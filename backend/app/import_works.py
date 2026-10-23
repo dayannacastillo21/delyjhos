@@ -25,8 +25,8 @@ def import_works(db, records):
                     base + f"/detail-{i}.webp"
                     for i in range(1, len(record["selected_seconds"]))
                 ],
-                width=576,
-                height=1024,
+                width=record.get("width", 576),
+                height=record.get("height", 1024),
                 duration=record["duration"],
                 product_id=None,
                 is_published=True,

@@ -21,6 +21,9 @@ FILES = [
     "WhatsApp Video 2026-10-23 at 1.06.38 PM.mp4",
     "WhatsApp Video 2026-10-23 at 1.06.35 PM.mp4",
     "WhatsApp Video 2026-10-23 at 1.05.40 PM.mp4",
+    "WhatsApp Video 2026-10-23 at 1.05.37 PM.mp4",
+    "WhatsApp Video 2026-10-23 at 1.05.34 PM.mp4",
+    "WhatsApp Video 2026-10-23 at 1.05.29 PM.mp4",
 ]
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 
@@ -32,6 +35,7 @@ def run(*args):
 def inspect(downloads):
     ARCHIVE.mkdir(parents=True, exist_ok=True)
     reports = []
+    previous = json.loads((ARCHIVE / "inspection.json").read_text(encoding="utf-8")) if (ARCHIVE / "inspection.json").exists() else []
     for index, name in enumerate(FILES, 1):
         source = downloads / name
         digest = hashlib.sha256(source.read_bytes()).hexdigest()
@@ -42,10 +46,15 @@ def inspect(downloads):
             raise ValueError("Original archive differs; choose a new work identifier")
         if not archive.exists():
             shutil.copy2(source, archive)
+        known = next((r for r in previous if r["slug"] == f"work-{index:02}" and r["sha256"] == digest), None)
+        if known and (directory / "contact-sheet.jpg").exists():
+            reports.append(known)
+            continue
         probe = subprocess.run([FFMPEG, "-hide_banner", "-i", str(archive)], capture_output=True, text=True, encoding="utf-8", errors="replace").stderr
         (directory / "probe.txt").write_text(probe, encoding="utf-8")
         match = re.search(r"Duration: (\d+):(\d+):([\d.]+)", probe)
         duration = int(match[1]) * 3600 + int(match[2]) * 60 + float(match[3])
+        dimensions = re.search(r"Video:.*?\b(\d{2,5})x(\d{2,5})\b", probe)
         times = [round(duration * fraction, 2) for fraction in [.03, .15, .27, .39, .51, .63, .75, .87, .96]]
         sheet = Image.new("RGB", (720, 3 * 452), "#fff7fa")
         draw = ImageDraw.Draw(sheet)
@@ -58,16 +67,20 @@ def inspect(downloads):
                 sheet.paste(image, (x + (240 - image.width) // 2, y + 24))
                 draw.text((x + 8, y + 5), f"work-{index:02} | {seconds:.2f}s", fill="#30232a")
         sheet.save(directory / "contact-sheet.jpg", quality=90)
-        reports.append({"slug": f"work-{index:02}", "original_name": name, "sha256": digest, "duration": duration, "source_bytes": source.stat().st_size, "review_times": times})
+        reports.append({"slug": f"work-{index:02}", "original_name": name, "sha256": digest, "duration": duration, "width": int(dimensions[1]), "height": int(dimensions[2]), "source_bytes": source.stat().st_size, "review_times": times})
     (ARCHIVE / "inspection.json").write_text(json.dumps(reports, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(reports, indent=2, ensure_ascii=False))
 
 
-def build(config):
+def build(config, only=None):
     entries = json.loads(config.read_text(encoding="utf-8"))
     reports = json.loads((ARCHIVE / "inspection.json").read_text(encoding="utf-8"))
+    previous = {x["slug"]: x for x in json.loads((PUBLIC / "manifest.json").read_text(encoding="utf-8"))} if (PUBLIC / "manifest.json").exists() else {}
+    entries = [{**previous.get(x["slug"], {}), **x} for x in entries]
     for entry in entries:
         slug = entry["slug"]
+        if only and slug not in only:
+            continue
         if not re.fullmatch(r"work-\d{2}", slug):
             raise ValueError("Invalid work identifier")
         original = ARCHIVE / slug / "original.mp4"
@@ -82,7 +95,7 @@ def build(config):
             run("-ss", seconds, "-i", original, "-vf", filters, "-frames:v", 1,
                 "-c:v", "libwebp", "-quality", 90, destination / ("poster.webp" if i == 0 else f"detail-{i}.webp"))
         report = next(r for r in reports if r["slug"] == slug)
-        entry.update({"source_sha256": report["sha256"], "source_bytes": report["source_bytes"], "duration": report["duration"], "web_bytes": (destination / "video.mp4").stat().st_size})
+        entry.update({"source_sha256": report["sha256"], "source_bytes": report["source_bytes"], "duration": report["duration"], "width": report.get("width", 576), "height": report.get("height", 1024), "web_bytes": (destination / "video.mp4").stat().st_size})
         print(slug, report["source_bytes"], "->", entry["web_bytes"], "bytes")
     (PUBLIC / "manifest.json").write_text(json.dumps(entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -92,5 +105,6 @@ if __name__ == "__main__":
     parser.add_argument("stage", choices=["inspect", "build"])
     parser.add_argument("--downloads", type=Path, default=Path.home() / "Downloads")
     parser.add_argument("--config", type=Path, default=ROOT / "scripts" / "work-videos.json")
+    parser.add_argument("--only", nargs="+", help="Build only these work identifiers, preserving earlier derivatives")
     args = parser.parse_args()
-    inspect(args.downloads) if args.stage == "inspect" else build(args.config)
+    inspect(args.downloads) if args.stage == "inspect" else build(args.config, args.only)

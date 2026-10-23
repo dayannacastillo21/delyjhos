@@ -1,10 +1,30 @@
 from datetime import timedelta
 from pathlib import Path
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from app.models.works import Work
 from app.models.business import QuoteRequest, Order
 from app.services import business_today
 from app.config import settings
+from app.import_works import import_works
+import json
+
+
+def test_media_import_preserves_dimensions_and_existing_edits(setup):
+    _, engine = setup
+    manifest = (
+        Path(__file__).resolve().parents[2]
+        / "frontend/public/media/works/manifest.json"
+    )
+    records = json.loads(manifest.read_text(encoding="utf-8"))
+    with Session(engine) as db:
+        assert import_works(db, records) == 6
+        row = db.scalar(select(Work).where(Work.slug == "work-04"))
+        assert (row.width, row.height) == (480, 848)
+        row.title = "Título revisado por administración"
+        db.commit()
+        assert import_works(db, records) == 0
+        assert row.title == "Título revisado por administración"
 
 
 def seed_work(engine, published=True):

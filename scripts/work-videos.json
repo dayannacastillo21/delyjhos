@@ -28,5 +28,35 @@
     "selected_seconds": [6.56, 2.52],
     "video_filter": "hqdn3d=0.6:0.4:1:1,eq=contrast=1.01:saturation=1.0,unsharp=3:3:0.12:3:3:0",
     "review_notes": "Principal muestra la base y la camiseta completas; complementaria destaca decoración superior. El original contiene cierre de TikTok, conservado en el video; no se usa como miniatura."
+  },
+  {
+    "slug": "work-04",
+    "crf": 25,
+    "title": "Torta de Sonic y Shadow",
+    "occasion": "Cumpleaños",
+    "description": "Trabajo real con personajes de Sonic y Shadow, aros dorados y nombre personalizado. El video también muestra cake pops de la misma temática. Coordinemos una propuesta para tu celebración.",
+    "selected_seconds": [25.78, 15.11],
+    "video_filter": "hqdn3d=0.5:0.3:0.8:0.8,eq=gamma=1.015,unsharp=3:3:0.10:3:3:0",
+    "review_notes": "Principal amplia para conservar personajes, aros y base. Complementaria de cake pops; no se asignan sabor, cantidad ni precio. Resolución original 480x848, sin ampliación."
+  },
+  {
+    "slug": "work-05",
+    "crf": 26,
+    "title": "Torta de abejitas y flores",
+    "occasion": "Cumpleaños",
+    "description": "Trabajo real en amarillo y verde con abejitas, flores, mariposas y un nombre personalizado. Podemos cotizar una creación inspirada en sus colores y temática.",
+    "selected_seconds": [23.98, 19.42],
+    "video_filter": "hqdn3d=0.5:0.3:0.8:0.8,unsharp=3:3:0.10:3:3:0",
+    "review_notes": "Principal muestra torta, antenas y base completas. Se conservan bandas negras del original. No se aumenta saturación: el video ya contiene tomas con amarillo intenso. Complementaria de decoración; resolución original 464x832."
+  },
+  {
+    "slug": "work-06",
+    "crf": 25,
+    "title": "Torta de temática científica",
+    "occasion": "Felicitación",
+    "description": "Trabajo real de dos niveles con microscopio y detalles inspirados en instrumentos de laboratorio. Cuéntanos el motivo de tu celebración para preparar una propuesta personalizada.",
+    "selected_seconds": [19.42, 4.62],
+    "video_filter": "hqdn3d=0.5:0.3:0.8:0.8,eq=gamma=1.02,unsharp=3:3:0.10:3:3:0",
+    "review_notes": "Principal conserva microscopio, base y accesorios. Complementaria de los tubos decorativos. El mensaje visible es de felicitación; no se supone una profesión o evento específico. Se mantienen marcas y encuadres originales, 576x1024."
   }
 ]

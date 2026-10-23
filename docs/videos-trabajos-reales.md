@@ -1,4 +1,6 @@
-# Trabajos reales: primera muestra de tres videos
+# Trabajos reales: registro de las tandas procesadas
+
+La galería reúne seis trabajos y doce fotografías WebP. Cada tanda se añade con identificadores nuevos; los originales y los derivados de las tandas anteriores se conservan.
 
 Se revisaron los tres MP4 suministrados el 23 de octubre de 2026. Se preservaron los archivos de Downloads sin cambios y se guardaron copias verificadas por SHA-256 en `backend/media-originals/`, excluidas de Git y de Docker. Allí están las hojas de contacto, los fotogramas de revisión y el informe técnico original. No son necesarias para servir la web.
 
@@ -59,3 +61,28 @@ python -m app.import_works ../frontend/public/media/works/manifest.json
 ```
 
 El importador es idempotente y no sobrescribe modificaciones administrativas. En despliegues separados, entregar el manifiesto al backend y publicar los MP4/WebP en el frontend antes de registrar los trabajos.
+
+## Segunda tanda: Sonic, abejitas y temática científica
+
+| Trabajo | Archivo de origen (WhatsApp) | Duración | Resolución original conservada | Principal | Complementaria | Original | MP4 web |
+|---|---|---:|---|---:|---:|---:|---:|
+| Sonic y Shadow | 1.05.37 PM.mp4 | 29,63 s | 480 × 848 | 25,78 s | 15,11 s | 4.753.319 bytes | 2.275.945 bytes |
+| Abejitas y flores | 1.05.34 PM.mp4 | 38,07 s | 464 × 832 | 23,98 s | 19,42 s | 6.573.635 bytes | 3.201.154 bytes |
+| Temática científica | 1.05.29 PM.mp4 | 30,83 s | 576 × 1024 | 19,42 s | 4,62 s | 4.994.376 bytes | 2.719.961 bytes |
+
+Esta tanda reduce los MP4 de 16.321.330 a 8.197.060 bytes (49,8 %). Se revisaron nueve fotogramas distribuidos por video, las tres fotografías principales resultantes y las vistas originales seleccionadas. Se verificó la decodificación completa de los tres MP4 web.
+
+- Sonic: se eligió una toma amplia que conserva los personajes, aros y base. La complementaria muestra los cake pops presentes en el mismo video; no se presupone que estén incluidos en un pedido ni se les asigna precio o sabor.
+- Abejitas: se conserva el amarillo intenso que ya tiene el original, sin aumentar saturación. La principal conserva antenas y base; se mantienen las bandas negras incorporadas al video. La complementaria es un acercamiento de decoración.
+- Científica: se conserva el microscopio y el conjunto de accesorios decorativos. El mensaje visible es de felicitación; no se inventa una profesión, graduación o especialidad específica.
+- Los dos primeros archivos son de menor resolución que la primera tanda. No se ampliaron ni se presentaron como Full HD. Se aplicó reducción leve de ruido y nitidez moderada; solo Sonic y científica recibieron un ajuste pequeño de gamma.
+
+Los identificadores son `work-04`, `work-05` y `work-06`. El importador utiliza las dimensiones de cada pieza y mantiene los valores anteriores de las ya registradas. Las comprobaciones SHA-256 verificaron que los seis archivos de Downloads y sus seis copias locales siguen sin cambios.
+
+El procesador ahora permite construir únicamente una tanda, conservando los derivados anteriores:
+
+```powershell
+python scripts/prepare_work_videos.py build --only work-04 work-05 work-06
+```
+
+La inspección conserva los informes anteriores y reutiliza las hojas de contacto cuando el archivo archivado y la fuente coinciden. Las cargas nuevas siguen disponibles en «Nuestros trabajos» y en el flujo de cotización por referencia existente.

@@ -1,5 +1,36 @@
 import { test, expect } from "@playwright/test";
 
+test("second batch plays with its original dimensions", async ({ page }) => {
+  await page.goto("/#nuestros-trabajos");
+  const gallery = page.locator("#nuestros-trabajos");
+  for (const [title, width, height] of [
+    ["Torta de Sonic y Shadow", 480, 848],
+    ["Torta de abejitas y flores", 464, 832],
+    ["Torta de temática científica", 576, 1024],
+  ] as const) {
+    await gallery
+      .getByRole("button", { name: `Ver video de ${title}`, exact: true })
+      .click();
+    const dialog = page.getByRole("dialog");
+    const video = dialog.locator("video");
+    await video.evaluate((element: HTMLVideoElement) => element.play());
+    await expect
+      .poll(() =>
+        video.evaluate((element: HTMLVideoElement) => element.currentTime),
+      )
+      .toBeGreaterThan(0);
+    expect(
+      await video.evaluate((element: HTMLVideoElement) => [
+        element.videoWidth,
+        element.videoHeight,
+      ]),
+    ).toEqual([width, height]);
+    await dialog
+      .getByRole("button", { name: "Cerrar trabajo", exact: true })
+      .click();
+  }
+});
+
 test("real videos load on demand and inspiration persists in the quote", async ({
   page,
 }) => {
@@ -9,7 +40,7 @@ test("real videos load on demand and inspiration persists in the quote", async (
   });
   await page.goto("/#nuestros-trabajos");
   const gallery = page.locator("#nuestros-trabajos");
-  await expect(gallery.locator(".work-card")).toHaveCount(3);
+  await expect(gallery.locator(".work-card")).toHaveCount(6);
   await expect(gallery.locator("video")).toHaveCount(0);
   expect(videos).toHaveLength(0);
   await gallery
@@ -80,7 +111,7 @@ test("real gallery and expanded photos fit mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/#nuestros-trabajos");
   const gallery = page.locator("#nuestros-trabajos");
-  await expect(gallery.locator(".work-card")).toHaveCount(3);
+  await expect(gallery.locator(".work-card")).toHaveCount(6);
   await gallery.evaluate((element) =>
     element.scrollIntoView({ block: "start", behavior: "instant" }),
   );

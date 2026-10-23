@@ -21,7 +21,7 @@ La contraseña de PostgreSQL solo existe en el backend. La sesión administrativ
 | --- | --- |
 | Página pública | Diseño adaptable, catálogo desde la API, categorías, búsqueda, detalles y galería |
 | Bocaditos | 31 productos del catálogo 2025 en borrador, presentaciones de 25/50/100, precios actuales confirmables y propuestas de mesa |
-| Trabajos reales | Tres videos propios con seis fotos WebP, visor bajo demanda y cotización «Quiero una torta similar» con referencia conservada |
+| Trabajos reales | Seis videos propios con doce fotos WebP, visor bajo demanda y cotización «Quiero una torta similar» con referencia conservada |
 | Clientes | Solicitud de pedidos con cantidades y fecha, cotización de tortas con imagen, seguimiento privado |
 | Administración | Inicio de sesión, cuatro roles, catálogo, clientes, proveedores y usuarios |
 | Pedidos | Flujo de confirmación, producción, preparación y entrega; conversión de cotizaciones aprobadas |
