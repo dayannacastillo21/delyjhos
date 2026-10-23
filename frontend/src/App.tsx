@@ -5,8 +5,11 @@ import { api, assetUrl } from "./api";
 import { Checkout, CustomQuote, Tracking } from "./CustomerForms";
 import type { Product } from "./catalog";
 import "./App.css";
+import "./HeaderResponsive.css";
 import ProductGallery from "./ProductGallery";
 import SnackCatalog from "./SnackCatalog";
+import WorksGallery from "./WorksGallery";
+import type { Work } from "./workTypes";
 
 function Icon({ name, size = 22 }: { name: string; size?: number }) {
   const paths: Record<string, ReactNode> = {
@@ -121,6 +124,7 @@ function App() {
   const [bag, setBag] = useState<number[]>([]);
   const [bagOpen, setBagOpen] = useState(false);
   const [customOpen, setCustomOpen] = useState(false);
+  const [referenceWork, setReferenceWork] = useState<Work | null>(null);
   const [notice, setNotice] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState(sampleCategories);
@@ -249,13 +253,16 @@ function App() {
               Inicio
             </a>
             <a href="#productos" onClick={() => setMenuOpen(false)}>
-              Productos
+              Tortas
             </a>
             <a href="#bocaditos" onClick={() => setMenuOpen(false)}>
               Bocaditos
             </a>
             <a href="#arma-tu-mesa" onClick={() => setMenuOpen(false)}>
               Arma tu mesa
+            </a>
+            <a href="#nuestros-trabajos" onClick={() => setMenuOpen(false)}>
+              Nuestros trabajos
             </a>
             <button
               onClick={() => {
@@ -499,6 +506,12 @@ function App() {
           </section>
 
           <SnackCatalog />
+          <WorksGallery
+            onQuote={(work) => {
+              setReferenceWork(work);
+              setCustomOpen(true);
+            }}
+          />
           <section className="about-section" id="nosotros">
             <div>
               <span className="eyebrow">NUESTRA ESENCIA</span>
@@ -669,9 +682,12 @@ function App() {
       {customOpen && (
         <Modal
           title="Personaliza tu torta"
-          onClose={() => setCustomOpen(false)}
+          onClose={() => {
+            setCustomOpen(false);
+            setReferenceWork(null);
+          }}
         >
-          <CustomQuote />
+          <CustomQuote referenceWork={referenceWork} />
         </Modal>
       )}
     </>

@@ -23,6 +23,8 @@ from app.models import (
 from app.security import password_hash
 from app.main import app
 from app.import_snacks import import_catalog
+from app.import_works import import_works
+import json
 from app.models.snacks import Snack
 from sqlalchemy import select
 
@@ -70,3 +72,8 @@ with SessionLocal.begin() as db:
     import_catalog(db)
     for snack in db.scalars(select(Snack)):
         snack.is_published = True
+    manifest = (
+        Path(__file__).resolve().parents[2]
+        / "frontend/public/media/works/manifest.json"
+    )
+    import_works(db, json.loads(manifest.read_text(encoding="utf-8")))

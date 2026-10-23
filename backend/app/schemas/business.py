@@ -122,7 +122,7 @@ class OrderLine(Input):
 class OrderWrite(Input):
     customer_id: int = Field(gt=0)
     due_date: date
-    notes: str = Field(default="", max_length=3000)
+    notes: str = Field(default="", max_length=6000)
     items: list[OrderLine] = Field(min_length=1, max_length=50)
     request_key: str = Field(min_length=16, max_length=80)
 
@@ -179,6 +179,11 @@ class QuoteWrite(Input):
     decoration: str = Field(default="", max_length=500)
     due_date: date
     reference_image: str | None = Field(default=None, max_length=500)
+    reference_work_id: int | None = Field(default=None, gt=0)
+    celebration: str = Field(default="", max_length=100)
+    preferred_colors: str = Field(default="", max_length=150)
+    cake_message: str = Field(default="", max_length=150)
+    comments: str = Field(default="", max_length=3000)
     request_key: str = Field(min_length=16, max_length=80)
 
     @field_validator("reference_image")

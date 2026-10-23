@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { api } from "./api";
+import { api, assetUrl } from "./api";
+import type { Work } from "./workTypes";
 import type { Product } from "./catalog";
 import { money } from "./catalog";
 import { statuses } from "./admin/modules";
@@ -163,7 +164,11 @@ export function Checkout({
   );
 }
 
-export function CustomQuote() {
+export function CustomQuote({
+  referenceWork,
+}: {
+  referenceWork?: Work | null;
+}) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<{ id: number } | null>(null);
@@ -201,6 +206,11 @@ export function CustomQuote() {
             decoration: data.get("decoration") || "",
             due_date: data.get("due_date"),
             reference_image: image,
+            reference_work_id: referenceWork?.id || null,
+            celebration: data.get("celebration") || "",
+            preferred_colors: data.get("preferred_colors") || "",
+            cake_message: data.get("cake_message") || "",
+            comments: data.get("comments") || "",
             request_key: key.current,
           }),
         }),
@@ -223,6 +233,26 @@ export function CustomQuote() {
     );
   return (
     <form className="custom-form" onSubmit={submit}>
+      {referenceWork && (
+        <div className="quote-work-reference">
+          <img
+            src={assetUrl(referenceWork.poster_url)}
+            alt={referenceWork.title}
+          />
+          <div>
+            <strong>Tu inspiración</strong>
+            <p>{referenceWork.title}</p>
+            <a
+              href={assetUrl(referenceWork.video_url)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ver video de referencia
+            </a>
+            <p>Guardaremos este trabajo junto con tu solicitud.</p>
+          </div>
+        </div>
+      )}
       <p className="dialog-note">
         Cuéntanos tu idea para recibir una cotización personalizada. No se
         realiza ningún cobro.
@@ -243,12 +273,37 @@ export function CustomQuote() {
         />
       </label>
       <label>
+        Tipo de celebración
+        <select
+          name="celebration"
+          defaultValue={referenceWork?.occasion || "Por coordinar"}
+        >
+          {[
+            ...new Set(
+              [
+                referenceWork?.occasion,
+                "Cumpleaños",
+                "Bautizo",
+                "Matrimonio",
+                "Quinceañero",
+                "Reunión familiar",
+                "Otro",
+                "Por coordinar",
+              ].filter((x): x is string => Boolean(x)),
+            ),
+          ].map((value) => (
+            <option key={value}>{value}</option>
+          ))}
+        </select>
+      </label>
+      <label>
         Temática o celebración
         <input
           name="theme"
           required
           maxLength={150}
           placeholder="Ej. flores rosadas"
+          defaultValue={referenceWork?.title.slice(0, 150) || ""}
         />
       </label>
       <div className="form-row">
@@ -290,6 +345,22 @@ export function CustomQuote() {
           maxLength={500}
           placeholder="Colores, acabado, necesidades alimentarias…"
         />
+      </label>
+      <label>
+        Colores preferidos
+        <input
+          name="preferred_colors"
+          maxLength={150}
+          placeholder="Ej. lila y blanco"
+        />
+      </label>
+      <label>
+        Nombre o mensaje para la torta
+        <input name="cake_message" maxLength={150} />
+      </label>
+      <label>
+        Comentarios adicionales
+        <textarea name="comments" maxLength={3000} rows={3} />
       </label>
       <label>
         Imagen de referencia (opcional)

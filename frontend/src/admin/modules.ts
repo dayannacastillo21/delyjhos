@@ -5,6 +5,7 @@ export type Field = {
   required?: boolean;
   options?: string[];
   resource?: string;
+  defaultValue?: string | number | boolean;
 };
 export type Module = {
   key: string;
@@ -20,6 +21,74 @@ export const management = ["admin", "manager"];
 export const all = ["admin", "manager", "sales", "production"];
 export const sales = ["admin", "manager", "sales"];
 export const modules: Module[] = [
+  {
+    key: "works",
+    title: "Nuestros trabajos",
+    icon: "▷",
+    roles: management,
+    columns: ["title", "occasion", "product_id", "is_published"],
+    fields: [
+      { key: "title", label: "Título", required: true },
+      {
+        key: "slug",
+        label: "Identificador (minúsculas y guiones)",
+        required: true,
+      },
+      { key: "occasion", label: "Celebración" },
+      {
+        key: "description",
+        label: "Descripción del trabajo real",
+        type: "textarea",
+      },
+      {
+        key: "video_url",
+        label: "Video MP4 H.264 (máximo 5 MB)",
+        type: "video",
+        required: true,
+      },
+      {
+        key: "poster_url",
+        label: "Fotografía principal",
+        type: "image",
+        required: true,
+      },
+      {
+        key: "gallery",
+        label: "Fotografías complementarias (una ruta por línea)",
+        type: "image-list",
+      },
+      {
+        key: "width",
+        label: "Ancho original (píxeles)",
+        type: "integer",
+        defaultValue: 576,
+        required: true,
+      },
+      {
+        key: "height",
+        label: "Alto original (píxeles)",
+        type: "integer",
+        defaultValue: 1024,
+        required: true,
+      },
+      {
+        key: "duration",
+        label: "Duración (segundos)",
+        type: "number",
+        required: true,
+      },
+      {
+        key: "product_id",
+        label: "Producto relacionado (opcional)",
+        resource: "products",
+      },
+      {
+        key: "is_published",
+        label: "Visible en Momentos que endulzamos",
+        type: "checkbox",
+      },
+    ],
+  },
   {
     key: "snacks",
     title: "Catálogo de bocaditos",
@@ -438,6 +507,14 @@ export const modules: Module[] = [
   },
 ];
 export const labels: Record<string, string> = {
+  reference_work_id: "Trabajo de referencia",
+  reference_work: "Referencia conservada",
+  preferred_colors: "Colores preferidos",
+  cake_message: "Mensaje para la torta",
+  video_url: "Video",
+  poster_url: "Fotografía principal",
+  gallery: "Galería",
+  duration: "Duración (s)",
   is_published: "Publicado",
   is_available: "Disponible",
   source_page: "Página de origen",

@@ -4,6 +4,7 @@
 !.env.example
 .initial-admin.txt
 uploads
+media-originals
 __pycache__
 .pytest_cache
 *.db

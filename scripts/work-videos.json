@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "work-01",
+    "crf": 27,
+    "title": "Torta temática K-pop en tonos lila",
+    "occasion": "Cumpleaños",
+    "description": "Trabajo real de dos niveles con figuras, estrellas y detalles musicales. Podemos cotizar una creación inspirada en esta temática, adaptada a tu celebración.",
+    "selected_seconds": [28.13, 25.49],
+    "video_filter": "hqdn3d=0.6:0.4:1:1,eq=contrast=1.01:gamma=1.02:saturation=1.01,unsharp=3:3:0.15:3:3:0",
+    "review_notes": "Principal elegida para conservar la base y los adornos superiores. Se mantienen bandas negras y marca de agua. Complementaria más cercana; el borde inferior de la base llega al encuadre. No se inventan zonas fuera de cámara."
+  },
+  {
+    "slug": "work-02",
+    "crf": 25,
+    "title": "Torta de bautizo en blanco y dorado",
+    "occasion": "Bautizo",
+    "description": "Trabajo real con cruz dorada, detalles blancos y dorados y un mensaje de bautizo. Cada propuesta se revisa según las porciones, colores y fecha que necesites.",
+    "selected_seconds": [23.5, 6.8],
+    "video_filter": "hqdn3d=0.6:0.4:1:1,eq=contrast=1.01:gamma=1.025:saturation=1.0,unsharp=3:3:0.12:3:3:0",
+    "review_notes": "Tomas amplias conservan base, cruz y mensaje. El extremo de la decoración blanca superior está cortado en el material original; no se reconstruye. Bandas negras y marca de agua conservadas."
+  },
+  {
+    "slug": "work-03",
+    "crf": 23,
+    "title": "Torta de fútbol en celeste y blanco",
+    "occasion": "Cumpleaños",
+    "description": "Trabajo real con camiseta, escudo y pelotas de fútbol en celeste y blanco. Solicita una versión personalizada y coordinaremos sus detalles contigo.",
+    "selected_seconds": [6.56, 2.52],
+    "video_filter": "hqdn3d=0.6:0.4:1:1,eq=contrast=1.01:saturation=1.0,unsharp=3:3:0.12:3:3:0",
+    "review_notes": "Principal muestra la base y la camiseta completas; complementaria destaca decoración superior. El original contiene cierre de TikTok, conservado en el video; no se usa como miniatura."
+  }
+]

@@ -79,6 +79,9 @@ from app.services import (
 from app.config import settings
 from app.models.snacks import Snack, SnackPresentation, SnackQuote
 from app.schemas.snacks import SnackWrite, PresentationWrite, SnackQuoteUpdate
+from app.models.works import Work
+from app.schemas.works import WorkWrite
+from app.routers.works import public_work
 
 router = APIRouter(prefix="/api/v1")
 
@@ -262,7 +265,14 @@ def public_quote(data: QuoteWrite, request: Request, db: DB):
     )
     if existing:
         raise HTTPException(409, "La solicitud ya fue registrada")
-    quote = QuoteRequest(**data.model_dump())
+    reference = None
+    if data.reference_work_id is not None:
+        work = get_or_404(db, Work, data.reference_work_id)
+        if not work.is_published:
+            raise HTTPException(422, "El trabajo seleccionado ya no está disponible")
+        reference = public_work(work)
+        reference["duration"] = str(work.duration)
+    quote = QuoteRequest(**data.model_dump(), reference_work=reference)
     db.add(quote)
     db.flush()
     commit(db)
@@ -304,6 +314,7 @@ async def upload(request: Request, db: DB, file: Annotated[UploadFile, File()]):
 
 
 RESOURCES = {
+    "works": (Work, WorkWrite),
     "snacks": (Snack, SnackWrite),
     "snack-presentations": (SnackPresentation, PresentationWrite),
     "snack-quotes": (SnackQuote, SnackQuoteUpdate),
@@ -521,6 +532,7 @@ def create_resource(resource: str, payload: dict, db: DB, actor: Actor):
 @router.put("/admin/{resource}/{id}", tags=["Administración"])
 def update_resource(resource: str, id: int, payload: dict, db: DB, actor: Actor):
     if resource not in {
+        "works",
         "snacks",
         "snack-presentations",
         "snack-quotes",
@@ -865,7 +877,11 @@ def convert_quote(id: int, data: ConvertQuote, db: DB, actor: Actor):
     order_input = OrderWrite(
         customer_id=customer.id,
         due_date=quote.due_date,
-        notes=f"Cotización #{id}: {quote.theme}, {quote.portions} porciones, sabor {quote.flavor}, relleno {quote.filling}. {quote.decoration}",
+        notes=(
+            f"Cotización #{id}: {quote.theme}, {quote.portions} porciones, sabor {quote.flavor}, relleno {quote.filling}. {quote.decoration}. "
+            f"Celebración: {quote.celebration}. Colores: {quote.preferred_colors}. Mensaje: {quote.cake_message}. Comentarios: {quote.comments}. "
+            f"Trabajo de referencia: {(quote.reference_work or {}).get('title', 'Sin trabajo seleccionado')} (ID {quote.reference_work_id or '-'}). Imagen adicional: {quote.reference_image or '-'}"
+        ),
         items=[{"product_id": data.product_id, "quantity": data.quantity}],
         request_key="quote-conversion-" + str(id),
     )

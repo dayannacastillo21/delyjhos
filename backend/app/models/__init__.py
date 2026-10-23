@@ -51,3 +51,6 @@ __all__.append("BusinessSetting")
 from app.models.snacks import Snack, SnackPresentation, SnackQuote
 
 __all__.extend(["Snack", "SnackPresentation", "SnackQuote"])
+from app.models.works import Work
+
+__all__.append("Work")

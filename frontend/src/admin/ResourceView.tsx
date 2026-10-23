@@ -281,8 +281,51 @@ export default function ResourceView({
               alt="Referencia de la cotización"
             />
           )}
+          {module.key === "quotes" &&
+          detail.reference_work &&
+          typeof detail.reference_work === "object" ? (
+            <div className="quote-work-reference">
+              <img
+                src={assetUrl(
+                  String(
+                    (detail.reference_work as Record<string, unknown>)
+                      .poster_url,
+                  ),
+                )}
+                alt="Trabajo elegido como inspiración"
+              />
+              <div>
+                <strong>
+                  {String(
+                    (detail.reference_work as Record<string, unknown>).title,
+                  )}
+                </strong>
+                <p>Referencia guardada al recibir la solicitud.</p>
+                <a
+                  href={assetUrl(
+                    String(
+                      (detail.reference_work as Record<string, unknown>)
+                        .video_url,
+                    ),
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ver video de referencia
+                </a>
+              </div>
+            </div>
+          ) : null}
           {Object.entries(detail)
-            .filter(([k]) => !["items", "payments", "request_key"].includes(k))
+            .filter(
+              ([k]) =>
+                ![
+                  "items",
+                  "payments",
+                  "request_key",
+                  "reference_work",
+                ].includes(k),
+            )
             .map(([key, value]) => (
               <p key={key}>
                 <strong>{labels[key] || key}: </strong>

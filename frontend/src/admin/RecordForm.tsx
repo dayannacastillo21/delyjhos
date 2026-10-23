@@ -19,7 +19,10 @@ export default function RecordForm({
     Object.fromEntries(
       module.fields.map((f) => [
         f.key,
-        record?.[f.key] ??
+        (f.type === "image-list" && Array.isArray(record?.[f.key])
+          ? (record[f.key] as string[]).join("\n")
+          : record?.[f.key]) ??
+          f.defaultValue ??
           (["is_published", "price_confirmed", "is_available"].includes(f.key)
             ? false
             : f.key === "source_year"
@@ -68,6 +71,11 @@ export default function RecordForm({
         if (module.key === "users" && !record && f.key === "is_active")
           continue;
         let value = values[f.key];
+        if (f.type === "image-list")
+          value = String(value || "")
+            .split("\n")
+            .map((x) => x.trim())
+            .filter(Boolean);
         if ((f.resource || f.type === "integer") && value !== "")
           value = Number(value);
         if (
@@ -81,6 +89,8 @@ export default function RecordForm({
             "source_page",
           ].includes(f.key)
         )
+          value = null;
+        if (module.key === "works" && f.key === "product_id" && value === "")
           value = null;
         if (module.key === "users" && record && f.key === "password" && !value)
           continue;
@@ -132,7 +142,7 @@ export default function RecordForm({
                     checked={Boolean(values[f.key])}
                     onChange={(e) => update(f.key, e.target.checked)}
                   />
-                ) : f.type === "textarea" ? (
+                ) : f.type === "textarea" || f.type === "image-list" ? (
                   <textarea
                     aria-label={f.label}
                     rows={3}
@@ -160,16 +170,24 @@ export default function RecordForm({
                         </option>
                       ))}
                   </select>
-                ) : f.type === "image" ? (
+                ) : f.type === "image" || f.type === "video" ? (
                   <>
                     <input
-                      placeholder="URL HTTPS o carga una imagen"
+                      placeholder={
+                        f.type === "video"
+                          ? "Ruta del video o carga un MP4"
+                          : "Ruta de la imagen o carga una fotografía"
+                      }
                       value={String(values[f.key] ?? "")}
                       onChange={(e) => update(f.key, e.target.value)}
                     />
                     <input
                       type="file"
-                      accept="image/png,image/jpeg,image/webp"
+                      accept={
+                        f.type === "video"
+                          ? "video/mp4"
+                          : "image/png,image/jpeg,image/webp"
+                      }
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
@@ -177,7 +195,9 @@ export default function RecordForm({
                           const form = new FormData();
                           form.append("file", file);
                           const result = await api<{ url: string }>(
-                            "/api/v1/uploads",
+                            f.type === "video"
+                              ? "/api/v1/work-videos/upload"
+                              : "/api/v1/uploads",
                             { method: "POST", body: form },
                           );
                           update(f.key, result.url);

@@ -35,7 +35,7 @@
 }
 .navigation {
   display: flex;
-  gap: 12px;
+  gap: 4px;
   align-items: center;
   margin: auto;
   white-space: nowrap;
@@ -44,7 +44,7 @@
 .navigation button {
   font-size: 13px;
   font-weight: 600;
-  padding: 11px 14px;
+  padding: 11px 10px;
   border-radius: 14px;
 }
 .navigation .active {

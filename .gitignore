@@ -23,6 +23,7 @@ Thumbs.db
 Desktop.ini
 # Runtime data and local bootstrap credentials
 backend/uploads/
+backend/media-originals/
 backend/.initial-admin.txt
 *.db
 playwright-report/

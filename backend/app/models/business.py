@@ -251,6 +251,16 @@ class QuoteRequest(Timestamp, Base):
     decoration: Mapped[str] = mapped_column(String(500), default="")
     due_date: Mapped[date] = mapped_column(Date)
     reference_image: Mapped[str | None] = mapped_column(String(500))
+    reference_work_id: Mapped[int | None] = mapped_column(ForeignKey("works.id"))
+    reference_work: Mapped[dict | None] = mapped_column(JSON)
+    celebration: Mapped[str] = mapped_column(String(100), default="", server_default="")
+    preferred_colors: Mapped[str] = mapped_column(
+        String(150), default="", server_default=""
+    )
+    cake_message: Mapped[str] = mapped_column(
+        String(150), default="", server_default=""
+    )
+    comments: Mapped[str] = mapped_column(Text, default="", server_default="")
     status: Mapped[str] = mapped_column(String(20), default="pending")
     quoted_price: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
     staff_notes: Mapped[str] = mapped_column(Text, default="")
