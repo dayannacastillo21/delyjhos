@@ -280,6 +280,12 @@ class AuditLog(Timestamp, Base):
 
 class BusinessSetting(Base):
     __tablename__ = "business_settings"
+    __table_args__ = (
+        CheckConstraint(
+            "(snack_min_per_guest IS NULL AND snack_max_per_guest IS NULL) OR (snack_min_per_guest IS NOT NULL AND snack_max_per_guest IS NOT NULL AND snack_min_per_guest > 0 AND snack_max_per_guest >= snack_min_per_guest)",
+            name="snack_guest_range_valid",
+        ),
+    )
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), default="DelyJhos")
     whatsapp_number: Mapped[str] = mapped_column(String(20), default="")
@@ -288,3 +294,5 @@ class BusinessSetting(Base):
         String(1000), default="Coordinar la entrega al confirmar el pedido."
     )
     demo_catalog: Mapped[bool] = mapped_column(Boolean, default=True)
+    snack_min_per_guest: Mapped[Decimal | None] = mapped_column(Numeric(6, 2))
+    snack_max_per_guest: Mapped[Decimal | None] = mapped_column(Numeric(6, 2))

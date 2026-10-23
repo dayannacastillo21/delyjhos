@@ -797,3 +797,24 @@ td {
   background: #40263866;
   backdrop-filter: blur(4px);
 }
+.snack-review-line {
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid #e8ced9;
+  border-radius: 12px;
+}
+.snack-review-line legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
+.snack-review-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 20px 0;
+  line-height: 1.6;
+}
+.snack-review-confirm input {
+  margin-top: 5px;
+  flex-shrink: 0;
+}

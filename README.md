@@ -20,7 +20,8 @@ La contraseña de PostgreSQL solo existe en el backend. La sesión administrativ
 | Área | Funcionalidad |
 | --- | --- |
 | Página pública | Diseño adaptable, catálogo desde la API, categorías, búsqueda, detalles y galería |
-| Bocaditos | 31 productos del catálogo 2025 en borrador, presentaciones de 25/50/100, precios actuales confirmables y propuestas de mesa |
+| Bocaditos | 31 productos en borrador, presentaciones de 25/50/100, precios actuales confirmables, paquetes configurables y guía opcional por invitados |
+| Mesas | Propuestas con seguimiento privado, resumen para WhatsApp, revisión de precios y conversión a pedido, producción y entrega |
 | Trabajos reales | Seis videos propios con doce fotos WebP, visor bajo demanda y cotización «Quiero una torta similar» con referencia conservada |
 | Clientes | Solicitud de pedidos con cantidades y fecha, cotización de tortas con imagen, seguimiento privado |
 | Administración | Inicio de sesión, cuatro roles, catálogo, clientes, proveedores y usuarios |
@@ -36,6 +37,8 @@ La contraseña de PostgreSQL solo existe en el backend. La sesión administrativ
 Los seis productos iniciales conservan **datos e imágenes de muestra**. Deben reemplazarse o confirmarse antes de usar el catálogo comercialmente. Las fotografías se encuadran provisionalmente desde la referencia visual aportada por la propietaria del proyecto.
 
 Los trabajos de «Momentos que endulzamos» utilizan los videos reales proporcionados, separados de esos productos de muestra. No tienen precios, recetas ni porciones inventadas. Ver [informe del procesamiento y registro de los videos](docs/videos-trabajos-reales.md) y [revisión e importación del catálogo de bocaditos](docs/catalogo-2025-revision.md).
+
+El [flujo de mesas de bocaditos](docs/mesas-de-bocaditos.md) explica cómo vincular recetas de paquetes, revisar una propuesta aceptada y conservar sus cantidades, precios y seguimiento al convertirla en pedido.
 
 ## Arranque en Windows
 

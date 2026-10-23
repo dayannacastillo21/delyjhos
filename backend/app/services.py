@@ -18,6 +18,7 @@ from app.models import (
     PurchaseItem,
     InventoryMovement,
     AuditLog,
+    ProductionTask,
 )
 from app.security import digest, utcnow
 
@@ -80,7 +81,7 @@ def recipe_cost(db, product_id):
     return cost, snapshot
 
 
-def create_order(db, data, customer_id=None):
+def create_order(db, data, customer_id=None, approved_prices=None):
     if db.scalar(select(Order.id).where(Order.request_key == data.request_key)):
         raise HTTPException(
             409,
@@ -114,8 +115,13 @@ def create_order(db, data, customer_id=None):
 
         if not db.get(Category, product.category_id).is_active:
             raise HTTPException(422, "Categoría inactiva")
-        total += product.price * line.quantity
-        pending.append((line, product))
+        unit_price = (
+            approved_prices[product.id]
+            if approved_prices is not None
+            else product.price
+        )
+        total += unit_price * line.quantity
+        pending.append((line, product, unit_price))
     token = secrets.token_urlsafe(32)
     order = Order(
         customer_id=customer_id,
@@ -129,14 +135,14 @@ def create_order(db, data, customer_id=None):
     )
     db.add(order)
     db.flush()
-    for line, product in pending:
+    for line, product, unit_price in pending:
         db.add(
             OrderItem(
                 order_id=order.id,
                 product_id=product.id,
                 product_name=product.name,
                 quantity=line.quantity,
-                unit_price=product.price,
+                unit_price=unit_price,
                 unit_cost=0,
                 ingredients_snapshot={},
             )
@@ -217,6 +223,19 @@ def transition_order(db, id, status, actor):
             raise HTTPException(409, "Registra el saldo pendiente antes de entregar")
     previous = order.status
     order.status = status
+    task_state = {
+        "production": "in_progress",
+        "ready": "done",
+        "cancelled": "cancelled",
+    }.get(status)
+    if task_state:
+        for task in db.scalars(
+            select(ProductionTask).where(
+                ProductionTask.order_id == id,
+                ProductionTask.status.in_(["pending", "in_progress"]),
+            )
+        ):
+            task.status = task_state
     audit(db, actor, "status", "orders", id, f"{previous} → {status}")
     db.flush()
     return order

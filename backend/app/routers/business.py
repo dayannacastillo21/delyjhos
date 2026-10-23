@@ -9,7 +9,6 @@ from app.models import (
     User,
     Role,
     AuthSession,
-    LoginAttempt,
     Category,
     Customer,
     Product,
@@ -64,6 +63,7 @@ from app.security import (
     digest,
     utcnow,
     password_hash,
+    public_limit,
 )
 from app.services import (
     business_today,
@@ -77,8 +77,13 @@ from app.services import (
     receive_purchase,
 )
 from app.config import settings
-from app.models.snacks import Snack, SnackPresentation, SnackQuote
-from app.schemas.snacks import SnackWrite, PresentationWrite, SnackQuoteUpdate
+from app.models.snacks import Snack, SnackPresentation, SnackQuote, SnackPackage
+from app.schemas.snacks import (
+    SnackWrite,
+    PresentationWrite,
+    SnackQuoteUpdate,
+    PackageWrite,
+)
 from app.models.works import Work
 from app.schemas.works import WorkWrite
 from app.routers.works import public_work
@@ -209,24 +214,6 @@ def product_detail(id: int, db: DB):
     return result
 
 
-def public_limit(db, request, kind):
-    key = digest(
-        f'public:{kind}:{request.client.host if request.client else "unknown"}'
-    )
-    count = db.scalar(
-        select(func.count())
-        .select_from(LoginAttempt)
-        .where(
-            LoginAttempt.identity == key,
-            LoginAttempt.created_at > utcnow() - timedelta(hours=1),
-        )
-    )
-    if count >= 15:
-        raise HTTPException(429, "Demasiadas solicitudes. Intenta más tarde.")
-    db.add(LoginAttempt(identity=key))
-    db.commit()
-
-
 @router.post("/orders/", tags=["Pedidos públicos"], status_code=201)
 def public_order(data: PublicOrder, request: Request, db: DB):
     public_limit(db, request, "order")
@@ -314,6 +301,7 @@ async def upload(request: Request, db: DB, file: Annotated[UploadFile, File()]):
 
 
 RESOURCES = {
+    "snack-packages": (SnackPackage, PackageWrite),
     "works": (Work, WorkWrite),
     "snacks": (Snack, SnackWrite),
     "snack-presentations": (SnackPresentation, PresentationWrite),
@@ -473,6 +461,17 @@ def validate_payload(schema, payload):
         raise RequestValidationError(exc.errors())
 
 
+def validate_package(db, data):
+    for line in data.items:
+        variant = get_or_404(db, SnackPresentation, line.presentation_id)
+        snack = get_or_404(db, Snack, variant.snack_id)
+        if data.is_published and not snack.is_published:
+            raise HTTPException(
+                409,
+                "Publica primero los bocaditos del paquete, o guárdalo como borrador",
+            )
+
+
 @router.post("/admin/{resource}", tags=["Administración"], status_code=201)
 def create_resource(resource: str, payload: dict, db: DB, actor: Actor):
     if resource not in RESOURCES or resource in {
@@ -486,6 +485,8 @@ def create_resource(resource: str, payload: dict, db: DB, actor: Actor):
     access(db, actor, resource, True)
     model, schema = RESOURCES[resource]
     data = validate_payload(schema, payload)
+    if resource == "snack-packages":
+        validate_package(db, data)
     if resource == "product-images":
         get_or_404(db, Product, data.product_id)
     if resource == "orders":
@@ -514,7 +515,16 @@ def create_resource(resource: str, payload: dict, db: DB, actor: Actor):
             db.add(PurchaseItem(purchase_id=row.id, **line.model_dump()))
     else:
         if resource == "production":
-            get_or_404(db, Order, data.order_id)
+            task_order = get_or_404(db, Order, data.order_id)
+            if data.status in {"in_progress", "done"} and task_order.status not in {
+                "production",
+                "ready",
+                "delivered",
+            }:
+                raise HTTPException(
+                    409,
+                    "Inicia la producción desde el pedido antes de avanzar sus tareas",
+                )
             if data.assigned_to:
                 get_or_404(db, User, data.assigned_to)
         row = model(**data.model_dump())
@@ -532,6 +542,7 @@ def create_resource(resource: str, payload: dict, db: DB, actor: Actor):
 @router.put("/admin/{resource}/{id}", tags=["Administración"])
 def update_resource(resource: str, id: int, payload: dict, db: DB, actor: Actor):
     if resource not in {
+        "snack-packages",
         "works",
         "snacks",
         "snack-presentations",
@@ -553,11 +564,17 @@ def update_resource(resource: str, id: int, payload: dict, db: DB, actor: Actor)
     access(db, actor, resource, True)
     model, schema = RESOURCES[resource]
     data = validate_payload(schema, payload)
+    if resource == "snack-packages":
+        validate_package(db, data)
     if resource == "product-images":
         get_or_404(db, Product, data.product_id)
     if resource == "recipes":
         get_or_404(db, Product, data.product_id, True)
     row = get_or_404(db, model, id, True)
+    if resource == "snack-quotes" and row.order_id:
+        raise HTTPException(
+            409, "La propuesta ya fue convertida; gestiona el pedido asociado"
+        )
     if resource == "ingredients" and data.unit != row.unit:
         used = db.scalar(
             select(func.count())
@@ -580,11 +597,21 @@ def update_resource(resource: str, id: int, payload: dict, db: DB, actor: Actor)
                 "No cambies la unidad de un ingrediente utilizado; crea otro ingrediente",
             )
     if resource == "production":
-        get_or_404(db, Order, data.order_id)
+        task_order = get_or_404(db, Order, data.order_id)
+        if data.status in {"in_progress", "done"} and task_order.status not in {
+            "production",
+            "ready",
+            "delivered",
+        }:
+            raise HTTPException(
+                409, "Inicia la producción desde el pedido antes de avanzar sus tareas"
+            )
         if data.assigned_to:
             get_or_404(db, User, data.assigned_to)
     for key, value in data.model_dump(exclude={"items"}).items():
         setattr(row, key, value)
+    if resource == "snack-packages":
+        row.items = [x.model_dump() for x in data.items]
     if resource == "recipes":
         db.execute(delete(RecipeIngredient).where(RecipeIngredient.recipe_id == id))
         db.flush()

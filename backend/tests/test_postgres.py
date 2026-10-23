@@ -103,6 +103,7 @@ def test_postgresql_concurrent_production_consumes_once():
             )
             transition_order(db, order.id, "confirmed", actor)
             order_id, actor_id, ingredient_id = order.id, actor.id, ingredient.id
+            product_id = product.id
             db.commit()
 
         def produce(_):
@@ -116,6 +117,73 @@ def test_postgresql_concurrent_production_consumes_once():
             assert db.get(Ingredient, ingredient_id).stock == Decimal(8)
             assert db.scalar(select(func.count()).select_from(InventoryMovement)) == 1
             assert db.get(Order, order_id).stock_consumed is True
+        # A row lock on an accepted proposal prevents two simultaneous orders.
+        from fastapi import HTTPException
+        from app.models.snacks import Snack, SnackPresentation, SnackQuote
+        from app.schemas.snacks import ConvertSnackQuote
+        from app.snack_services import convert_snack_quote
+
+        with Session(engine) as db:
+            snack = Snack(name="Test snack", slug="test-snack", kind="savory")
+            db.add(snack)
+            db.flush()
+            variant = SnackPresentation(
+                snack_id=snack.id, units=25, historical_price=10
+            )
+            db.add(variant)
+            db.flush()
+            proposal = SnackQuote(
+                name="Test customer",
+                phone="999999999",
+                celebration="Test",
+                guests=10,
+                due_date=date.today() + timedelta(days=3),
+                status="accepted",
+                quoted_price=20,
+                request_key=str(uuid4()),
+                items=[
+                    {
+                        "presentation_id": variant.id,
+                        "snack_id": snack.id,
+                        "name": snack.name,
+                        "units": 25,
+                        "packs": 1,
+                        "price": None,
+                    }
+                ],
+            )
+            db.add(proposal)
+            db.commit()
+            proposal_id = proposal.id
+            conversion = ConvertSnackQuote(
+                availability_confirmed=True,
+                items=[
+                    {
+                        "presentation_id": variant.id,
+                        "product_id": product_id,
+                        "packs": 1,
+                        "unit_price": "20.00",
+                    }
+                ],
+            )
+
+        def convert(_):
+            with Session(engine) as db:
+                try:
+                    convert_snack_quote(
+                        db, proposal_id, conversion, db.get(User, actor_id)
+                    )
+                    db.commit()
+                    return 201
+                except HTTPException as exc:
+                    db.rollback()
+                    return exc.status_code
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            assert sorted(pool.map(convert, range(2))) == [201, 409]
+        with Session(engine) as db:
+            assert db.scalar(select(func.count()).select_from(Order)) == 2
+            assert db.get(SnackQuote, proposal_id).order_id is not None
     finally:
         engine.dispose()
         with root.begin() as conn:

@@ -4,6 +4,7 @@ import type { RecordData, SessionUser } from "../api";
 import RecordForm from "./RecordForm";
 import AdminDialog from "./AdminDialog";
 import QuoteConversion from "./QuoteConversion";
+import SnackQuoteConversion from "./SnackQuoteConversion";
 import type { Module } from "./modules";
 import { management, sales, labels, statuses, currency, show } from "./modules";
 
@@ -184,6 +185,7 @@ export default function ResourceView({
                         <button onClick={() => setDetail(row)}>Ver</button>
                         {canWrite &&
                           !module.readonly &&
+                          !(module.key === "snack-quotes" && row.order_id) &&
                           !["orders", "purchases"].includes(module.key) && (
                             <button onClick={() => setForm(row)}>Editar</button>
                           )}
@@ -324,6 +326,7 @@ export default function ResourceView({
                   "payments",
                   "request_key",
                   "reference_work",
+                  "reviewed_items",
                 ].includes(k),
             )
             .map(([key, value]) => (
@@ -334,7 +337,11 @@ export default function ResourceView({
             ))}
           {Array.isArray(detail.items) && (
             <>
-              <h3>Detalle</h3>
+              <h3>
+                {module.key === "snack-quotes"
+                  ? "Selección solicitada"
+                  : "Detalle"}
+              </h3>
               <ul>
                 {(detail.items as RecordData[]).map((i, index) => (
                   <li key={index}>
@@ -350,6 +357,11 @@ export default function ResourceView({
                           ? "Disponibilidad confirmada al solicitar"
                           : "Disponibilidad por revisar"}
                       </>
+                    ) : module.key === "snack-packages" ? (
+                      <>
+                        Presentación #{String(i.presentation_id)} ·{" "}
+                        {String(i.packs)} paquetes
+                      </>
                     ) : (
                       <>
                         {String(
@@ -364,6 +376,23 @@ export default function ResourceView({
               </ul>
             </>
           )}
+          {module.key === "snack-quotes" &&
+            Array.isArray(detail.reviewed_items) && (
+              <section>
+                <h3>Selección aprobada para el pedido</h3>
+                <ul>
+                  {(detail.reviewed_items as RecordData[]).map(
+                    (line, index) => (
+                      <li key={index}>
+                        {String(line.name)} · {String(line.packs)} paquetes de{" "}
+                        {String(line.units)} unidades · {currency(line.price)}{" "}
+                        por paquete · Subtotal {currency(line.subtotal)}
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </section>
+            )}
           {Array.isArray(detail.payments) && (
             <>
               <h3>Pagos registrados</h3>
@@ -487,6 +516,15 @@ export default function ResourceView({
                 }}
               />
             )}
+          {module.key === "snack-quotes" && management.includes(user.role) && (
+            <SnackQuoteConversion
+              quote={detail}
+              onConverted={() => {
+                setDetail(null);
+                void reload();
+              }}
+            />
+          )}
           {module.key === "purchases" &&
             detail.status === "pending" &&
             management.includes(user.role) && (

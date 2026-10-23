@@ -1,11 +1,75 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from sqlalchemy import select
-from app.security import DB, Actor, require
-from app.models.snacks import Snack, SnackPresentation, SnackQuote
-from app.schemas.snacks import SnackQuoteWrite
+import secrets
+from app.models import Order
+from app.schemas.business import TrackingInput
+from app.security import DB, Actor, require, digest, public_limit
+from app.models.snacks import Snack, SnackPresentation, SnackQuote, SnackPackage
+from app.schemas.snacks import SnackQuoteWrite, ConvertSnackQuote
+from app.snack_services import convert_snack_quote
 from app.services import business_today
 
 router = APIRouter(prefix="/api/v1", tags=["Bocaditos"])
+
+
+@router.post("/snack-quotes/track")
+def track_quote(data: TrackingInput, request: Request, db: DB):
+    public_limit(db, request, "snack-tracking", maximum=120)
+    row = db.scalar(
+        select(SnackQuote).where(SnackQuote.tracking_hash == digest(data.token))
+    )
+    if row is None:
+        raise HTTPException(404, "Propuesta no encontrada; revisa el código privado")
+    order = db.get(Order, row.order_id) if row.order_id else None
+    return {
+        "id": row.id,
+        "status": row.status,
+        "due_date": row.due_date,
+        "quoted_price": (
+            str(row.quoted_price)
+            if row.quoted_price is not None and row.status in {"quoted", "accepted"}
+            else None
+        ),
+        "items": [
+            {
+                key: line.get(key)
+                for key in ["name", "units", "packs", "price", "subtotal"]
+            }
+            for line in (row.reviewed_items or row.items)
+        ],
+        "order_status": order.status if order else None,
+    }
+
+
+@router.get("/snack-packages")
+def public_packages(db: DB):
+    published = set(
+        db.scalars(
+            select(SnackPresentation.id).join(Snack).where(Snack.is_published.is_(True))
+        )
+    )
+    return [
+        {
+            "id": row.id,
+            "name": row.name,
+            "description": row.description,
+            "items": row.items,
+        }
+        for row in db.scalars(
+            select(SnackPackage)
+            .where(SnackPackage.is_published.is_(True))
+            .order_by(SnackPackage.id)
+        )
+        if row.items and all(line["presentation_id"] in published for line in row.items)
+    ]
+
+
+@router.post("/admin/snack-quotes/{id}/convert", status_code=201)
+def convert_quote(id: int, data: ConvertSnackQuote, db: DB, actor: Actor):
+    require(actor, db, "admin", "manager")
+    order, token = convert_snack_quote(db, id, data, actor)
+    db.commit()
+    return {"id": order.id, "tracking_token": token, "total": str(order.total)}
 
 
 @router.get("/snacks")
@@ -69,7 +133,8 @@ def catalog_data(db, limit, offset, published_only):
 
 
 @router.post("/snack-quotes", status_code=201)
-def create_snack_quote(data: SnackQuoteWrite, db: DB):
+def create_snack_quote(data: SnackQuoteWrite, request: Request, db: DB):
+    public_limit(db, request, "snack-quote")
     existing = db.scalar(
         select(SnackQuote.id).where(SnackQuote.request_key == data.request_key)
     )
@@ -103,12 +168,16 @@ def create_snack_quote(data: SnackQuoteWrite, db: DB):
                 "availability_confirmed": snack.is_available,
             }
         )
-    row = SnackQuote(**data.model_dump(exclude={"items"}), items=lines)
+    token = secrets.token_urlsafe(32)
+    row = SnackQuote(
+        **data.model_dump(exclude={"items"}), items=lines, tracking_hash=digest(token)
+    )
     db.add(row)
     db.commit()
     db.refresh(row)
     return {
         "id": row.id,
         "status": row.status,
+        "tracking_token": token,
         "message": "Propuesta recibida. Confirmaremos disponibilidad y precio antes de crear el pedido.",
     }

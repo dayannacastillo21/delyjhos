@@ -1,7 +1,14 @@
 from datetime import date
 from decimal import Decimal
 from typing import Annotated, Literal
-from pydantic import BaseModel, ConfigDict, Field, EmailStr, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    EmailStr,
+    field_validator,
+    model_validator,
+)
 
 Money = Annotated[Decimal, Field(ge=0, le=1000000, max_digits=14, decimal_places=2)]
 Quantity = Annotated[Decimal, Field(gt=0, le=1000000, max_digits=12, decimal_places=3)]
@@ -165,7 +172,7 @@ class TaskWrite(Input):
     title: Name
     due_date: date
     assigned_to: int | None = Field(default=None, gt=0)
-    status: Literal["pending", "in_progress", "done"] = "pending"
+    status: Literal["pending", "in_progress", "done", "cancelled"] = "pending"
     notes: str = Field(default="", max_length=2000)
 
 
@@ -213,6 +220,23 @@ class BusinessWrite(Input):
     contact_email: EmailStr | None = None
     pickup_instructions: str = Field(default="", max_length=1000)
     demo_catalog: bool = True
+    snack_min_per_guest: Decimal | None = Field(
+        default=None, gt=0, le=100, decimal_places=2
+    )
+    snack_max_per_guest: Decimal | None = Field(
+        default=None, gt=0, le=100, decimal_places=2
+    )
+
+    @model_validator(mode="after")
+    def valid_guest_range(self):
+        if (self.snack_min_per_guest is None) != (self.snack_max_per_guest is None):
+            raise ValueError("Completa ambos límites orientativos o deja ambos vacíos")
+        if (
+            self.snack_min_per_guest is not None
+            and self.snack_max_per_guest < self.snack_min_per_guest
+        ):
+            raise ValueError("El máximo orientativo no puede ser menor al mínimo")
+        return self
 
 
 class ConvertQuote(Input):

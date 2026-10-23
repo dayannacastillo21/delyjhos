@@ -385,11 +385,18 @@ export function CustomQuote({
   );
 }
 
-export function Tracking() {
+export function Tracking({
+  initialKind = "order",
+  initialToken = "",
+}: { initialKind?: string; initialToken?: string } = {}) {
+  const [kind, setKind] = useState(initialKind);
   const [result, setResult] = useState<{
     id: number;
     status: string;
     due_date: string;
+    quoted_price?: string | null;
+    order_status?: string | null;
+    items?: { name: string; packs: number; units: number }[];
   } | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -403,10 +410,17 @@ export function Tracking() {
         const data = new FormData(e.currentTarget);
         try {
           setResult(
-            await api("/api/v1/tracking", {
-              method: "POST",
-              body: JSON.stringify({ token: String(data.get("token")).trim() }),
-            }),
+            await api(
+              kind === "order"
+                ? "/api/v1/tracking"
+                : "/api/v1/snack-quotes/track",
+              {
+                method: "POST",
+                body: JSON.stringify({
+                  token: String(data.get("token")).trim(),
+                }),
+              },
+            ),
           );
         } catch (err) {
           setResult(null);
@@ -424,11 +438,30 @@ export function Tracking() {
           maxLength={100}
           required
           placeholder="Pega el código que recibiste"
+          defaultValue={initialToken}
           autoComplete="off"
         />
       </label>
+      <label>
+        Tipo de seguimiento
+        <select
+          value={kind}
+          onChange={(e) => {
+            setKind(e.target.value);
+            setResult(null);
+            setError("");
+          }}
+        >
+          <option value="order">Pedido</option>
+          <option value="table">Propuesta de mesa de bocaditos</option>
+        </select>
+      </label>
       <button className="button button-primary" disabled={busy}>
-        {busy ? "Consultando…" : "Consultar pedido"}
+        {busy
+          ? "Consultando…"
+          : kind === "order"
+            ? "Consultar pedido"
+            : "Consultar propuesta"}
       </button>
       {error && (
         <p className="form-error" role="alert">
@@ -437,11 +470,31 @@ export function Tracking() {
       )}
       {result && (
         <div className="order-success" role="status">
-          <h3>Pedido #{result.id}</h3>
+          <h3>
+            {kind === "order" ? "Pedido" : "Propuesta"} #{result.id}
+          </h3>
           <p>
             Estado: <strong>{statuses[result.status] || result.status}</strong>
           </p>
           <p>Fecha solicitada: {result.due_date}</p>
+          {result.quoted_price && (
+            <p>Precio revisado: {money(Number(result.quoted_price))}</p>
+          )}
+          {result.items && (
+            <ul>
+              {result.items.map((item, index) => (
+                <li key={index}>
+                  {item.name} · {item.packs} paquetes de {item.units} unidades
+                </li>
+              ))}
+            </ul>
+          )}
+          {result.order_status && (
+            <p>
+              Estado del pedido asociado:{" "}
+              {statuses[result.order_status] || result.order_status}
+            </p>
+          )}
         </div>
       )}
     </form>

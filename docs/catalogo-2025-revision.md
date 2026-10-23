@@ -87,6 +87,8 @@ La maquetación usa recortes circulares, algunos con partes fuera de página. Pa
 - La página pública incluye búsqueda, filtros, detalle y selección de 25/50/100 unidades. Los productos sin precio actual muestran «Solicitar precio».
 - Arma tu mesa guarda solo identificadores y cantidades en este navegador. Los datos personales se envían al solicitar la propuesta; no se guardan en localStorage.
 - La API guarda nombres, presentaciones, cantidades y precios confirmados desde el servidor como instantánea. El cliente no puede enviar un precio arbitrario. Una propuesta tiene referencia y clave única contra reenvíos.
-- Administración puede revisar la propuesta, documentar disponibilidad y fijar un importe total. La conversión de estas propuestas de mesa a pedidos y sus recetas queda para la siguiente etapa; no genera ventas, reservas, pagos ni consumos de inventario automáticamente.
+- Administración puede revisar la propuesta, documentar disponibilidad y fijar un importe total. Una propuesta aceptada puede convertirse en pedido después de revisar el desglose y las recetas de cada paquete. La solicitud pública no genera ventas, reservas, pagos ni consumos automáticamente.
 
-Pendientes: validar fotos y precios actuales; procesar videos cuando se reciban; galería de trabajos y cotización de torta similar; sugerencias por invitados, paquetes, compartir por WhatsApp y conversión de mesas a pedidos. Ninguno se declara terminado en esta etapa.
+Ya están implementados la galería de seis videos reales, la cotización de torta similar, la guía configurable por invitados, los paquetes, el resumen para WhatsApp y la conversión de mesas aceptadas a pedidos. Ver [flujo completo de mesas de bocaditos](mesas-de-bocaditos.md).
+
+Quedan por aportar o verificar los datos comerciales: fotos por producto, precios actuales, disponibilidad, recetas de cada presentación, paquetes del negocio y su guía de cantidades. Los precios históricos continúan separados de los actuales; los productos siguen en borrador hasta su revisión comercial.

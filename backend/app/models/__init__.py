@@ -48,9 +48,9 @@ __all__ = [
 from app.models.business import BusinessSetting
 
 __all__.append("BusinessSetting")
-from app.models.snacks import Snack, SnackPresentation, SnackQuote
+from app.models.snacks import Snack, SnackPresentation, SnackQuote, SnackPackage
 
-__all__.extend(["Snack", "SnackPresentation", "SnackQuote"])
+__all__.extend(["Snack", "SnackPresentation", "SnackQuote", "SnackPackage"])
 from app.models.works import Work
 
 __all__.append("Work")

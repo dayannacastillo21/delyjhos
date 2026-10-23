@@ -54,6 +54,7 @@ class SnackPresentation(Base):
     source_year: Mapped[int] = mapped_column(default=2025)
     current_price: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
     price_confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
+    production_product_id: Mapped[int | None] = mapped_column(ForeignKey("products.id"))
 
 
 class SnackQuote(Timestamp, Base):
@@ -71,3 +72,15 @@ class SnackQuote(Timestamp, Base):
     status: Mapped[str] = mapped_column(String(20), default="pending")
     staff_notes: Mapped[str] = mapped_column(Text, default="")
     quoted_price: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    order_id: Mapped[int | None] = mapped_column(ForeignKey("orders.id"), unique=True)
+    reviewed_items: Mapped[list | None] = mapped_column(JSON)
+    tracking_hash: Mapped[str | None] = mapped_column(String(64), unique=True)
+
+
+class SnackPackage(Timestamp, Base):
+    __tablename__ = "snack_packages"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(120))
+    description: Mapped[str] = mapped_column(Text, default="")
+    items: Mapped[list] = mapped_column(JSON)
+    is_published: Mapped[bool] = mapped_column(Boolean, default=False)

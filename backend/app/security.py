@@ -25,6 +25,24 @@ def utcnow():
     return datetime.now(timezone.utc)
 
 
+def public_limit(db, request, kind, maximum=15):
+    key = digest(
+        f'public:{kind}:{request.client.host if request.client else "unknown"}'
+    )
+    count = db.scalar(
+        select(func.count())
+        .select_from(LoginAttempt)
+        .where(
+            LoginAttempt.identity == key,
+            LoginAttempt.created_at > utcnow() - timedelta(hours=1),
+        )
+    )
+    if count >= maximum:
+        raise HTTPException(429, "Demasiadas solicitudes. Intenta más tarde.")
+    db.add(LoginAttempt(identity=key))
+    db.commit()
+
+
 def authenticate(data, request: Request, db: Session):
     email = str(data.email).lower()
     identity = digest(f'{request.client.host if request.client else "unknown"}:{email}')
@@ -51,7 +69,11 @@ def authenticate(data, request: Request, db: Session):
         )
         db.commit()
         raise HTTPException(401, "Correo o contraseña incorrectos")
-    db.execute(delete(LoginAttempt).where(LoginAttempt.created_at < cutoff))
+    db.execute(
+        delete(LoginAttempt).where(
+            LoginAttempt.created_at < utcnow() - timedelta(hours=1)
+        )
+    )
     token = secrets.token_urlsafe(48)
     db.add(
         AuthSession(

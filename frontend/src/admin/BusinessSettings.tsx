@@ -8,6 +8,8 @@ export default function BusinessSettings() {
     contact_email: "",
     pickup_instructions: "",
     demo_catalog: true,
+    snack_min_per_guest: "",
+    snack_max_per_guest: "",
   });
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -20,6 +22,8 @@ export default function BusinessSettings() {
           contact_email: String(data.contact_email || ""),
           pickup_instructions: String(data.pickup_instructions || ""),
           demo_catalog: Boolean(data.demo_catalog),
+          snack_min_per_guest: String(data.snack_min_per_guest ?? ""),
+          snack_max_per_guest: String(data.snack_max_per_guest ?? ""),
         }),
       )
       .catch((e) => setMessage(e.message));
@@ -42,6 +46,8 @@ export default function BusinessSettings() {
                 body: JSON.stringify({
                   ...values,
                   contact_email: values.contact_email || null,
+                  snack_min_per_guest: values.snack_min_per_guest || null,
+                  snack_max_per_guest: values.snack_max_per_guest || null,
                 }),
               });
               setMessage(
@@ -55,6 +61,36 @@ export default function BusinessSettings() {
           }}
         >
           <div className="admin-fields">
+            <label>
+              Mínimo orientativo de bocaditos por invitado
+              <input
+                type="number"
+                min="0.01"
+                max="100"
+                step="0.01"
+                value={values.snack_min_per_guest}
+                onChange={(e) =>
+                  setValues({ ...values, snack_min_per_guest: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Máximo orientativo de bocaditos por invitado
+              <input
+                type="number"
+                min="0.01"
+                max="100"
+                step="0.01"
+                value={values.snack_max_per_guest}
+                onChange={(e) =>
+                  setValues({ ...values, snack_max_per_guest: e.target.value })
+                }
+              />
+              <small>
+                Deja ambos vacíos para no mostrar una guía. La recomendación no
+                reserva productos ni cambia cantidades.
+              </small>
+            </label>
             <label>
               Nombre comercial
               <input

@@ -27,28 +27,45 @@ export default function RecordForm({
             ? false
             : f.key === "source_year"
               ? 2025
-              : f.type === "checkbox"
-                ? true
-                : f.type === "number"
-                  ? "0"
-                  : f.options?.[0] || ""),
+              : ["current_price", "quoted_price"].includes(f.key)
+                ? ""
+                : f.type === "checkbox"
+                  ? true
+                  : f.type === "number"
+                    ? "0"
+                    : f.options?.[0] || ""),
       ]),
     ),
   );
   const [lines, setLines] = useState<Record<string, unknown>[]>(() =>
     Array.isArray(record?.items)
-      ? (record.items as Record<string, unknown>[])
+      ? (record.items as Record<string, unknown>[]).map((line) => ({
+          ...line,
+          quantity: line.quantity ?? line.packs ?? 1,
+        }))
       : [{ quantity: 1, unit_cost: 0 }],
   );
   const [options, setOptions] = useState<Record<string, RecordData[]>>({});
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const lineResource =
+    module.lines === "snack-packages"
+      ? "snack-presentations"
+      : module.lines === "orders"
+        ? "products"
+        : "ingredients";
+  const lineKey =
+    module.lines === "snack-packages"
+      ? "presentation_id"
+      : module.lines === "orders"
+        ? "product_id"
+        : "ingredient_id";
   useEffect(() => {
     const resources = new Set(
       module.fields.map((f) => f.resource).filter(Boolean) as string[],
     );
-    if (module.lines)
-      resources.add(module.lines === "orders" ? "products" : "ingredients");
+    if (module.lines) resources.add(lineResource);
+    if (module.lines === "snack-packages") resources.add("snacks");
     Promise.all(
       [...resources].map(
         async (r) =>
@@ -57,7 +74,7 @@ export default function RecordForm({
     )
       .then((entries) => setOptions(Object.fromEntries(entries)))
       .catch((e) => setError(e.message));
-  }, [module]);
+  }, [module, lineResource]);
   const update = (key: string, value: unknown) =>
     setValues((old) => ({ ...old, [key]: value }));
   async function submit(e: React.FormEvent) {
@@ -87,6 +104,7 @@ export default function RecordForm({
             "image_url",
             "current_price",
             "source_page",
+            "production_product_id",
           ].includes(f.key)
         )
           value = null;
@@ -98,18 +116,26 @@ export default function RecordForm({
       }
       if (module.lines)
         data.items = lines.map((l) =>
-          module.lines === "orders"
-            ? { product_id: Number(l.product_id), quantity: Number(l.quantity) }
-            : module.lines === "recipes"
+          module.lines === "snack-packages"
+            ? {
+                presentation_id: Number(l.presentation_id),
+                packs: Number(l.quantity),
+              }
+            : module.lines === "orders"
               ? {
-                  ingredient_id: Number(l.ingredient_id),
-                  quantity: String(l.quantity),
+                  product_id: Number(l.product_id),
+                  quantity: Number(l.quantity),
                 }
-              : {
-                  ingredient_id: Number(l.ingredient_id),
-                  quantity: String(l.quantity),
-                  unit_cost: String(l.unit_cost),
-                },
+              : module.lines === "recipes"
+                ? {
+                    ingredient_id: Number(l.ingredient_id),
+                    quantity: String(l.quantity),
+                  }
+                : {
+                    ingredient_id: Number(l.ingredient_id),
+                    quantity: String(l.quantity),
+                    unit_cost: String(l.unit_cost),
+                  },
         );
       if (module.key === "orders") data.request_key = crypto.randomUUID();
       await onSave(data);
@@ -238,27 +264,23 @@ export default function RecordForm({
             <legend>
               {module.lines === "orders"
                 ? "Productos"
-                : "Ingredientes (usa la misma unidad del inventario)"}
+                : module.lines === "snack-packages"
+                  ? "Presentaciones y número de paquetes"
+                  : "Ingredientes (usa la misma unidad del inventario)"}
             </legend>
             {lines.map((line, index) => (
               <div className="line-row" key={index}>
                 <select
                   aria-label={`Artículo ${index + 1}`}
                   required
-                  value={String(
-                    line[
-                      module.lines === "orders" ? "product_id" : "ingredient_id"
-                    ] || "",
-                  )}
+                  value={String(line[lineKey] || "")}
                   onChange={(e) =>
                     setLines(
                       lines.map((l, i) =>
                         i === index
                           ? {
                               ...l,
-                              [module.lines === "orders"
-                                ? "product_id"
-                                : "ingredient_id"]: e.target.value,
+                              [lineKey]: e.target.value,
                             }
                           : l,
                       ),
@@ -266,11 +288,15 @@ export default function RecordForm({
                   }
                 >
                   <option value="">Selecciona…</option>
-                  {options[
-                    module.lines === "orders" ? "products" : "ingredients"
-                  ]?.map((p) => (
+                  {options[lineResource]?.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {String(p.name)} {p.unit ? `(${p.unit})` : ""}
+                      {module.lines === "snack-packages" ? (
+                        `${String(options.snacks?.find((snack) => snack.id === p.snack_id)?.name || "Bocadito")} · ${p.units} unidades`
+                      ) : (
+                        <>
+                          {String(p.name)} {p.unit ? `(${p.unit})` : ""}
+                        </>
+                      )}
                     </option>
                   ))}
                 </select>
@@ -278,8 +304,17 @@ export default function RecordForm({
                   aria-label={`Cantidad ${index + 1}`}
                   type="number"
                   required
-                  min={module.lines === "orders" ? 1 : 0.001}
-                  step={module.lines === "orders" ? 1 : 0.001}
+                  min={
+                    ["orders", "snack-packages"].includes(module.lines || "")
+                      ? 1
+                      : 0.001
+                  }
+                  step={
+                    ["orders", "snack-packages"].includes(module.lines || "")
+                      ? 1
+                      : 0.001
+                  }
+                  max={module.lines === "snack-packages" ? 100 : undefined}
                   value={String(line.quantity ?? 1)}
                   onChange={(e) =>
                     setLines(

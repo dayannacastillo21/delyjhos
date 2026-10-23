@@ -221,3 +221,22 @@
     grid-template-columns: 1fr;
   }
 }
+.snack-packages {
+  margin: 40px 0;
+}
+.snack-packages > p {
+  margin: 12px 0 24px;
+  color: #75606a;
+}
+.snack-packages .snack-card ul {
+  padding-left: 18px;
+  line-height: 1.8;
+}
+.snack-share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.snack-share-actions .text-button {
+  text-align: left;
+}

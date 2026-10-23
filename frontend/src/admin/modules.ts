@@ -15,12 +15,29 @@ export type Module = {
   columns: string[];
   readonly?: boolean;
   roles: string[];
-  lines?: "recipes" | "orders" | "purchases";
+  lines?: "recipes" | "orders" | "purchases" | "snack-packages";
 };
 export const management = ["admin", "manager"];
 export const all = ["admin", "manager", "sales", "production"];
 export const sales = ["admin", "manager", "sales"];
 export const modules: Module[] = [
+  {
+    key: "snack-packages",
+    title: "Paquetes de bocaditos",
+    icon: "▦",
+    roles: management,
+    lines: "snack-packages",
+    columns: ["name", "description", "is_published"],
+    fields: [
+      { key: "name", label: "Nombre del paquete", required: true },
+      { key: "description", label: "Descripción", type: "textarea" },
+      {
+        key: "is_published",
+        label: "Visible en la página pública",
+        type: "checkbox",
+      },
+    ],
+  },
   {
     key: "works",
     title: "Nuestros trabajos",
@@ -126,6 +143,7 @@ export const modules: Module[] = [
       "historical_price",
       "current_price",
       "price_confirmed",
+      "production_product_id",
     ],
     fields: [
       {
@@ -162,6 +180,11 @@ export const modules: Module[] = [
         label: "Confirmar precio actual para publicación",
         type: "checkbox",
       },
+      {
+        key: "production_product_id",
+        label: "Producto con receta del paquete completo (opcional)",
+        resource: "products",
+      },
     ],
   },
   {
@@ -177,6 +200,7 @@ export const modules: Module[] = [
       "guests",
       "status",
       "quoted_price",
+      "order_id",
     ],
     fields: [
       {
@@ -434,7 +458,7 @@ export const modules: Module[] = [
       {
         key: "status",
         label: "Estado",
-        options: ["pending", "in_progress", "done"],
+        options: ["pending", "in_progress", "done", "cancelled"],
         required: true,
       },
       { key: "notes", label: "Notas", type: "textarea" },
@@ -507,6 +531,8 @@ export const modules: Module[] = [
   },
 ];
 export const labels: Record<string, string> = {
+  production_product_id: "Producto de producción",
+  reviewed_items: "Desglose aprobado",
   reference_work_id: "Trabajo de referencia",
   reference_work: "Referencia conservada",
   preferred_colors: "Colores preferidos",

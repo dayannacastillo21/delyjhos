@@ -33,6 +33,7 @@ class PresentationWrite(Input):
         default=None, gt=0, max_digits=12, decimal_places=2
     )
     price_confirmed: bool = False
+    production_product_id: int | None = Field(default=None, gt=0)
 
     @model_validator(mode="after")
     def confirmed_price(self):
@@ -63,6 +64,20 @@ class SnackQuoteWrite(Input):
         return self
 
 
+class PackageWrite(Input):
+    name: str = Field(min_length=1, max_length=120)
+    description: str = Field(default="", max_length=1500)
+    is_published: bool = False
+    items: list[SnackLine] = Field(min_length=1, max_length=93)
+
+    @model_validator(mode="after")
+    def no_duplicates(self):
+        ids = [x.presentation_id for x in self.items]
+        if len(ids) != len(set(ids)):
+            raise ValueError("Agrupa las presentaciones repetidas")
+        return self
+
+
 class SnackQuoteUpdate(Input):
     status: Literal["pending", "contacted", "quoted", "accepted", "rejected"]
     staff_notes: str = Field(default="", max_length=3000)
@@ -74,4 +89,26 @@ class SnackQuoteUpdate(Input):
     def reviewed_price(self):
         if self.status in {"quoted", "accepted"} and self.quoted_price is None:
             raise ValueError("La cotización necesita un precio revisado")
+        return self
+
+
+class ReviewedSnackLine(Input):
+    presentation_id: int = Field(gt=0)
+    product_id: int = Field(gt=0)
+    packs: int = Field(ge=1, le=100)
+    unit_price: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
+
+
+class ConvertSnackQuote(Input):
+    availability_confirmed: Literal[True]
+    items: list[ReviewedSnackLine] = Field(min_length=1, max_length=93)
+
+    @model_validator(mode="after")
+    def unique_items(self):
+        ids = [x.presentation_id for x in self.items]
+        products = [x.product_id for x in self.items]
+        if len(ids) != len(set(ids)) or len(products) != len(set(products)):
+            raise ValueError(
+                "Cada presentación necesita una línea y un producto de producción distinto"
+            )
         return self
