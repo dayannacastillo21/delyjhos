@@ -44,8 +44,10 @@ function readSelection(): Selection[] {
 
 export default function SnackCatalog({
   preview = false,
+  view = "all",
 }: {
   preview?: boolean;
+  view?: "all" | "catalog" | "table";
 }) {
   const [snacks, setSnacks] = useState<Snack[]>([]);
   const [packages, setPackages] = useState<SnackPackage[]>([]);
@@ -296,7 +298,7 @@ export default function SnackCatalog({
     );
   return (
     <section
-      className="snack-catalog"
+      className={`snack-catalog snack-view-${view}`}
       id="bocaditos"
       aria-labelledby="snack-heading"
     >
@@ -306,390 +308,436 @@ export default function SnackCatalog({
           ni permite enviar cotizaciones.
         </p>
       )}
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">PEQUEÑOS DETALLES PARA COMPARTIR</p>
-          <h2 id="snack-heading">Catálogo de bocaditos</h2>
-          <p>Dulces y salados para una mesa a tu medida.</p>
-        </div>
-        <a className="button button-outline" href="#arma-tu-mesa">
-          Arma tu mesa · {totalUnits} unidades
-        </a>
-      </div>
-      <div className="snack-filters">
-        <label>
-          Buscar bocaditos
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Empanaditas, tartaletas…"
-          />
-        </label>
-        <div role="group" aria-label="Tipo de bocaditos">
-          {[
-            ["all", "Todos"],
-            ["savory", "Salados"],
-            ["sweet", "Dulces"],
-          ].map(([value, label]) => (
-            <button
-              key={value}
-              aria-pressed={kind === value}
-              onClick={() => setKind(value)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-      {loading && <p role="status">Cargando bocaditos…</p>}
-      {error && (
-        <p role="alert" className="form-error">
-          {error}
-        </p>
-      )}
-      {notice && (
-        <p role="status" className="snack-notice">
-          {notice}
-        </p>
-      )}
-      {!loading && !error && !shown.length && (
-        <p className="empty-state">
-          {snacks.length
-            ? "No encontramos bocaditos con ese nombre."
-            : "Estamos preparando nuestro catálogo de bocaditos. Pronto podrás elegir tus favoritos aquí."}
-        </p>
-      )}
-      <div className="snack-grid">
-        {shown.map((snack) => (
-          <article key={snack.id} className="snack-card">
-            <button
-              className="snack-image"
-              onClick={() => setSelected(snack)}
-              aria-label={`Ver detalles de ${snack.name}`}
-            >
-              {photo(snack)}
-            </button>
-            <div className="snack-card-body">
-              <p className="product-category">
-                {snack.kind === "sweet"
-                  ? "Bocaditos dulces"
-                  : "Bocaditos salados"}
-              </p>
-              <h3>{snack.name}</h3>
-              <p className="snack-availability">
-                {snack.is_available
-                  ? "Disponible previa coordinación"
-                  : "Disponibilidad por confirmar"}
-              </p>
-              <div className="snack-presentations">
-                {snack.presentations.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => add(p)}
-                    aria-label={`Añadir ${p.units} unidades de ${snack.name}`}
-                  >
-                    <strong>{p.units} unidades</strong>
-                    <span>
-                      {p.price === null
-                        ? "Solicitar precio"
-                        : money(Number(p.price))}
-                    </span>
-                    <span aria-hidden="true">＋</span>
-                  </button>
-                ))}
-              </div>
-              <button
-                className="text-button"
-                onClick={() => setSelected(snack)}
-              >
-                Ver detalles →
-              </button>
+      {view !== "table" && (
+        <>
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">PEQUEÑOS DETALLES PARA COMPARTIR</p>
+              <h2 id="snack-heading">Catálogo de bocaditos</h2>
+              <p>Dulces y salados para una mesa a tu medida.</p>
             </div>
-          </article>
-        ))}
-      </div>
-      {presentablePackages.length > 0 && (
-        <section className="snack-packages" aria-label="Paquetes de bocaditos">
-          <h3>Elige un paquete y hazlo tuyo</h3>
-          <p>Puedes ajustar sus cantidades antes de solicitar la cotización.</p>
-          <div className="snack-grid">
-            {presentablePackages.map((bundle) => (
-              <article className="snack-card snack-card-body" key={bundle.id}>
-                <h3>{bundle.name}</h3>
-                <p>{bundle.description}</p>
-                <ul>
-                  {bundle.items.map((item) => {
-                    const snack = snacks.find((s) =>
-                      s.presentations.some(
-                        (p) => p.id === item.presentation_id,
-                      ),
-                    );
-                    const units = snack?.presentations.find(
-                      (p) => p.id === item.presentation_id,
-                    )?.units;
-                    return (
-                      <li key={item.presentation_id}>
-                        {snack?.name} · {item.packs} paquetes de {units}{" "}
-                        unidades
-                      </li>
-                    );
-                  })}
-                </ul>
+            <a className="button button-outline" href="#/arma-tu-mesa">
+              Arma tu mesa · {totalUnits} unidades
+            </a>
+          </div>
+          <div className="snack-filters">
+            <label>
+              Buscar bocaditos
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Empanaditas, tartaletas…"
+              />
+            </label>
+            <div role="group" aria-label="Tipo de bocaditos">
+              {[
+                ["all", "Todos"],
+                ["savory", "Salados"],
+                ["sweet", "Dulces"],
+              ].map(([value, label]) => (
                 <button
-                  className="button button-outline"
-                  onClick={() => addPackage(bundle)}
+                  key={value}
+                  aria-pressed={kind === value}
+                  onClick={() => setKind(value)}
                 >
-                  Añadir {bundle.name} a mi mesa
+                  {label}
                 </button>
+              ))}
+            </div>
+          </div>
+          {loading && <p role="status">Cargando bocaditos…</p>}
+          {error && (
+            <p role="alert" className="form-error">
+              {error}
+            </p>
+          )}
+          {notice && (
+            <p role="status" className="snack-notice">
+              {notice}
+            </p>
+          )}
+          {!loading && !error && !shown.length && (
+            <p className="empty-state">
+              {snacks.length
+                ? "No encontramos bocaditos con ese nombre."
+                : "Estamos preparando nuestro catálogo de bocaditos. Pronto podrás elegir tus favoritos aquí."}
+            </p>
+          )}
+          <div className="snack-grid">
+            {shown.map((snack) => (
+              <article key={snack.id} className="snack-card">
+                <button
+                  className="snack-image"
+                  onClick={() => setSelected(snack)}
+                  aria-label={`Ver detalles de ${snack.name}`}
+                >
+                  {photo(snack)}
+                </button>
+                <div className="snack-card-body">
+                  <p className="product-category">
+                    {snack.kind === "sweet"
+                      ? "Bocaditos dulces"
+                      : "Bocaditos salados"}
+                  </p>
+                  <h3>{snack.name}</h3>
+                  <p className="snack-availability">
+                    {snack.is_available
+                      ? "Disponible previa coordinación"
+                      : "Disponibilidad por confirmar"}
+                  </p>
+                  <div className="snack-presentations">
+                    {snack.presentations.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => add(p)}
+                        aria-label={`Añadir ${p.units} unidades de ${snack.name}`}
+                      >
+                        <strong>{p.units} unidades</strong>
+                        <span>
+                          {p.price === null
+                            ? "Solicitar precio"
+                            : money(Number(p.price))}
+                        </span>
+                        <span aria-hidden="true">＋</span>
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    className="text-button"
+                    onClick={() => setSelected(snack)}
+                  >
+                    Ver detalles →
+                  </button>
+                </div>
               </article>
             ))}
           </div>
-        </section>
-      )}
-      <section
-        id="arma-tu-mesa"
-        className="snack-builder"
-        aria-labelledby="table-heading"
-      >
-        <div>
-          <p className="eyebrow">TU CELEBRACIÓN, A TU GUSTO</p>
-          <h2 id="table-heading">Arma tu mesa de bocaditos</h2>
-          <p>
-            Selecciona variedades y presentaciones. Revisaremos disponibilidad y
-            precio contigo antes de confirmar el pedido.
-          </p>
-          <p className="sample-note">
-            Tu selección se guarda en este navegador; tus datos personales no se
-            guardan aquí.
-          </p>
-          {missingLines > 0 && (
-            <p role="alert">
-              Algunas presentaciones guardadas ya no aparecen.{" "}
-              <button
-                className="text-button"
-                onClick={() =>
-                  setSelection(
-                    availableLines.map(({ presentation_id, packs }) => ({
-                      presentation_id,
-                      packs,
-                    })),
-                  )
-                }
-              >
-                Actualizar selección
-              </button>
-            </p>
+          {presentablePackages.length > 0 && (
+            <section
+              className="snack-packages"
+              aria-label="Paquetes de bocaditos"
+            >
+              <h3>Elige un paquete y hazlo tuyo</h3>
+              <p>
+                Puedes ajustar sus cantidades antes de solicitar la cotización.
+              </p>
+              <div className="snack-grid">
+                {presentablePackages.map((bundle) => (
+                  <article
+                    className="snack-card snack-card-body"
+                    key={bundle.id}
+                  >
+                    <h3>{bundle.name}</h3>
+                    <p>{bundle.description}</p>
+                    <ul>
+                      {bundle.items.map((item) => {
+                        const snack = snacks.find((s) =>
+                          s.presentations.some(
+                            (p) => p.id === item.presentation_id,
+                          ),
+                        );
+                        const units = snack?.presentations.find(
+                          (p) => p.id === item.presentation_id,
+                        )?.units;
+                        return (
+                          <li key={item.presentation_id}>
+                            {snack?.name} · {item.packs} paquetes de {units}{" "}
+                            unidades
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <button
+                      className="button button-outline"
+                      onClick={() => addPackage(bundle)}
+                    >
+                      Añadir {bundle.name} a mi mesa
+                    </button>
+                  </article>
+                ))}
+              </div>
+            </section>
           )}
-          {(["savory", "sweet"] as const).map((group) => (
-            <div key={group} className="snack-selection-group">
-              <h3>{group === "sweet" ? "Dulces" : "Salados"}</h3>
-              {availableLines
-                .filter((x) => x.snack.kind === group)
-                .map((line) => (
-                  <div className="snack-selection" key={line.presentation_id}>
-                    <div>
-                      <strong>{line.snack.name}</strong>
-                      <small>
-                        {line.presentation.units} unidades por presentación ·{" "}
-                        {line.presentation.price === null
-                          ? "Precio por cotizar"
-                          : money(Number(line.presentation.price))}
-                      </small>
-                    </div>
-                    <label>
-                      Paquetes
-                      <input
-                        type="number"
-                        min="1"
-                        max="100"
-                        value={line.packs}
-                        onChange={(e) => {
-                          const packs = Number(e.target.value);
-                          if (
-                            Number.isInteger(packs) &&
-                            packs >= 1 &&
-                            packs <= 100
-                          ) {
+        </>
+      )}
+      {view === "table" &&
+        availableLines.length === 0 &&
+        !receipt &&
+        !loading && (
+          <div className="table-empty">
+            <p className="eyebrow">UNA MESA PARA COMPARTIR</p>
+            <h1>Arma tu mesa de bocaditos</h1>
+            <p>
+              Empieza eligiendo tus variedades favoritas y sus presentaciones.
+              Después podrás ajustar las cantidades y enviarnos tu solicitud.
+            </p>
+            <a className="button button-primary" href="#/bocaditos">
+              Elegir bocaditos →
+            </a>
+          </div>
+        )}
+      {view !== "catalog" &&
+        (view !== "table" || availableLines.length > 0 || receipt) && (
+          <section
+            id="arma-tu-mesa"
+            className="snack-builder"
+            aria-labelledby="table-heading"
+          >
+            <div>
+              <p className="eyebrow">TU CELEBRACIÓN, A TU GUSTO</p>
+              <h2 id="table-heading">Arma tu mesa de bocaditos</h2>
+              <p>
+                Selecciona variedades y presentaciones. Revisaremos
+                disponibilidad y precio contigo antes de confirmar el pedido.
+              </p>
+              <p className="sample-note">
+                Tu selección se guarda en este navegador; tus datos personales
+                no se guardan aquí.
+              </p>
+              {missingLines > 0 && (
+                <p role="alert">
+                  Algunas presentaciones guardadas ya no aparecen.{" "}
+                  <button
+                    className="text-button"
+                    onClick={() =>
+                      setSelection(
+                        availableLines.map(({ presentation_id, packs }) => ({
+                          presentation_id,
+                          packs,
+                        })),
+                      )
+                    }
+                  >
+                    Actualizar selección
+                  </button>
+                </p>
+              )}
+              {(["savory", "sweet"] as const).map((group) => (
+                <div key={group} className="snack-selection-group">
+                  <h3>{group === "sweet" ? "Dulces" : "Salados"}</h3>
+                  {availableLines
+                    .filter((x) => x.snack.kind === group)
+                    .map((line) => (
+                      <div
+                        className="snack-selection"
+                        key={line.presentation_id}
+                      >
+                        <div>
+                          <strong>{line.snack.name}</strong>
+                          <small>
+                            {line.presentation.units} unidades por presentación
+                            ·{" "}
+                            {line.presentation.price === null
+                              ? "Precio por cotizar"
+                              : money(Number(line.presentation.price))}
+                          </small>
+                        </div>
+                        <label>
+                          Paquetes
+                          <input
+                            type="number"
+                            min="1"
+                            max="100"
+                            value={line.packs}
+                            onChange={(e) => {
+                              const packs = Number(e.target.value);
+                              if (
+                                Number.isInteger(packs) &&
+                                packs >= 1 &&
+                                packs <= 100
+                              ) {
+                                setSelection((old) =>
+                                  old.map((x) =>
+                                    x.presentation_id === line.presentation_id
+                                      ? { ...x, packs }
+                                      : x,
+                                  ),
+                                );
+                                requestKey.current = crypto.randomUUID();
+                              }
+                            }}
+                          />
+                        </label>
+                        <button
+                          className="text-button"
+                          onClick={() => {
                             setSelection((old) =>
-                              old.map((x) =>
-                                x.presentation_id === line.presentation_id
-                                  ? { ...x, packs }
-                                  : x,
+                              old.filter(
+                                (x) =>
+                                  x.presentation_id !== line.presentation_id,
                               ),
                             );
                             requestKey.current = crypto.randomUUID();
-                          }
-                        }}
-                      />
-                    </label>
-                    <button
-                      className="text-button"
-                      onClick={() => {
-                        setSelection((old) =>
-                          old.filter(
-                            (x) => x.presentation_id !== line.presentation_id,
-                          ),
-                        );
-                        requestKey.current = crypto.randomUUID();
-                      }}
-                      aria-label={`Quitar ${line.snack.name}, ${line.presentation.units} unidades`}
-                    >
-                      Quitar
-                    </button>
-                  </div>
-                ))}
-            </div>
-          ))}
-          <p>
-            <strong>
-              {totalUnits} unidades ·{" "}
-              {new Set(availableLines.map((x) => x.snack.id)).size} variedades
-            </strong>
-          </p>
-          {availableLines.length > 0 && (
-            <p>
-              {needsPrice
-                ? "Subtotal de presentaciones con precio confirmado"
-                : "Subtotal referencial de la selección"}
-              : {money(knownSubtotal)}
-              {needsPrice &&
-                ". Hay productos pendientes de cotizar; este no es el total."}
-            </p>
-          )}
-        </div>
-        <form className="snack-quote-form" onSubmit={submit}>
-          <h3>Solicita tu propuesta</h3>
-          <label>
-            Nombre
-            <input name="name" required maxLength={120} autoComplete="name" />
-          </label>
-          <label>
-            Teléfono / WhatsApp
-            <input
-              name="phone"
-              type="tel"
-              required
-              minLength={6}
-              maxLength={30}
-              autoComplete="tel"
-            />
-          </label>
-          <label>
-            Celebración
-            <input
-              name="celebration"
-              value={eventInfo.celebration}
-              onChange={(e) =>
-                setEventInfo({ ...eventInfo, celebration: e.target.value })
-              }
-              required
-              maxLength={150}
-              placeholder="Cumpleaños, reunión familiar…"
-            />
-          </label>
-          <div className="snack-form-pair">
-            <label>
-              Fecha
-              <input
-                name="due_date"
-                type="date"
-                required
-                value={eventInfo.date}
-                onChange={(e) =>
-                  setEventInfo({ ...eventInfo, date: e.target.value })
-                }
-              />
-            </label>
-            <label>
-              Invitados
-              <input
-                name="guests"
-                type="number"
-                required
-                min="1"
-                max="10000"
-                value={eventInfo.guests}
-                onChange={(e) =>
-                  setEventInfo({ ...eventInfo, guests: e.target.value })
-                }
-              />
-            </label>
-          </div>
-          {suggestion && (
-            <p className="request-summary" role="status">
-              Guía orientativa del negocio: entre {suggestion[0]} y{" "}
-              {suggestion[1]} bocaditos para {eventInfo.guests} invitados.
-              Ajusta la selección según tu celebración; no cambia tus cantidades
-              automáticamente.
-            </p>
-          )}
-          <label>
-            Comentarios
-            <textarea name="comments" maxLength={3000} rows={3} />
-          </label>
-          <button
-            className="button"
-            disabled={
-              preview || sending || !availableLines.length || missingLines > 0
-            }
-          >
-            {sending ? "Enviando…" : "Solicitar cotización de mi mesa"}
-          </button>
-          {(availableLines.length > 0 || sentSummary) && !preview && (
-            <div className="snack-share-actions">
-              <button
-                type="button"
-                className="text-button"
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(
-                      availableLines.length ? summary : sentSummary,
-                    );
-                    setNotice("Resumen de tu mesa copiado.");
-                  } catch {
-                    setNotice(
-                      "No se pudo copiar. Puedes revisar la selección en pantalla.",
-                    );
-                  }
-                }}
-              >
-                Copiar resumen de mi mesa
-              </button>
-              {planning.whatsapp_number && (
-                <a
-                  className="text-button"
-                  href={`https://wa.me/${planning.whatsapp_number.replace(/\D/g, "")}?text=${encodeURIComponent(availableLines.length ? summary : sentSummary)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Compartir mi mesa por WhatsApp
-                </a>
+                          }}
+                          aria-label={`Quitar ${line.snack.name}, ${line.presentation.units} unidades`}
+                        >
+                          Quitar
+                        </button>
+                      </div>
+                    ))}
+                </div>
+              ))}
+              <p>
+                <strong>
+                  {totalUnits} unidades ·{" "}
+                  {new Set(availableLines.map((x) => x.snack.id)).size}{" "}
+                  variedades
+                </strong>
+              </p>
+              {availableLines.length > 0 && (
+                <p>
+                  {needsPrice
+                    ? "Subtotal de presentaciones con precio confirmado"
+                    : "Subtotal referencial de la selección"}
+                  : {money(knownSubtotal)}
+                  {needsPrice &&
+                    ". Hay productos pendientes de cotizar; este no es el total."}
+                </p>
               )}
             </div>
-          )}
-          <small>
-            La solicitud no realiza cobros ni reserva una fecha automáticamente.
-          </small>
-          {receipt && (
-            <p role="status">
-              Recibimos tu propuesta #{receipt}. Te contactaremos para revisar
-              disponibilidad y precio.
-              <span className="tracking-code">
-                Guarda tu código privado para consultar esta propuesta:{" "}
-                <code>{trackingCode}</code>
-              </span>
+            <form className="snack-quote-form" onSubmit={submit}>
+              <h3>Solicita tu propuesta</h3>
+              <label>
+                Nombre
+                <input
+                  name="name"
+                  required
+                  maxLength={120}
+                  autoComplete="name"
+                />
+              </label>
+              <label>
+                Teléfono / WhatsApp
+                <input
+                  name="phone"
+                  type="tel"
+                  required
+                  minLength={6}
+                  maxLength={30}
+                  autoComplete="tel"
+                />
+              </label>
+              <label>
+                Celebración
+                <input
+                  name="celebration"
+                  value={eventInfo.celebration}
+                  onChange={(e) =>
+                    setEventInfo({ ...eventInfo, celebration: e.target.value })
+                  }
+                  required
+                  maxLength={150}
+                  placeholder="Cumpleaños, reunión familiar…"
+                />
+              </label>
+              <div className="snack-form-pair">
+                <label>
+                  Fecha
+                  <input
+                    name="due_date"
+                    type="date"
+                    required
+                    value={eventInfo.date}
+                    onChange={(e) =>
+                      setEventInfo({ ...eventInfo, date: e.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  Invitados
+                  <input
+                    name="guests"
+                    type="number"
+                    required
+                    min="1"
+                    max="10000"
+                    value={eventInfo.guests}
+                    onChange={(e) =>
+                      setEventInfo({ ...eventInfo, guests: e.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              {suggestion && (
+                <p className="request-summary" role="status">
+                  Guía orientativa del negocio: entre {suggestion[0]} y{" "}
+                  {suggestion[1]} bocaditos para {eventInfo.guests} invitados.
+                  Ajusta la selección según tu celebración; no cambia tus
+                  cantidades automáticamente.
+                </p>
+              )}
+              <label>
+                Comentarios
+                <textarea name="comments" maxLength={3000} rows={3} />
+              </label>
               <button
-                type="button"
-                className="text-button"
-                onClick={() => setTrackingVisible(true)}
+                className="button"
+                disabled={
+                  preview ||
+                  sending ||
+                  !availableLines.length ||
+                  missingLines > 0
+                }
               >
-                Consultar esta propuesta
+                {sending ? "Enviando…" : "Solicitar cotización de mi mesa"}
               </button>
-            </p>
-          )}
-        </form>
-      </section>
+              {(availableLines.length > 0 || sentSummary) && !preview && (
+                <div className="snack-share-actions">
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(
+                          availableLines.length ? summary : sentSummary,
+                        );
+                        setNotice("Resumen de tu mesa copiado.");
+                      } catch {
+                        setNotice(
+                          "No se pudo copiar. Puedes revisar la selección en pantalla.",
+                        );
+                      }
+                    }}
+                  >
+                    Copiar resumen de mi mesa
+                  </button>
+                  {planning.whatsapp_number && (
+                    <a
+                      className="text-button"
+                      href={`https://wa.me/${planning.whatsapp_number.replace(/\D/g, "")}?text=${encodeURIComponent(availableLines.length ? summary : sentSummary)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Compartir mi mesa por WhatsApp
+                    </a>
+                  )}
+                </div>
+              )}
+              <small>
+                La solicitud no realiza cobros ni reserva una fecha
+                automáticamente.
+              </small>
+              {receipt && (
+                <p role="status">
+                  Recibimos tu propuesta #{receipt}. Te contactaremos para
+                  revisar disponibilidad y precio.
+                  <span className="tracking-code">
+                    Guarda tu código privado para consultar esta propuesta:{" "}
+                    <code>{trackingCode}</code>
+                  </span>
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={() => setTrackingVisible(true)}
+                  >
+                    Consultar esta propuesta
+                  </button>
+                </p>
+              )}
+            </form>
+          </section>
+        )}
       <dialog
         ref={trackingDialog}
         className="modal"

@@ -144,6 +144,7 @@ test("snack catalog filters, saves selection, submits and appears in administrat
     })
     .click();
   await page.reload();
+  await page.getByRole("link", { name: /Arma tu mesa ·/ }).click();
   await expect(page.locator("#arma-tu-mesa")).toContainText(
     "50 unidades · 1 variedades",
   );
@@ -280,6 +281,7 @@ test("administration creates a package and public builder uses configured guidan
       exact: true,
     })
     .click();
+  await page.getByRole("link", { name: /Arma tu mesa ·/ }).click();
   await expect(page.locator("#arma-tu-mesa")).toContainText(
     "75 unidades · 2 variedades",
   );
