@@ -75,6 +75,11 @@ export default function SnackCatalog({
   const requestKey = useRef(crypto.randomUUID());
   const dialog = useRef<HTMLDialogElement>(null);
   const trackingDialog = useRef<HTMLDialogElement>(null);
+  const [trackingVisible, setTrackingVisible] = useState(false);
+  useEffect(() => {
+    if (trackingVisible) trackingDialog.current?.showModal();
+    else trackingDialog.current?.close();
+  }, [trackingVisible]);
   useEffect(() => {
     const controller = new AbortController();
     async function load() {
@@ -677,7 +682,7 @@ export default function SnackCatalog({
               <button
                 type="button"
                 className="text-button"
-                onClick={() => trackingDialog.current?.showModal()}
+                onClick={() => setTrackingVisible(true)}
               >
                 Consultar esta propuesta
               </button>
@@ -689,6 +694,7 @@ export default function SnackCatalog({
         ref={trackingDialog}
         className="modal"
         aria-label="Seguimiento de mi propuesta"
+        onCancel={() => setTrackingVisible(false)}
       >
         <div className="modal-heading">
           <h2>Mi propuesta de bocaditos</h2>
@@ -696,16 +702,18 @@ export default function SnackCatalog({
             type="button"
             className="icon-button"
             aria-label="Cerrar seguimiento"
-            onClick={() => trackingDialog.current?.close()}
+            onClick={() => setTrackingVisible(false)}
           >
             ✕
           </button>
         </div>
-        <Tracking
-          key={trackingCode}
-          initialKind="table"
-          initialToken={trackingCode}
-        />
+        {trackingVisible && (
+          <Tracking
+            key={trackingCode}
+            initialKind="table"
+            initialToken={trackingCode}
+          />
+        )}
       </dialog>
       <dialog
         ref={dialog}
