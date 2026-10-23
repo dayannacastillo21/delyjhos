@@ -20,11 +20,15 @@ export default function RecordForm({
       module.fields.map((f) => [
         f.key,
         record?.[f.key] ??
-          (f.type === "checkbox"
-            ? true
-            : f.type === "number"
-              ? "0"
-              : f.options?.[0] || ""),
+          (["is_published", "price_confirmed", "is_available"].includes(f.key)
+            ? false
+            : f.key === "source_year"
+              ? 2025
+              : f.type === "checkbox"
+                ? true
+                : f.type === "number"
+                  ? "0"
+                  : f.options?.[0] || ""),
       ]),
     ),
   );
@@ -68,7 +72,14 @@ export default function RecordForm({
           value = Number(value);
         if (
           value === "" &&
-          ["email", "assigned_to", "quoted_price", "image_url"].includes(f.key)
+          [
+            "email",
+            "assigned_to",
+            "quoted_price",
+            "image_url",
+            "current_price",
+            "source_page",
+          ].includes(f.key)
         )
           value = null;
         if (module.key === "users" && record && f.key === "password" && !value)

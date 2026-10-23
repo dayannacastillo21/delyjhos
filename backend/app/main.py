@@ -7,6 +7,7 @@ from sqlalchemy import text
 from app.config import settings
 from app.database import engine
 from app.routers.business import router
+from app.routers.snacks import router as snack_router
 
 app = FastAPI(
     title="DelyJhos API",
@@ -75,3 +76,4 @@ def health():
 settings.upload_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
 app.include_router(router)
+app.include_router(snack_router)

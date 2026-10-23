@@ -6,6 +6,7 @@ import { Checkout, CustomQuote, Tracking } from "./CustomerForms";
 import type { Product } from "./catalog";
 import "./App.css";
 import ProductGallery from "./ProductGallery";
+import SnackCatalog from "./SnackCatalog";
 
 function Icon({ name, size = 22 }: { name: string; size?: number }) {
   const paths: Record<string, ReactNode> = {
@@ -250,6 +251,12 @@ function App() {
             <a href="#productos" onClick={() => setMenuOpen(false)}>
               Productos
             </a>
+            <a href="#bocaditos" onClick={() => setMenuOpen(false)}>
+              Bocaditos
+            </a>
+            <a href="#arma-tu-mesa" onClick={() => setMenuOpen(false)}>
+              Arma tu mesa
+            </a>
             <button
               onClick={() => {
                 setCustomOpen(true);
@@ -491,6 +498,7 @@ function App() {
             </p>
           </section>
 
+          <SnackCatalog />
           <section className="about-section" id="nosotros">
             <div>
               <span className="eyebrow">NUESTRA ESENCIA</span>

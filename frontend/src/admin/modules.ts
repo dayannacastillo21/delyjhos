@@ -21,6 +21,113 @@ export const all = ["admin", "manager", "sales", "production"];
 export const sales = ["admin", "manager", "sales"];
 export const modules: Module[] = [
   {
+    key: "snacks",
+    title: "Catálogo de bocaditos",
+    icon: "◈",
+    roles: management,
+    columns: ["name", "kind", "is_published", "is_available", "source_page"],
+    fields: [
+      { key: "name", label: "Nombre", required: true },
+      {
+        key: "slug",
+        label: "Identificador (minúsculas y guiones)",
+        required: true,
+      },
+      { key: "kind", label: "Tipo", options: ["savory", "sweet"] },
+      { key: "description", label: "Descripción verificada", type: "textarea" },
+      { key: "image_url", label: "Fotografía verificada", type: "image" },
+      { key: "source_document", label: "Documento de origen" },
+      { key: "source_page", label: "Página de origen", type: "integer" },
+      { key: "is_published", label: "Visible en catálogo", type: "checkbox" },
+      {
+        key: "is_available",
+        label: "Disponibilidad confirmada",
+        type: "checkbox",
+      },
+    ],
+  },
+  {
+    key: "snack-presentations",
+    title: "Presentaciones y precios",
+    icon: "◇",
+    roles: management,
+    columns: [
+      "snack_id",
+      "units",
+      "historical_price",
+      "current_price",
+      "price_confirmed",
+    ],
+    fields: [
+      {
+        key: "snack_id",
+        label: "Bocadito",
+        resource: "snacks",
+        required: true,
+      },
+      {
+        key: "units",
+        label: "Unidades por presentación",
+        type: "integer",
+        required: true,
+      },
+      {
+        key: "historical_price",
+        label: "Precio histórico (no se publica)",
+        type: "number",
+        required: true,
+      },
+      {
+        key: "source_year",
+        label: "Año del precio histórico",
+        type: "integer",
+        required: true,
+      },
+      {
+        key: "current_price",
+        label: "Precio actual revisado (S/)",
+        type: "number",
+      },
+      {
+        key: "price_confirmed",
+        label: "Confirmar precio actual para publicación",
+        type: "checkbox",
+      },
+    ],
+  },
+  {
+    key: "snack-quotes",
+    title: "Mesas de bocaditos",
+    icon: "▧",
+    roles: management,
+    columns: [
+      "id",
+      "name",
+      "celebration",
+      "due_date",
+      "guests",
+      "status",
+      "quoted_price",
+    ],
+    fields: [
+      {
+        key: "status",
+        label: "Estado",
+        options: ["pending", "contacted", "quoted", "accepted", "rejected"],
+      },
+      {
+        key: "staff_notes",
+        label: "Revisión de disponibilidad y respuesta",
+        type: "textarea",
+      },
+      {
+        key: "quoted_price",
+        label: "Precio total revisado (S/)",
+        type: "number",
+      },
+    ],
+  },
+  {
     key: "product-images",
     title: "Galería de productos",
     icon: "▣",
@@ -331,6 +438,19 @@ export const modules: Module[] = [
   },
 ];
 export const labels: Record<string, string> = {
+  is_published: "Publicado",
+  is_available: "Disponible",
+  source_page: "Página de origen",
+  source_document: "Documento de origen",
+  snack_id: "Bocadito",
+  units: "Unidades",
+  historical_price: "Precio histórico",
+  current_price: "Precio actual",
+  price_confirmed: "Precio confirmado",
+  source_year: "Año de origen",
+  guests: "Invitados",
+  celebration: "Celebración",
+  comments: "Comentarios",
   id: "#",
   name: "Nombre",
   customer_name: "Cliente",
@@ -375,6 +495,8 @@ export const labels: Record<string, string> = {
   details: "Detalle",
 };
 export const statuses: Record<string, string> = {
+  sweet: "Dulces",
+  savory: "Salados",
   pending: "Pendiente",
   confirmed: "Confirmado",
   production: "En producción",

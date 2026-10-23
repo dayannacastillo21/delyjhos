@@ -1,0 +1,343 @@
+[
+  {
+    "page": 2,
+    "kind": "savory",
+    "name": "Empanaditas de carne",
+    "slug": "empanaditas-de-carne",
+    "prices": {
+      "25": "38.00",
+      "50": "70.00",
+      "100": "130.00"
+    }
+  },
+  {
+    "page": 2,
+    "kind": "savory",
+    "name": "Empanaditas de pollo",
+    "slug": "empanaditas-de-pollo",
+    "prices": {
+      "25": "38.00",
+      "50": "70.00",
+      "100": "130.00"
+    }
+  },
+  {
+    "page": 2,
+    "kind": "savory",
+    "name": "Empanaditas mixta de jamón y queso",
+    "slug": "empanaditas-mixta-de-jamon-y-queso",
+    "prices": {
+      "25": "38.00",
+      "50": "70.00",
+      "100": "130.00"
+    }
+  },
+  {
+    "page": 3,
+    "kind": "savory",
+    "name": "Petitpan con pollo",
+    "slug": "petitpan-con-pollo",
+    "prices": {
+      "25": "35.00",
+      "50": "70.00",
+      "100": "130.00"
+    }
+  },
+  {
+    "page": 3,
+    "kind": "savory",
+    "name": "Petitpan con pollo y durazno",
+    "slug": "petitpan-con-pollo-y-durazno",
+    "prices": {
+      "25": "40.00",
+      "50": "75.00",
+      "100": "140.00"
+    }
+  },
+  {
+    "page": 3,
+    "kind": "savory",
+    "name": "Enrolladitos de hotdog",
+    "slug": "enrolladitos-de-hotdog",
+    "prices": {
+      "25": "25.00",
+      "50": "50.00",
+      "100": "95.00"
+    }
+  },
+  {
+    "page": 3,
+    "kind": "savory",
+    "name": "Mini croissant con jamón y queso",
+    "slug": "mini-croissant-con-jamon-y-queso",
+    "prices": {
+      "25": "43.00",
+      "50": "85.00",
+      "100": "165.00"
+    }
+  },
+  {
+    "page": 4,
+    "kind": "savory",
+    "name": "Mini triples pollo, jamón y queso",
+    "slug": "mini-triples-pollo-jamon-y-queso",
+    "prices": {
+      "25": "38.00",
+      "50": "75.00",
+      "100": "145.00"
+    }
+  },
+  {
+    "page": 4,
+    "kind": "savory",
+    "name": "Mini triple palta, huevo y tomate",
+    "slug": "mini-triple-palta-huevo-y-tomate",
+    "prices": {
+      "25": "38.00",
+      "50": "75.00",
+      "100": "145.00"
+    }
+  },
+  {
+    "page": 4,
+    "kind": "savory",
+    "name": "Tequeños de hotdog / queso",
+    "slug": "tequenos-de-hotdog-queso",
+    "prices": {
+      "25": "28.00",
+      "50": "50.00",
+      "100": "95.00"
+    }
+  },
+  {
+    "page": 4,
+    "kind": "savory",
+    "name": "Tequeños mixtos de jamón y queso mozarella",
+    "slug": "tequenos-mixtos-de-jamon-y-queso-mozarella",
+    "prices": {
+      "25": "35.00",
+      "50": "60.00",
+      "100": "115.00"
+    }
+  },
+  {
+    "page": 5,
+    "kind": "savory",
+    "name": "Brochetas de pollo",
+    "slug": "brochetas-de-pollo",
+    "prices": {
+      "25": "50.00",
+      "50": "95.00",
+      "100": "190.00"
+    }
+  },
+  {
+    "page": 5,
+    "kind": "savory",
+    "name": "Aliitas bouchet",
+    "slug": "aliitas-bouchet",
+    "prices": {
+      "25": "55.00",
+      "50": "100.00",
+      "100": "195.00"
+    }
+  },
+  {
+    "page": 5,
+    "kind": "savory",
+    "name": "Aliitas bouchet con ají de pollería",
+    "slug": "aliitas-bouchet-con-aji-de-polleria",
+    "prices": {
+      "25": "60.00",
+      "50": "105.00",
+      "100": "210.00"
+    }
+  },
+  {
+    "page": 5,
+    "kind": "savory",
+    "name": "Mini pizzitas",
+    "slug": "mini-pizzitas",
+    "prices": {
+      "25": "35.00",
+      "50": "65.00",
+      "100": "120.00"
+    }
+  },
+  {
+    "page": 6,
+    "kind": "savory",
+    "name": "Mini hamburguesitas",
+    "slug": "mini-hamburguesitas",
+    "prices": {
+      "25": "48.00",
+      "50": "90.00",
+      "100": "175.00"
+    }
+  },
+  {
+    "page": 6,
+    "kind": "savory",
+    "name": "Mini cheeseburguer",
+    "slug": "mini-cheeseburguer",
+    "prices": {
+      "25": "55.00",
+      "50": "95.00",
+      "100": "190.00"
+    }
+  },
+  {
+    "page": 6,
+    "kind": "savory",
+    "name": "Mini causitas de pollo",
+    "slug": "mini-causitas-de-pollo",
+    "prices": {
+      "25": "35.00",
+      "50": "70.00",
+      "100": "130.00"
+    }
+  },
+  {
+    "page": 6,
+    "kind": "savory",
+    "name": "Mini causitas",
+    "slug": "mini-causitas",
+    "prices": {
+      "25": "30.00",
+      "50": "55.00",
+      "100": "105.00"
+    }
+  },
+  {
+    "page": 7,
+    "kind": "sweet",
+    "name": "Mini alfajores de maicena",
+    "slug": "mini-alfajores-de-maicena",
+    "prices": {
+      "25": "23.00",
+      "50": "42.00",
+      "100": "80.00"
+    }
+  },
+  {
+    "page": 7,
+    "kind": "sweet",
+    "name": "Mini alfajores de chocolate",
+    "slug": "mini-alfajores-de-chocolate",
+    "prices": {
+      "25": "30.00",
+      "50": "55.00",
+      "100": "100.00"
+    }
+  },
+  {
+    "page": 7,
+    "kind": "sweet",
+    "name": "Empanaditas de boda",
+    "slug": "empanaditas-de-boda",
+    "prices": {
+      "25": "20.00",
+      "50": "35.00",
+      "100": "65.00"
+    }
+  },
+  {
+    "page": 7,
+    "kind": "sweet",
+    "name": "Niditos de amor",
+    "slug": "niditos-de-amor",
+    "prices": {
+      "25": "22.00",
+      "50": "40.00",
+      "100": "75.00"
+    }
+  },
+  {
+    "page": 8,
+    "kind": "sweet",
+    "name": "Mini tartaletas de fresa",
+    "slug": "mini-tartaletas-de-fresa",
+    "prices": {
+      "25": "30.00",
+      "50": "55.00",
+      "100": "110.00"
+    }
+  },
+  {
+    "page": 8,
+    "kind": "sweet",
+    "name": "Mini tartaletas de durazno",
+    "slug": "mini-tartaletas-de-durazno",
+    "prices": {
+      "25": "30.00",
+      "50": "55.00",
+      "100": "110.00"
+    }
+  },
+  {
+    "page": 8,
+    "kind": "sweet",
+    "name": "Fresas con chocolate",
+    "slug": "fresas-con-chocolate",
+    "prices": {
+      "25": "28.00",
+      "50": "50.00",
+      "100": "90.00"
+    }
+  },
+  {
+    "page": 8,
+    "kind": "sweet",
+    "name": "Mini brownies",
+    "slug": "mini-brownies",
+    "prices": {
+      "25": "28.00",
+      "50": "50.00",
+      "100": "95.00"
+    }
+  },
+  {
+    "page": 9,
+    "kind": "sweet",
+    "name": "Mini pie de manzana",
+    "slug": "mini-pie-de-manzana",
+    "prices": {
+      "25": "33.00",
+      "50": "60.00",
+      "100": "115.00"
+    }
+  },
+  {
+    "page": 9,
+    "kind": "sweet",
+    "name": "Mini pie de limón",
+    "slug": "mini-pie-de-limon",
+    "prices": {
+      "25": "33.00",
+      "50": "60.00",
+      "100": "115.00"
+    }
+  },
+  {
+    "page": 9,
+    "kind": "sweet",
+    "name": "Trufas de chocolate",
+    "slug": "trufas-de-chocolate",
+    "prices": {
+      "25": "25.00",
+      "50": "48.00",
+      "100": "90.00"
+    }
+  },
+  {
+    "page": 9,
+    "kind": "sweet",
+    "name": "Trufas de Oreo",
+    "slug": "trufas-de-oreo",
+    "prices": {
+      "25": "30.00",
+      "50": "55.00",
+      "100": "100.00"
+    }
+  }
+]

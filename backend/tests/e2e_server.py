@@ -22,6 +22,9 @@ from app.models import (
 )
 from app.security import password_hash
 from app.main import app
+from app.import_snacks import import_catalog
+from app.models.snacks import Snack
+from sqlalchemy import select
 
 Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
@@ -64,3 +67,6 @@ with SessionLocal.begin() as db:
     )
     db.flush()
     db.add(RecipeIngredient(recipe_id=1, ingredient_id=1, quantity=2))
+    import_catalog(db)
+    for snack in db.scalars(select(Snack)):
+        snack.is_published = True

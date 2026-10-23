@@ -3,6 +3,7 @@ import { api, setAccessToken } from "./api";
 import type { SessionUser } from "./api";
 import Dashboard from "./admin/Dashboard";
 import BusinessSettings from "./admin/BusinessSettings";
+import SnackCatalog from "./SnackCatalog";
 import ResourceView from "./admin/ResourceView";
 import { Calendar, CostTools } from "./admin/Tools";
 import { modules, management, statuses } from "./admin/modules";
@@ -139,6 +140,16 @@ export default function Admin() {
           {management.includes(user.role) && (
             <button
               onClick={() => {
+                setSection("snack-preview");
+                setNavOpen(false);
+              }}
+            >
+              ◈ <span>Vista previa de bocaditos</span>
+            </button>
+          )}
+          {management.includes(user.role) && (
+            <button
+              onClick={() => {
                 setSection("reports");
                 setNavOpen(false);
               }}
@@ -196,6 +207,8 @@ export default function Admin() {
             <Dashboard user={user} />
           ) : section === "settings" ? (
             <BusinessSettings />
+          ) : section === "snack-preview" ? (
+            <SnackCatalog preview />
           ) : section === "reports" ? (
             <CostTools />
           ) : section === "calendar" ? (

@@ -113,11 +113,13 @@ export default function ResourceView({
           <button onClick={() => csv(filtered, module.columns)}>
             Exportar CSV
           </button>
-          {canWrite && !module.readonly && module.key !== "quotes" && (
-            <button className="admin-primary" onClick={() => setForm(null)}>
-              + Nuevo registro
-            </button>
-          )}
+          {canWrite &&
+            !module.readonly &&
+            !["quotes", "snack-quotes"].includes(module.key) && (
+              <button className="admin-primary" onClick={() => setForm(null)}>
+                + Nuevo registro
+              </button>
+            )}
         </div>
       </div>
       {error && (
@@ -293,11 +295,27 @@ export default function ResourceView({
               <ul>
                 {(detail.items as RecordData[]).map((i, index) => (
                   <li key={index}>
-                    {String(
-                      i.product_name || "Ingrediente #" + i.ingredient_id,
-                    )}{" "}
-                    · {String(i.quantity)}{" "}
-                    {i.unit_price ? `× ${currency(i.unit_price)}` : ""}
+                    {module.key === "snack-quotes" ? (
+                      <>
+                        {String(i.name)} · {String(i.packs)} paquetes de{" "}
+                        {String(i.units)} unidades ·{" "}
+                        {i.price === null
+                          ? "Precio por revisar"
+                          : currency(i.price)}{" "}
+                        ·{" "}
+                        {i.availability_confirmed
+                          ? "Disponibilidad confirmada al solicitar"
+                          : "Disponibilidad por revisar"}
+                      </>
+                    ) : (
+                      <>
+                        {String(
+                          i.product_name || "Ingrediente #" + i.ingredient_id,
+                        )}{" "}
+                        · {String(i.quantity)}{" "}
+                        {i.unit_price ? `× ${currency(i.unit_price)}` : ""}
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>

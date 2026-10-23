@@ -77,6 +77,8 @@ from app.services import (
     receive_purchase,
 )
 from app.config import settings
+from app.models.snacks import Snack, SnackPresentation, SnackQuote
+from app.schemas.snacks import SnackWrite, PresentationWrite, SnackQuoteUpdate
 
 router = APIRouter(prefix="/api/v1")
 
@@ -302,6 +304,9 @@ async def upload(request: Request, db: DB, file: Annotated[UploadFile, File()]):
 
 
 RESOURCES = {
+    "snacks": (Snack, SnackWrite),
+    "snack-presentations": (SnackPresentation, PresentationWrite),
+    "snack-quotes": (SnackQuote, SnackQuoteUpdate),
     "product-images": (ProductImage, ProductImageWrite),
     "categories": (Category, CategoryWrite),
     "products": (Product, ProductWrite),
@@ -461,6 +466,7 @@ def validate_payload(schema, payload):
 def create_resource(resource: str, payload: dict, db: DB, actor: Actor):
     if resource not in RESOURCES or resource in {
         "quotes",
+        "snack-quotes",
         "payments",
         "movements",
         "audit",
@@ -515,6 +521,9 @@ def create_resource(resource: str, payload: dict, db: DB, actor: Actor):
 @router.put("/admin/{resource}/{id}", tags=["Administración"])
 def update_resource(resource: str, id: int, payload: dict, db: DB, actor: Actor):
     if resource not in {
+        "snacks",
+        "snack-presentations",
+        "snack-quotes",
         "categories",
         "products",
         "product-images",
