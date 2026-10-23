@@ -65,7 +65,28 @@ export default function SnackCatalog({
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState("all");
-  const [selected, setSelected] = useState<Snack | null>(null);
+  const [previewSelected, setPreviewSelected] = useState<Snack | null>(null);
+  const [detailId, setDetailId] = useState(
+    () =>
+      Number(window.location.hash.match(/^#\/bocaditos\/(\d+)$/)?.[1]) || null,
+  );
+  const selected = preview
+    ? previewSelected
+    : snacks.find((snack) => snack.id === detailId) || null;
+  function setSelected(snack: Snack | null) {
+    if (preview) setPreviewSelected(snack);
+    else
+      window.location.assign(snack ? `#/bocaditos/${snack.id}` : "#/bocaditos");
+  }
+  useEffect(() => {
+    const update = () =>
+      setDetailId(
+        Number(window.location.hash.match(/^#\/bocaditos\/(\d+)$/)?.[1]) ||
+          null,
+      );
+    window.addEventListener("hashchange", update);
+    return () => window.removeEventListener("hashchange", update);
+  }, []);
   const [selection, setSelection] = useState<Selection[]>(() =>
     preview ? [] : readSelection(),
   );
@@ -131,9 +152,9 @@ export default function SnackCatalog({
     }
   }, [selection, preview]);
   useEffect(() => {
-    if (selected) dialog.current?.showModal();
+    if (selected && preview) dialog.current?.showModal();
     else dialog.current?.close();
-  }, [selected]);
+  }, [selected, preview]);
 
   const availableLines = selection.flatMap((line) => {
     const snack = snacks.find((s) =>
@@ -296,6 +317,59 @@ export default function SnackCatalog({
         <small>Fotografía por confirmar</small>
       </div>
     );
+  const detailContent = selected && (
+    <>
+      {photo(selected)}
+      <p>
+        {selected.description ||
+          "Cuéntanos tu ocasión y coordinaremos los detalles de esta especialidad contigo."}
+      </p>
+      <p>
+        {selected.is_available
+          ? "Disponible previa coordinación."
+          : "Confirmaremos disponibilidad al revisar tu propuesta."}
+      </p>
+      <div className="snack-presentations">
+        {selected.presentations.map((p) => (
+          <button
+            key={p.id}
+            onClick={() => {
+              add(p);
+              setSelected(null);
+            }}
+          >
+            <strong>{p.units} unidades</strong>
+            <span>
+              {p.price === null ? "Solicitar precio" : money(Number(p.price))}
+            </span>
+            <span>Añadir a mi mesa</span>
+          </button>
+        ))}
+      </div>
+    </>
+  );
+  if (selected && !preview)
+    return (
+      <section className="snack-detail-page">
+        <nav className="breadcrumbs" aria-label="Ubicación">
+          <a href="#/">Inicio</a>
+          <span>›</span>
+          <a href="#/bocaditos">Bocaditos</a>
+          <span>›</span>
+          <span>{selected.name}</span>
+        </nav>
+        <div className="snack-detail-layout">
+          <h1>{selected.name}</h1>
+          {detailContent}
+        </div>
+        <a className="text-button" href="#/bocaditos">
+          ← Volver a nuestros bocaditos
+        </a>
+        <a className="button button-outline" href="#/arma-tu-mesa">
+          Revisar mi mesa · {totalUnits} unidades
+        </a>
+      </section>
+    );
   return (
     <section
       className={`snack-catalog snack-view-${view}`}
@@ -313,7 +387,7 @@ export default function SnackCatalog({
           <div className="section-heading">
             <div>
               <p className="eyebrow">PEQUEÑOS DETALLES PARA COMPARTIR</p>
-              <h2 id="snack-heading">Catálogo de bocaditos</h2>
+              <h2 id="snack-heading">Nuestros bocaditos</h2>
               <p>Dulces y salados para una mesa a tu medida.</p>
             </div>
             <a className="button button-outline" href="#/arma-tu-mesa">
@@ -778,39 +852,7 @@ export default function SnackCatalog({
             ✕
           </button>
         </div>
-        {selected && (
-          <>
-            {photo(selected)}
-            <p>
-              {selected.description ||
-                "Cuéntanos tu ocasión y coordinaremos los detalles de esta especialidad contigo."}
-            </p>
-            <p>
-              {selected.is_available
-                ? "Disponible previa coordinación."
-                : "Confirmaremos disponibilidad al revisar tu propuesta."}
-            </p>
-            <div className="snack-presentations">
-              {selected.presentations.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => {
-                    add(p);
-                    setSelected(null);
-                  }}
-                >
-                  <strong>{p.units} unidades</strong>
-                  <span>
-                    {p.price === null
-                      ? "Solicitar precio"
-                      : money(Number(p.price))}
-                  </span>
-                  <span>Añadir a mi mesa</span>
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+        {detailContent}
       </dialog>
     </section>
   );

@@ -122,7 +122,7 @@ test("snack catalog filters, saves selection, submits and appears in administrat
   const catalog = page.locator("#bocaditos");
   await expect(
     catalog.getByRole("heading", {
-      name: "Catálogo de bocaditos",
+      name: "Nuestros bocaditos",
       exact: true,
     }),
   ).toBeVisible();

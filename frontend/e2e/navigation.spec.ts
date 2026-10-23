@@ -16,13 +16,13 @@ test("storefront navigation opens separate views and supports history and refres
   await nav.getByRole("link", { name: "Tortas", exact: true }).click();
   await expect(page).toHaveURL(/#\/tortas$/);
   await expect(
-    page.getByRole("heading", { name: "Tortas para celebrar" }),
+    page.getByRole("heading", { name: "Nuestras tortas" }),
   ).toBeVisible();
   await expect(page.locator("#inicio")).toHaveCount(0);
   await expect(page.locator(".product-card")).toHaveCount(1);
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Tortas para celebrar" }),
+    page.getByRole("heading", { name: "Nuestras tortas" }),
   ).toBeVisible();
   await nav.getByRole("link", { name: "Bocaditos", exact: true }).click();
   await expect(page.locator("#bocaditos")).toBeVisible();
@@ -83,4 +83,76 @@ test("all storefront pages fit a phone viewport", async ({ page }) => {
         fullPage: true,
       });
   }
+});
+
+test("cake detail has its own address and carries the reference into a quote", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/#/tortas");
+  await page.getByRole("button", { name: "Ver detalles", exact: true }).click();
+  await expect(page).toHaveURL(/#\/tortas\/1$/);
+  await expect(page.locator(".cake-detail")).toBeVisible();
+  await expect(page.locator(".product-grid")).toHaveCount(0);
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Torta de Chocolate", exact: true }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: "test-results/reference-cake-detail.png",
+    fullPage: true,
+  });
+  await page
+    .getByRole("button", { name: "Quiero una torta similar", exact: true })
+    .click();
+  await expect(
+    page.getByRole("dialog").getByLabel("Temática o celebración"),
+  ).toHaveValue("Torta de Chocolate");
+  await expect(page.locator(".quote-product-reference")).toContainText(
+    "Torta de Chocolate",
+  );
+  await page
+    .getByRole("button", { name: "Cerrar ventana", exact: true })
+    .click();
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
+  await page.screenshot({
+    path: "test-results/reference-cake-detail-mobile.png",
+    fullPage: true,
+  });
+});
+
+test("snack detail opens independently and adds a presentation to the table", async ({
+  page,
+}) => {
+  await page.goto("/#/bocaditos");
+  await page
+    .getByRole("button", {
+      name: "Ver detalles de Empanaditas de carne",
+      exact: true,
+    })
+    .click();
+  await expect(page).toHaveURL(/#\/bocaditos\/1$/);
+  await expect(page.locator(".snack-detail-page")).toBeVisible();
+  await expect(page.locator(".snack-grid")).toHaveCount(0);
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Empanaditas de carne", exact: true }),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
+  await page
+    .locator(".snack-detail-page .snack-presentations")
+    .getByRole("button")
+    .first()
+    .click();
+  await expect(page).toHaveURL(/#\/bocaditos$/);
+  await page.getByRole("link", { name: /Arma tu mesa ·/ }).click();
+  await expect(page.locator("#arma-tu-mesa")).toContainText(
+    "25 unidades · 1 variedades",
+  );
 });

@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { categories as sampleCategories, money } from "./catalog";
+import { money } from "./catalog";
 import { api, assetUrl } from "./api";
 import { Checkout, CustomQuote, Tracking } from "./CustomerForms";
 import type { Product } from "./catalog";
@@ -24,7 +24,7 @@ const pages = [
 ] as const;
 type Page = (typeof pages)[number];
 function currentPage(): Page {
-  const path = window.location.hash.replace(/^#\/?/, "");
+  const path = window.location.hash.replace(/^#\/?/, "").split("/")[0];
   if (path === "productos") return "tortas";
   return pages.includes(path as Page) ? (path as Page) : "inicio";
 }
@@ -135,12 +135,18 @@ function Modal({
 
 function App() {
   const [page, setPage] = useState<Page>(currentPage);
+  const [productId, setProductId] = useState(
+    () => Number(window.location.hash.match(/^#\/tortas\/(\d+)$/)?.[1]) || null,
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const change = () => {
       const next = currentPage();
       setPage(next);
+      setProductId(
+        Number(window.location.hash.match(/^#\/tortas\/(\d+)$/)?.[1]) || null,
+      );
       setMenuOpen(false);
       document.title = `${{ inicio: "Pastelería fina", tortas: "Tortas", bocaditos: "Bocaditos", "arma-tu-mesa": "Arma tu mesa", "nuestros-trabajos": "Nuestros trabajos", personaliza: "Personaliza tu torta", nosotros: "Nosotros", contacto: "Contacto" }[next]} | DelyJhos`;
       window.scrollTo({ top: 0, behavior: "instant" });
@@ -157,14 +163,18 @@ function App() {
   const [category, setCategory] = useState("Todas");
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
-  const [selected, setSelected] = useState<Product | null>(null);
+
   const [bag, setBag] = useState<number[]>([]);
   const [bagOpen, setBagOpen] = useState(false);
   const [customOpen, setCustomOpen] = useState(false);
+  const [quoteProduct, setQuoteProduct] = useState<Product | null>(null);
   const [referenceWork, setReferenceWork] = useState<Work | null>(null);
   const [notice, setNotice] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState(sampleCategories);
+  const selected = products.find((product) => product.id === productId) || null;
+  const setSelected = (product: Product | null) => {
+    window.location.hash = product ? `/tortas/${product.id}` : "/tortas";
+  };
   const [catalogError, setCatalogError] = useState("");
   const [loading, setLoading] = useState(true);
   const [trackingOpen, setTrackingOpen] = useState(false);
@@ -207,13 +217,6 @@ function App() {
           "empanadas-pollo": 5,
         };
         if (controller.signal.aborted) return;
-        setCategories([
-          ...cats.map((c) => ({
-            name: c.name,
-            icon: sampleCategories.find((s) => s.name === c.name)?.icon || "🎂",
-          })),
-          { name: "Pedidos especiales", icon: "🎁" },
-        ]);
         setProducts(
           records.map((p) => ({
             id: p.id,
@@ -402,45 +405,115 @@ function App() {
         )}
 
         <div className="page-content">
+          {page === "tortas" &&
+            productId &&
+            (selected ? (
+              <section className="cake-detail" aria-labelledby="cake-title">
+                <nav className="breadcrumbs" aria-label="Ubicación">
+                  <a href="#/">Inicio</a>
+                  <span>›</span>
+                  <a href="#/tortas">Tortas</a>
+                  <span>›</span>
+                  <span>{selected.name}</span>
+                </nav>
+                <div className="cake-detail-grid">
+                  <div className="cake-detail-images">
+                    <ProductGallery key={selected.id} product={selected} />
+                  </div>
+                  <div className="cake-detail-copy">
+                    <p className="eyebrow">HECHA PARA TU CELEBRACIÓN</p>
+                    <h1 id="cake-title">{selected.name}</h1>
+                    <p>{selected.description}</p>
+                    <span className="detail-tag">{selected.category}</span>
+                    <ul className="detail-values">
+                      <li>
+                        <Icon name="edit" />
+                        Diseño personalizado
+                      </li>
+                      <li>
+                        <Icon name="heart" />
+                        Elaboración artesanal
+                      </li>
+                      <li>
+                        <Icon name="cake" />
+                        Porciones a tu medida
+                      </li>
+                      <li>
+                        <Icon name="chat" />
+                        Atención para tu evento
+                      </li>
+                    </ul>
+                    <p className="detail-price">
+                      {money(selected.price)} <small>Precio referencial</small>
+                    </p>
+                    <button
+                      className="button button-primary full-width"
+                      onClick={() => {
+                        setQuoteProduct(selected);
+                        setCustomOpen(true);
+                      }}
+                    >
+                      Quiero una torta similar <Icon name="arrow" size={18} />
+                    </button>
+                    <button
+                      className="text-button"
+                      onClick={() => addProduct(selected)}
+                    >
+                      Añadir a mi lista para cotizar
+                    </button>
+                    <p className="dialog-note">
+                      Coordinamos tamaño, relleno, decoración y disponibilidad
+                      antes de confirmar. Consulta ingredientes y alérgenos.
+                    </p>
+                  </div>
+                </div>
+                <a className="text-button" href="#/tortas">
+                  ← Volver a nuestras tortas
+                </a>
+              </section>
+            ) : (
+              <div className="empty-state">
+                <h1>
+                  {loading ? "Cargando torta…" : "No encontramos esta torta"}
+                </h1>
+                <a href="#/tortas">Volver al catálogo</a>
+              </div>
+            ))}
+
           {page === "inicio" && (
             <section
-              className="category-grid"
-              aria-label="Categorías de productos"
+              className="home-categories"
+              aria-labelledby="categories-title"
             >
-              {categories.map((item) => (
-                <button
-                  key={item.name}
-                  className={`category-card ${category === item.name ? "selected" : ""}`}
-                  aria-pressed={category === item.name}
-                  onClick={() => {
-                    navigate(
-                      item.name === "Pedidos especiales"
-                        ? "personaliza"
-                        : item.name.includes("Tortas")
-                          ? "tortas"
-                          : "bocaditos",
-                    );
-                  }}
-                >
-                  <span className="category-icon" aria-hidden="true">
-                    <Icon
-                      name={
-                        item.name.includes("Tortas")
-                          ? "cake"
-                          : item.name === "Pedidos especiales"
-                            ? "edit"
-                            : "heart"
-                      }
-                      size={28}
-                    />
-                  </span>
-                  <span>{item.name}</span>
-                </button>
-              ))}
+              <h2 id="categories-title">Nuestras categorías</h2>
+              <div className="home-category-grid">
+                <a href="#/tortas">
+                  <span className="category-cover category-cover-cake" />
+                  <h3>Tortas</h3>
+                  <p>Diseños únicos para tu celebración.</p>
+                  <span className="category-link">Ver catálogo →</span>
+                </a>
+                <a href="#/bocaditos">
+                  <span className="category-cover category-cover-snacks" />
+                  <h3>Bocaditos</h3>
+                  <p>Dulces y salados para compartir.</p>
+                  <span className="category-link">Ver catálogo →</span>
+                </a>
+                <a href="#/nuestros-trabajos">
+                  <img
+                    src="/media/works/work-02/detail-1.webp"
+                    alt="Torta de bautizo de DelyJhos"
+                    loading="lazy"
+                  />
+                  <h3>Nuestros trabajos</h3>
+                  <p>Conoce nuestras creaciones reales.</p>
+                  <span className="category-link">Ver galería →</span>
+                </a>
+              </div>
             </section>
           )}
 
-          {(page === "inicio" || page === "tortas") && (
+          {(page === "inicio" || (page === "tortas" && !productId)) && (
             <section id="productos" className="products-section">
               <div className="section-heading">
                 <div>
@@ -449,8 +522,8 @@ function App() {
                   </p>
                   <h2>
                     {page === "tortas"
-                      ? "Tortas para celebrar"
-                      : "Una selección para ti"}
+                      ? "Nuestras tortas"
+                      : "Nuestros favoritos"}
                   </h2>
                   <p>Algunas de nuestras delicias más solicitadas.</p>
                 </div>
@@ -465,7 +538,7 @@ function App() {
                   Ver todo <Icon name="arrow" size={18} />
                 </button>
               </div>
-              {searchOpen && (
+              {(searchOpen || page === "tortas") && (
                 <label className="search-field">
                   <Icon name="search" />
                   <input
@@ -703,28 +776,6 @@ function App() {
         )}
       </div>
 
-      {selected && (
-        <Modal title={selected.name} onClose={() => setSelected(null)}>
-          <ProductGallery product={selected} />
-          <p className="detail-description">{selected.description}</p>
-          <p className="detail-price">
-            {money(selected.price)} <small>Precio del catálogo</small>
-          </p>
-          <p className="dialog-note">
-            Imagen referencial. La cotización final depende del tamaño, cantidad
-            y personalización. Consulta ingredientes y alérgenos.
-          </p>
-          <button
-            className="button button-primary full-width"
-            onClick={() => addProduct(selected)}
-          >
-            <Icon name="bag" size={18} />
-            {bag.includes(selected.id)
-              ? "Ya está en tu lista"
-              : "Añadir a mi lista para cotizar"}
-          </button>
-        </Modal>
-      )}
       {trackingOpen && (
         <Modal title="Seguir mi pedido" onClose={() => setTrackingOpen(false)}>
           <Tracking />
@@ -796,13 +847,19 @@ function App() {
       )}
       {customOpen && (
         <Modal
-          title="Personaliza tu torta"
+          title={
+            quoteProduct ? "Quiero una torta similar" : "Personaliza tu torta"
+          }
           onClose={() => {
             setCustomOpen(false);
             setReferenceWork(null);
+            setQuoteProduct(null);
           }}
         >
-          <CustomQuote referenceWork={referenceWork} />
+          <CustomQuote
+            referenceWork={referenceWork}
+            referenceProduct={quoteProduct}
+          />
         </Modal>
       )}
     </div>

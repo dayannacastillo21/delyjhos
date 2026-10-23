@@ -166,8 +166,10 @@ export function Checkout({
 
 export function CustomQuote({
   referenceWork,
+  referenceProduct,
 }: {
   referenceWork?: Work | null;
+  referenceProduct?: Product | null;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -233,6 +235,28 @@ export function CustomQuote({
     );
   return (
     <form className="custom-form" onSubmit={submit}>
+      {referenceProduct && (
+        <div className="quote-product-reference">
+          <span
+            className={`product-photo product-photo-${referenceProduct.photo}`}
+            role="img"
+            aria-label={referenceProduct.name}
+            style={
+              referenceProduct.image_url
+                ? {
+                    backgroundImage: `url("${assetUrl(referenceProduct.image_url)}")`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }
+                : undefined
+            }
+          />
+          <div>
+            <strong>{referenceProduct.name}</strong>
+            <p>Referencia para tu cotización</p>
+          </div>
+        </div>
+      )}
       {referenceWork && (
         <div className="quote-work-reference">
           <img
@@ -303,7 +327,11 @@ export function CustomQuote({
           required
           maxLength={150}
           placeholder="Ej. flores rosadas"
-          defaultValue={referenceWork?.title.slice(0, 150) || ""}
+          defaultValue={
+            referenceWork?.title.slice(0, 150) ||
+            referenceProduct?.name.slice(0, 150) ||
+            ""
+          }
         />
       </label>
       <div className="form-row">
