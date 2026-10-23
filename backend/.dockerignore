@@ -1,0 +1,10 @@
+.venv
+.env
+.env.*
+!.env.example
+.initial-admin.txt
+uploads
+__pycache__
+.pytest_cache
+*.db
+tests

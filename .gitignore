@@ -12,7 +12,6 @@ __pycache__/
 .ruff_cache/
 .coverage
 htmlcov/
-python -m venv backend/.venv
 # Frontend
 node_modules/
 dist/
@@ -21,4 +20,10 @@ coverage/
 
 # Archivos locales de Windows
 Thumbs.db
-Desktop.iniA
+Desktop.ini
+# Runtime data and local bootstrap credentials
+backend/uploads/
+backend/.initial-admin.txt
+*.db
+playwright-report/
+test-results/

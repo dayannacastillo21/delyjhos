@@ -1,114 +1,159 @@
 # DelyJhos — Sistema de Gestión para Pastelerías
 
-Proyecto Full Stack en desarrollo para la pastelería familiar DelyJhos.
+Aplicación Full Stack para una pastelería familiar: catálogo público, pedidos personalizados y administración de las operaciones del negocio.
 
-Su objetivo es ofrecer una página para clientes y un sistema administrativo
-que permita gestionar productos, pedidos personalizados y las operaciones
-del negocio.
+## Tecnologías y arquitectura
 
-## Tecnologías
-
-- Frontend: React, TypeScript, Vite y Tailwind CSS.
-- Backend: Python y FastAPI.
-- Base de datos: PostgreSQL alojado en Neon.
-- ORM: SQLAlchemy con Psycopg.
-- Migraciones: Alembic.
-- Control de versiones: Git y GitHub.
-
-## Arquitectura
-
-Frontend React → API REST FastAPI → PostgreSQL
-
-El frontend y el backend son aplicaciones separadas.
-Las credenciales de la base de datos se utilizan únicamente en el backend.
-
-## Estado actual
-
-- Backend FastAPI con ruta principal de comprobación.
-- Conexión con PostgreSQL verificada.
-- Frontend con una primera pantalla de DelyJhos.
-- Tailwind CSS configurado.
-- Compilación y revisión con ESLint verificadas.
-
-La aplicación todavía no implementa los módulos de negocio.
-
-## Funcionalidades planificadas
-
-- Catálogo de tortas, bocaditos, dulces y salados.
-- Cotizaciones y pedidos personalizados.
-- Administración de clientes, anticipos y pagos.
-- Recetas, ingredientes, compras e inventario auditable.
-- Calendario de producción y entregas.
-- Ventas, costos y reportes.
-- Autenticación, roles y permisos.
-
-## Estructura
+- **Frontend:** React, TypeScript, Vite y Tailwind CSS.
+- **Backend:** Python, FastAPI y Pydantic.
+- **Datos:** PostgreSQL en Neon, SQLAlchemy, Psycopg y Alembic.
+- **Calidad:** pytest, Vitest, Playwright y GitHub Actions.
 
 ```text
-DELYJHOS/
-├── backend/
-│   ├── app/
-│   └── requirements.txt
-├── frontend/
-└── README.md
+Navegador → React → API REST FastAPI → PostgreSQL
 ```
 
-## Ejecutar en Windows
+La contraseña de PostgreSQL solo existe en el backend. La sesión administrativa utiliza un token aleatorio revocable; se mantiene en memoria del navegador, sin guardarlo en localStorage.
 
-Requisitos utilizados durante la configuración:
-Python 3.14, Node.js 24, npm y una base de datos PostgreSQL en Neon.
+## Funcionalidades implementadas
 
-Ejecutar los comandos desde la raíz del repositorio.
+| Área | Funcionalidad |
+| --- | --- |
+| Página pública | Diseño adaptable, catálogo desde la API, categorías, búsqueda, detalles y galería |
+| Clientes | Solicitud de pedidos con cantidades y fecha, cotización de tortas con imagen, seguimiento privado |
+| Administración | Inicio de sesión, cuatro roles, catálogo, clientes, proveedores y usuarios |
+| Pedidos | Flujo de confirmación, producción, preparación y entrega; conversión de cotizaciones aprobadas |
+| Pagos | Anticipos y saldos, validación de sobrepagos y protección de solicitudes repetidas |
+| Recetas | Ingredientes, rendimientos, mano de obra y costos adicionales |
+| Inventario | Compras, recepción, ajustes auditables, consumo por recetas y alertas de stock mínimo |
+| Producción | Tareas, responsables, calendario y estados de pedidos |
+| Reportes | Cobros diarios, ventas entregadas, rentabilidad estimada, productos vendidos y exportación CSV |
+| Costos | Cotizador por receta, decoración y margen sobre precio de venta |
+| Demanda | Promedio semanal, habilitado solo con historia suficiente; no es un modelo de ML entrenado |
+
+Los seis productos iniciales conservan **datos e imágenes de muestra**. Deben reemplazarse o confirmarse antes de usar el catálogo comercialmente. Las fotografías se encuadran provisionalmente desde la referencia visual aportada por la propietaria del proyecto.
+
+## Arranque en Windows
+
+Versiones verificadas durante el desarrollo: Python 3.14 y Node.js 24.
+No se requiere instalar PostgreSQL en Windows.
 
 ### Backend
 
-Crear el entorno virtual e instalar las dependencias:
+Desde la raíz del repositorio:
 
 ```powershell
 python -m venv backend/.venv
-.\backend\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
+.\backend\.venv\Scripts\python.exe -m pip install -r backend/requirements-dev.txt
 ```
 
-Crear `backend/.env` con una conexión propia:
+Copia `backend/.env.example` a `backend/.env` **solo si no tienes ya uno**. Completa `DATABASE_URL` con tu conexión privada de Neon, comenzando por `postgresql+psycopg://` y conservando los parámetros TLS. Nunca compartas ni publiques el archivo `.env`.
 
-```dotenv
-DATABASE_URL="postgresql+psycopg://USUARIO:CONTRASENA@HOST/BASE_DE_DATOS?sslmode=require&channel_binding=require"
-```
-
-Sustituir los valores de ejemplo por las credenciales de PostgreSQL.
-No subir el archivo `.env` a Git.
-
-Iniciar la API:
+Desde la carpeta `backend`:
 
 ```powershell
-.\backend\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir backend --reload
+.\.venv\Scripts\python.exe -m alembic upgrade head
+.\.venv\Scripts\python.exe -m app.bootstrap --demo
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --no-access-log
 ```
 
-- API: http://127.0.0.1:8000/
-- Documentación interactiva: http://127.0.0.1:8000/docs
+`bootstrap` crea roles, categorías y la cuenta inicial; con `--demo` añade los seis productos de muestra. Es idempotente y no reemplaza registros existentes. La contraseña inicial aleatoria se guarda en **`backend/.initial-admin.txt`**, excluido de Git. El correo inicial `admin@example.com` es un identificador de ejemplo, no una cuenta de correo configurada.
 
-La ruta principal comprueba que la API responde; no verifica la base de datos.
+- API: http://127.0.0.1:8000/
+- Salud de PostgreSQL: http://127.0.0.1:8000/health
+- OpenAPI: http://127.0.0.1:8000/docs
 
 ### Frontend
 
-En otra terminal:
+En otra terminal, desde la raíz:
 
 ```powershell
 npm.cmd --prefix frontend ci
 npm.cmd --prefix frontend run dev
 ```
 
-Abrir la dirección que muestre Vite, normalmente http://localhost:5173/.
+- Página pública: http://localhost:5173/
+- Administración: http://localhost:5173/#/admin
 
-### Comprobaciones del frontend
+Por defecto el frontend consulta `http://127.0.0.1:8000`. Para cambiarlo configura `VITE_API_URL` en `frontend/.env` y reinicia Vite. Esta variable es pública: no contiene contraseñas ni claves privadas.
+
+También se incluyen `scripts/start-api.ps1` y `scripts/start-web.ps1`, que inician cada servicio en su terminal. Si PowerShell bloquea scripts, utiliza los comandos anteriores; no hace falta cambiar las políticas del sistema.
+
+## Uso inicial del negocio
+
+1. Ingresa a Administración con la cuenta del archivo privado y crea tu propia cuenta administradora.
+2. En Configuración, registra el WhatsApp con código de país y el contacto del negocio.
+3. Confirma categorías, productos, fotos y precios. Desmarca «Catálogo con datos de muestra» cuando hayas terminado.
+4. Crea ingredientes con su unidad base y registra el inventario inicial mediante un ajuste con motivo.
+5. Asocia una receta a cada producto, con sus ingredientes, rendimiento y costos.
+6. Registra compras y pulsa «Recibir» para incorporar cantidades y actualizar el costo medio ponderado.
+7. Revisa pedidos y cotizaciones. La confirmación de un pedido requiere una receta válida.
+8. Inicia producción para consumir ingredientes. Registra el saldo antes de marcar el pedido como entregado.
+
+Las listas para cotizar del navegador se mantienen en memoria; los pedidos **enviados** y las cotizaciones sí se guardan en PostgreSQL. El código privado de seguimiento se entrega una vez: guárdalo. No contiene datos personales y permite consultar únicamente estado y fecha.
+
+## Reglas de integridad
+
+- Las cantidades y el dinero se almacenan con `Numeric`/`Decimal`.
+- La confirmación congela receta y costo para ese pedido.
+- La producción bloquea filas, valida existencias y registra movimientos únicos por pedido e ingrediente dentro de una transacción.
+- Repetir producción o recibir la misma compra no duplica movimientos.
+- Los pagos usan una clave de idempotencia y no pueden superar el saldo.
+- Los ajustes requieren motivo y no pueden dejar existencias negativas.
+- Los registros financieros y de inventario no tienen endpoints para borrar o editar su historial.
+- Cancelar conserva pagos y consumos. No repone automáticamente ingredientes ya utilizados ni ejecuta reembolsos externos.
+
+## Pruebas
+
+Desde `backend`:
 
 ```powershell
-npm.cmd --prefix frontend run build
-npm.cmd --prefix frontend run lint
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m alembic check
 ```
 
-## Seguridad
+La suite ordinaria utiliza SQLite temporal con claves foráneas activadas. La prueba adicional de concurrencia PostgreSQL se habilita con `TEST_POSTGRES_URL`: crea un esquema aislado, aplica todas las migraciones y lo elimina al terminar. Para Neon usa una conexión directa; el pooler no admite el parámetro de arranque `search_path` utilizado por esa prueba. **No uses una cuenta sin permiso para crear y eliminar el esquema temporal.**
 
-- Las credenciales se guardan en `backend/.env`, excluido de Git.
-- El frontend no debe recibir la contraseña ni la conexión de PostgreSQL.
-- El proyecto está en desarrollo y todavía no está preparado para producción.
+Desde la raíz:
+
+```powershell
+npm.cmd --prefix frontend run test
+npm.cmd --prefix frontend run lint
+npm.cmd --prefix frontend run build
+npm.cmd --prefix frontend run test:e2e
+```
+
+Playwright usa una base SQLite desechable y los puertos 8001/5174, sin conectar con Neon. En Windows utiliza Chrome instalado. En CI instala Chromium. No inicies dos ejecuciones de Playwright simultáneamente.
+
+## Estructura
+
+```text
+backend/
+  app/
+    models/          # Tablas y restricciones
+    schemas/         # Validación de entrada y salida
+    routers/         # Endpoints
+    services.py      # Transacciones de pedidos, compras, pagos e inventario
+    security.py      # Contraseñas Argon2, sesiones y autorización
+    bootstrap.py     # Configuración inicial idempotente
+  migrations/        # Historial de Alembic
+  tests/             # API, transacciones y pruebas de concurrencia
+frontend/
+  src/
+    admin/           # Administración, formularios, reportes y calendario
+    CustomerForms.tsx
+    App.tsx          # Página pública
+    api.ts           # Cliente HTTP
+  e2e/               # Flujos reales de navegador
+scripts/             # Lanzadores para Windows
+docs/                # Arquitectura, operación y despliegue
+.github/workflows/   # Integración continua
+```
+
+## Despliegue y límites
+
+Los archivos Docker y `compose.yaml` están preparados, pero requieren Docker y un entorno de hosting configurado. No se ha publicado la aplicación en internet ni se han contratado servicios.
+
+Antes del uso comercial deben validarse precios, recetas, cantidades y fotografías con el negocio, configurar HTTPS y almacenamiento persistente para las imágenes, probar copias de seguridad y revisar los permisos de la cuenta de PostgreSQL. No hay pagos con tarjeta online, facturación tributaria, correo transaccional ni reembolsos automáticos. Las predicciones avanzadas requieren datos y evaluación posterior.
+
+Más detalles en [operación](docs/operations.md), [arquitectura](docs/architecture.md) y [despliegue](docs/deployment.md).
