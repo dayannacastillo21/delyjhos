@@ -1,4 +1,33 @@
+import { useEffect, useState } from 'react'
+import { getApiStatus } from './api'
+
 function App() {
+  const [apiMessage, setApiMessage] = useState('Conectando con la API…')
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return
+
+    const controller = new AbortController()
+
+    getApiStatus(controller.signal)
+      .then((data) => {
+        if (!controller.signal.aborted) {
+          setApiMessage(
+            data.status === 'ok'
+              ? `${data.service}: conexión correcta`
+              : `${data.service}: estado ${data.status}`,
+          )
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setApiMessage('No se pudo conectar con la API')
+        }
+      })
+
+    return () => controller.abort()
+  }, [])
+
   return (
     <main className="min-h-screen bg-rose-50 px-6 py-16 font-sans text-stone-800">
       <div className="mx-auto max-w-5xl">
@@ -6,6 +35,15 @@ function App() {
           <p className="text-3xl font-bold text-rose-800">DelyJhos</p>
           <p className="mt-2 text-stone-600">Pastelería hecha con cariño</p>
         </header>
+
+        {import.meta.env.DEV && (
+          <p
+            role="status"
+            className="mt-6 rounded-lg border border-rose-200 bg-white p-4 text-sm"
+          >
+            {apiMessage}
+          </p>
+        )}
 
         <section className="py-16">
           <p className="text-sm font-semibold uppercase tracking-widest text-rose-700">
