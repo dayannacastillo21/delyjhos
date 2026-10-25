@@ -360,7 +360,7 @@ function App() {
             <div
               className="hero-photo"
               role="img"
-              aria-label="Torta personalizada en tonos lila, creación de DelyJhos"
+              aria-label="Torta rosada con corona y flores, imagen decorativa de ambientación"
             />
             <div className="hero-inner">
               <div className="hero-copy">
@@ -368,9 +368,9 @@ function App() {
                   PASTELERÍA FINA · HECHA CON AMOR
                 </span>
                 <h1>
-                  Endulzamos
+                  Momentos
                   <br />
-                  <em>tus momentos</em>
+                  <em>que endulzamos</em>
                 </h1>
                 <p>
                   Tortas temáticas, bocaditos, dulces y más,
@@ -379,31 +379,65 @@ function App() {
                 </p>
                 <div className="hero-buttons">
                   <a className="button button-primary" href="#/tortas">
-                    <Icon name="cake" /> Ver catálogo
+                    <Icon name="cake" /> Ver tortas
+                  </a>
+                  <a
+                    className="button button-outline hero-snacks"
+                    href="#/bocaditos"
+                  >
+                    Ver bocaditos
                   </a>
                   <button
-                    className="button button-outline"
+                    className="hero-custom-link"
                     onClick={() => setCustomOpen(true)}
                   >
                     <Icon name="edit" /> Personaliza tu torta
                   </button>
                 </div>
-                <ul className="promises">
-                  <li>
-                    <Icon name="truck" size={27} /> Pedidos personalizados
-                  </li>
-                  <li>
-                    <Icon name="heart" size={27} /> Elaboración con amor
-                  </li>
-                  <li>
-                    <Icon name="star" size={27} /> Cuidamos cada detalle
-                  </li>
-                </ul>
+                <span className="hero-signature">
+                  Pastelería fina, para celebrar bonito.
+                </span>
               </div>
+            </div>
+            <span className="hero-art-label">Imagen de ambientación</span>
+          </section>
+        )}
+        {page === "inicio" && (
+          <section className="craft-values" aria-label="Nuestra pastelería">
+            <div>
+              <Icon name="cake" size={30} />
+              <span>
+                Productos
+                <br />
+                artesanales
+              </span>
+            </div>
+            <div>
+              <Icon name="heart" size={30} />
+              <span>
+                Elaboración
+                <br />
+                con cariño
+              </span>
+            </div>
+            <div>
+              <Icon name="edit" size={30} />
+              <span>
+                Diseños
+                <br />
+                personalizados
+              </span>
+            </div>
+            <div>
+              <Icon name="truck" size={30} />
+              <span>
+                Atención
+                <br />
+                para eventos
+              </span>
             </div>
           </section>
         )}
-
         <div className="page-content">
           {page === "tortas" &&
             productId &&
@@ -550,7 +584,9 @@ function App() {
                   />
                   <button
                     className="icon-button"
-                    aria-label="Cerrar búsqueda"
+                    aria-label={
+                      page === "tortas" ? "Limpiar búsqueda" : "Cerrar búsqueda"
+                    }
                     onClick={() => {
                       setSearchOpen(false);
                       setQuery("");
@@ -761,6 +797,24 @@ function App() {
           </a>
         )}
       </footer>
+      <nav className="mobile-tabbar" aria-label="Accesos rápidos">
+        {[
+          ["inicio", "Inicio", "heart"],
+          ["tortas", "Tortas", "cake"],
+          ["bocaditos", "Bocaditos", "star"],
+          ["arma-tu-mesa", "Mi mesa", "bag"],
+          ["contacto", "Contacto", "chat"],
+        ].map(([key, label, icon]) => (
+          <a
+            key={key}
+            href={`#/${key === "inicio" ? "" : key}`}
+            aria-current={page === key ? "page" : undefined}
+          >
+            <Icon name={icon} size={20} />
+            <span>{label}</span>
+          </a>
+        ))}
+      </nav>
       <div className="toast" role="status" aria-live="polite">
         {notice && (
           <>
