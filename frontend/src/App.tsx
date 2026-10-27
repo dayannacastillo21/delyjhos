@@ -18,7 +18,6 @@ const pages = [
   "tortas",
   "bocaditos",
   "arma-tu-mesa",
-  "nuestros-trabajos",
   "personaliza",
   "nosotros",
   "contacto",
@@ -29,7 +28,6 @@ const pageLabels: Record<Page, string> = {
   tortas: "Tortas",
   bocaditos: "Bocaditos",
   "arma-tu-mesa": "Arma tu mesa",
-  "nuestros-trabajos": "Nuestros trabajos",
   personaliza: "Personaliza tu torta",
   nosotros: "Nosotros",
   contacto: "Contacto",
@@ -37,7 +35,7 @@ const pageLabels: Record<Page, string> = {
 
 function currentPage(): Page {
   const path = window.location.hash.replace(/^#\/?/, "").split("/")[0];
-  if (path === "productos") return "tortas";
+  if (path === "productos" || path === "nuestros-trabajos") return "tortas";
   return pages.includes(path as Page) ? (path as Page) : "inicio";
 }
 
@@ -154,6 +152,9 @@ function App() {
   const mainRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const change = () => {
+      if (/^#\/?nuestros-trabajos\/?$/.test(window.location.hash)) {
+        window.history.replaceState(null, "", "#/tortas");
+      }
       const next = currentPage();
       setPage(next);
       setProductId(
@@ -166,6 +167,7 @@ function App() {
         mainRef.current?.focus({ preventScroll: true }),
       );
     };
+    change();
     window.addEventListener("hashchange", change);
     return () => window.removeEventListener("hashchange", change);
   }, []);
@@ -554,15 +556,15 @@ function App() {
                   <p>Dulces y salados para compartir.</p>
                   <span className="category-link">Ver catálogo →</span>
                 </a>
-                <a href="#/nuestros-trabajos">
+                <a href="#/personaliza">
                   <img
                     src="/media/works/work-02/detail-1.webp"
                     alt="Torta de bautizo de DelyJhos"
                     loading="lazy"
                   />
-                  <h3>Nuestros trabajos</h3>
-                  <p>Conoce nuestras creaciones reales.</p>
-                  <span className="category-link">Ver galería →</span>
+                  <h3>Tu torta a medida</h3>
+                  <p>Cuéntanos la idea para tu celebración.</p>
+                  <span className="category-link">Personalizar mi torta →</span>
                 </a>
               </div>
             </section>
@@ -748,14 +750,6 @@ function App() {
               setCustomOpen(true);
             }} />
           )}
-          {page === "nuestros-trabajos" && (
-            <WorksGallery
-              onQuote={(work) => {
-                setReferenceWork(work);
-                setCustomOpen(true);
-              }}
-            />
-          )}
           {page === "nosotros" && (<AboutPage onRequestQuote={() => setCustomOpen(true)} />)}
           {page === "contacto" && (
             <section className="contact-section" id="contacto">
@@ -800,16 +794,16 @@ function App() {
                   Conoce nuestras tortas personalizadas y encuentra una idea
                   para ese día especial.
                 </p>
-                <a className="text-button" href="#/nuestros-trabajos">
-                  Explorar nuestros trabajos <Icon name="arrow" size={18} />
+                <a className="text-button" href="#/tortas">
+                  Explorar nuestras tortas <Icon name="arrow" size={18} />
                 </a>
               </div>
               <div className="home-preview">
                 {[1, 4, 6].map((n) => (
                   <a
                     key={n}
-                    href="#/nuestros-trabajos"
-                    aria-label="Explorar trabajos de DelyJhos"
+                    href="#/tortas"
+                    aria-label="Ver tortas de DelyJhos"
                   >
                     <img
                       src={`/media/works/work-0${n}/poster.webp`}
@@ -839,7 +833,6 @@ function App() {
           <strong>Descubre</strong>
           <a href="#/tortas">Nuestras tortas</a>
           <a href="#/bocaditos">Bocaditos dulces y salados</a>
-          <a href="#/nuestros-trabajos">Nuestros trabajos</a>
           <a href="#/nosotros">Conoce DelyJhos</a>
         </nav>
         <div className="footer-service">

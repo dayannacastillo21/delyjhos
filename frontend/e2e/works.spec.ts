@@ -1,17 +1,18 @@
 import { test, expect } from "@playwright/test";
 
 test("second batch plays with its original dimensions", async ({ page }) => {
-  await page.goto("/#nuestros-trabajos");
-  const gallery = page.locator("#nuestros-trabajos");
+  await page.goto("/#/tortas");
+  const gallery = page.locator("#tortas");
   for (const [title, width, height] of [
     ["Torta de Sonic y Shadow", 480, 848],
     ["Torta de abejitas y flores", 464, 832],
     ["Torta de temática científica", 576, 1024],
   ] as const) {
     await gallery
-      .getByRole("button", { name: `Ver video de ${title}`, exact: true })
+      .getByRole("button", { name: `Ver fotos de ${title}`, exact: true })
       .click();
     const dialog = page.getByRole("dialog");
+    await dialog.getByRole("button", { name: "▶ Video", exact: true }).click();
     const video = dialog.locator("video");
     await video.evaluate((element: HTMLVideoElement) => element.play());
     await expect
@@ -38,18 +39,19 @@ test("real videos load on demand and inspiration persists in the quote", async (
   page.on("request", (request) => {
     if (request.url().includes("/video.mp4")) videos.push(request.url());
   });
-  await page.goto("/#nuestros-trabajos");
-  const gallery = page.locator("#nuestros-trabajos");
+  await page.goto("/#/tortas");
+  const gallery = page.locator("#tortas");
   await expect(gallery.locator(".work-card")).toHaveCount(6);
   await expect(gallery.locator("video")).toHaveCount(0);
   expect(videos).toHaveLength(0);
   await gallery
     .getByRole("button", {
-      name: "Ver video de Torta de fútbol en celeste y blanco",
+      name: "Ver fotos de Torta de fútbol en celeste y blanco",
       exact: true,
     })
     .click();
   const viewer = page.getByRole("dialog");
+  await viewer.getByRole("button", { name: "▶ Video", exact: true }).click();
   const video = viewer.locator("video");
   await expect(video).toHaveAttribute("controls", "");
   await video.evaluate((element: HTMLVideoElement) => element.play());
@@ -109,8 +111,8 @@ test("real videos load on demand and inspiration persists in the quote", async (
 
 test("real gallery and expanded photos fit mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/#nuestros-trabajos");
-  const gallery = page.locator("#nuestros-trabajos");
+  await page.goto("/#/tortas");
+  const gallery = page.locator("#tortas");
   await expect(gallery.locator(".work-card")).toHaveCount(6);
   await gallery.evaluate((element) =>
     element.scrollIntoView({ block: "start", behavior: "instant" }),

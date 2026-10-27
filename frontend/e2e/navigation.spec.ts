@@ -28,20 +28,11 @@ test("storefront navigation opens separate views and supports history and refres
   await expect(page.locator("#bocaditos")).toBeVisible();
   await expect(page.locator("#productos")).toHaveCount(0);
   await expect(page.locator(".snack-quote-form")).toHaveCount(0);
-  await nav
-    .getByRole("link", { name: "Nuestros trabajos", exact: true })
-    .click();
+  await expect(nav.getByRole("link", { name: "Nuestros trabajos", exact: true })).toHaveCount(0);
+  await page.goto("/#/nuestros-trabajos");
+  await expect(page).toHaveURL(/#\/tortas$/);
   await expect(page.locator(".work-card")).toHaveCount(6);
-  const height = await page
-    .locator(".work-poster")
-    .first()
-    .evaluate((el) => el.getBoundingClientRect().height);
-  expect(height).toBeLessThanOrEqual(280);
-  await page.screenshot({
-    path: "test-results/redesign-works-desktop.png",
-    fullPage: true,
-  });
-  await page.goBack();
+  await nav.getByRole("link", { name: "Bocaditos", exact: true }).click();
   await expect(page.locator("#bocaditos")).toBeVisible();
   await nav.getByRole("link", { name: "Arma tu mesa", exact: true }).click();
   await expect(
@@ -67,7 +58,6 @@ test("all storefront pages fit a phone viewport", async ({ page }) => {
     "tortas",
     "bocaditos",
     "arma-tu-mesa",
-    "nuestros-trabajos",
     "personaliza",
     "nosotros",
     "contacto",

@@ -11,7 +11,7 @@ export default function AboutPage({ onRequestQuote }: Props) {
           <h1 id="about-title">Detrás de cada torta,<br /><em>una historia para celebrar.</em></h1>
           <p className="about-lead">La tuya empieza con una idea. La nuestra, con las ganas de darle forma.</p>
           <p>Somos una pastelería familiar que prepara tortas personalizadas y bocaditos dulces y salados. Nos gusta acompañarte en esos días que reúnen a las personas que quieres.</p>
-          <a className="about-inline-link" href="#/nuestros-trabajos">Conoce nuestras creaciones <span aria-hidden="true">↗</span></a>
+          <a className="about-inline-link" href="#/tortas">Conoce nuestras creaciones <span aria-hidden="true">↗</span></a>
         </div>
         <div className="about-photo-composition">
           <figure className="about-photo-main">
