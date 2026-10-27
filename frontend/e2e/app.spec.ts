@@ -1,11 +1,10 @@
 import { test, expect } from "@playwright/test";
 
 test("public catalog, real order and private tracking", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/#/tortas/1");
   await expect(
     page.getByRole("heading", { name: "Torta de Chocolate", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Ver detalles", exact: true }).click();
   await page
     .getByRole("button", { name: "Añadir a mi lista para cotizar" })
     .click();
@@ -87,7 +86,7 @@ test("mobile layout does not overflow and menu opens", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Torta de Chocolate", exact: true }),
+    page.getByRole("heading", { level: 1, name: /Hay momentos/ }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Abrir menú", exact: true }).click();
   await expect(

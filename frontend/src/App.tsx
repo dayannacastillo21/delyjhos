@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { money } from "./catalog";
-import { api, assetUrl } from "./api";
+import { api } from "./api";
 import { Checkout, CustomQuote, Tracking } from "./CustomerForms";
 import type { Product } from "./catalog";
 import "./App.css";
@@ -12,6 +12,7 @@ import type { Work } from "./workTypes";
 import "./Storefront.css";
 import AboutPage from "./AboutPage";
 import "./HeaderFooter.css";
+import HomePage from "./HomePage";
 
 const pages = [
   "inicio",
@@ -177,9 +178,6 @@ function App() {
   function navigate(next: Page) {
     window.location.hash = `/${next === "inicio" ? "" : next}`;
   }
-  const [category, setCategory] = useState("Todas");
-  const [query, setQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchRequest, setSearchRequest] = useState(0);
 
   const [bag, setBag] = useState<number[]>([]);
@@ -197,7 +195,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [trackingOpen, setTrackingOpen] = useState(false);
   const [whatsapp, setWhatsapp] = useState("");
-  const [demoCatalog, setDemoCatalog] = useState(true);
   useEffect(() => {
     const controller = new AbortController();
     type CategoryRow = { id: number; name: string };
@@ -262,27 +259,10 @@ function App() {
     )
       .then((s) => {
         setWhatsapp(s.whatsapp_number);
-        setDemoCatalog(s.demo_catalog);
       })
       .catch(() => {});
     return () => controller.abort();
   }, []);
-  const shown = products.filter(
-    (p) =>
-      (page !== "tortas" ||
-        p.category.toLocaleLowerCase("es").includes("torta")) &&
-      (category === "Todas" || p.category === category) &&
-      p.name
-        .toLocaleLowerCase("es")
-        .includes(query.toLocaleLowerCase("es").trim()),
-  );
-  const featured = [...shown]
-    .sort(
-      (a, b) =>
-        Number(b.category.toLocaleLowerCase("es").includes("torta")) -
-        Number(a.category.toLocaleLowerCase("es").includes("torta")),
-    )
-    .slice(0, 4);
   const chosen = products.filter((p) => bag.includes(p.id));
 
   function addProduct(product: Product) {
@@ -342,8 +322,6 @@ function App() {
                 aria-current={page === entry ? "page" : undefined}
                 onClick={() => {
                   setMenuOpen(false);
-                  setCategory("Todas");
-                  setQuery("");
                 }}
               >
                 {pageLabels[entry]}
@@ -355,7 +333,6 @@ function App() {
               className="icon-button"
               onClick={() => {
                 navigate("tortas");
-                setSearchOpen(true);
                 setSearchRequest(value => value + 1);
               }}
               aria-label="Buscar productos"
@@ -381,89 +358,7 @@ function App() {
       </header>
 
       <main id="main-content" ref={mainRef} tabIndex={-1}>
-        {page === "inicio" && (
-          <section className="hero" id="inicio">
-            <div
-              className="hero-photo"
-              role="img"
-              aria-label="Torta rosada con corona y flores, imagen decorativa de ambientación"
-            />
-            <div className="hero-inner">
-              <div className="hero-copy">
-                <span className="eyebrow">
-                  PASTELERÍA FINA · HECHA CON AMOR
-                </span>
-                <h1>
-                  Momentos
-                  <br />
-                  <em>que endulzamos</em>
-                </h1>
-                <p>
-                  Tortas temáticas, bocaditos, dulces y más,
-                  <br className="desktop-break" /> hechos con amor para cada
-                  ocasión especial.
-                </p>
-                <div className="hero-buttons">
-                  <a className="button button-primary" href="#/tortas">
-                    <Icon name="cake" /> Ver tortas
-                  </a>
-                  <a
-                    className="button button-outline hero-snacks"
-                    href="#/bocaditos"
-                  >
-                    Ver bocaditos
-                  </a>
-                  <button
-                    className="hero-custom-link"
-                    onClick={() => setCustomOpen(true)}
-                  >
-                    <Icon name="edit" /> Personaliza tu torta
-                  </button>
-                </div>
-                <span className="hero-signature">
-                  Pastelería fina, para celebrar bonito.
-                </span>
-              </div>
-            </div>
-            <span className="hero-art-label">Imagen de ambientación</span>
-          </section>
-        )}
-        {page === "inicio" && (
-          <section className="craft-values" aria-label="Nuestra pastelería">
-            <div>
-              <Icon name="cake" size={30} />
-              <span>
-                Productos
-                <br />
-                artesanales
-              </span>
-            </div>
-            <div>
-              <Icon name="heart" size={30} />
-              <span>
-                Elaboración
-                <br />
-                con cariño
-              </span>
-            </div>
-            <div>
-              <Icon name="edit" size={30} />
-              <span>
-                Diseños
-                <br />
-                personalizados
-              </span>
-            </div>
-            <div>
-              <Icon name="truck" size={30} />
-              <span>
-                Atención
-                <br />
-                para eventos
-              </span>
-            </div>
-          </section>
-        )}
+        {page === "inicio" && <HomePage onCustomize={() => setCustomOpen(true)} />}
         <div className="page-content">
           {page === "tortas" &&
             productId &&
@@ -534,202 +429,11 @@ function App() {
             ) : (
               <div className="empty-state">
                 <h1>
-                  {loading ? "Cargando torta…" : "No encontramos esta torta"}
+                  {loading ? "Cargando torta…" : catalogError ? "No pudimos cargar esta torta" : "No encontramos esta torta"}
                 </h1>
                 <a href="#/tortas">Volver al catálogo</a>
               </div>
             ))}
-
-          {page === "inicio" && (
-            <section
-              className="home-categories"
-              aria-labelledby="categories-title"
-            >
-              <h2 id="categories-title">Nuestras categorías</h2>
-              <div className="home-category-grid">
-                <a href="#/tortas">
-                  <span className="category-cover category-cover-cake" />
-                  <h3>Tortas</h3>
-                  <p>Diseños únicos para tu celebración.</p>
-                  <span className="category-link">Ver catálogo →</span>
-                </a>
-                <a href="#/bocaditos">
-                  <span className="category-cover category-cover-snacks" />
-                  <h3>Bocaditos</h3>
-                  <p>Dulces y salados para compartir.</p>
-                  <span className="category-link">Ver catálogo →</span>
-                </a>
-                <a href="#/personaliza">
-                  <img
-                    src="/media/works/work-02/detail-1.webp"
-                    alt="Torta de bautizo de DelyJhos"
-                    loading="lazy"
-                  />
-                  <h3>Tu torta a medida</h3>
-                  <p>Cuéntanos la idea para tu celebración.</p>
-                  <span className="category-link">Personalizar mi torta →</span>
-                </a>
-              </div>
-            </section>
-          )}
-
-          {page === "inicio" && (
-            <section id="productos" className="products-section">
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow small-eyebrow">
-                    UN ANTOJO PARA CADA OCASIÓN
-                  </p>
-                  <h2>
-                    Nuestros favoritos
-                  </h2>
-                  <p>Algunas de nuestras delicias más solicitadas.</p>
-                </div>
-                <button
-                  className="text-button"
-                  onClick={() => {
-                    navigate("tortas");
-                    setCategory("Todas");
-                    setQuery("");
-                  }}
-                >
-                  Ver todo <Icon name="arrow" size={18} />
-                </button>
-              </div>
-              {searchOpen && (
-                <label className="search-field">
-                  <Icon name="search" />
-                  <input
-                    autoFocus={searchOpen}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Busca una torta, cupcakes, galletas…"
-                    aria-label="Buscar por nombre"
-                  />
-                  <button
-                    className="icon-button"
-                    aria-label={
-                      "Cerrar búsqueda"
-                    }
-                    onClick={() => {
-                      setSearchOpen(false);
-                      setQuery("");
-                    }}
-                  >
-                    <Icon name="close" size={18} />
-                  </button>
-                </label>
-              )}
-              {loading && (
-                <div
-                  className="catalog-loading"
-                  role="status"
-                  aria-label="Cargando nuestro catálogo"
-                >
-                  <span className="sr-only">Cargando nuestro catálogo…</span>
-                  {[0, 1, 2, 3].map((item) => (
-                    <div
-                      key={item}
-                      className="catalog-skeleton"
-                      aria-hidden="true"
-                    >
-                      <div />
-                      <span />
-                      <span />
-                    </div>
-                  ))}
-                </div>
-              )}
-              {catalogError && (
-                <div role="alert" className="catalog-unavailable">
-                  <h3>El catálogo no está disponible en este momento</h3>
-                  <p>
-                    Puedes intentar de nuevo o contarnos qué te gustaría
-                    preparar para tu celebración.
-                  </p>
-                  <div>
-                    <button
-                      className="button button-outline"
-                      onClick={() => window.location.reload()}
-                    >
-                      Volver a intentar
-                    </button>
-                    <button
-                      className="text-button"
-                      onClick={() => setCustomOpen(true)}
-                    >
-                      Solicitar una torta personalizada →
-                    </button>
-                  </div>
-                </div>
-              )}
-              <div className="product-grid">
-                {featured.map((product) => (
-                  <article className="product-card" key={product.id}>
-                    <button
-                      className="product-image-button"
-                      onClick={() => setSelected(product)}
-                      aria-label={`Ver ${product.name}`}
-                    >
-                      <span
-                        role="img"
-                        aria-label={product.name}
-                        className={`product-photo product-photo-${product.photo}`}
-                        style={
-                          product.image_url
-                            ? {
-                                backgroundImage: `url("${assetUrl(product.image_url)}")`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                              }
-                            : undefined
-                        }
-                      />
-                      <span className="photo-label">Imagen referencial</span>
-                    </button>
-                    <div className="product-info">
-                      <p className="product-category">{product.category}</p>
-                      <h3>{product.name}</h3>
-                      <p className="product-price">
-                        {money(product.price)} <span>referencial</span>
-                      </p>
-                      <button
-                        className="button product-button"
-                        onClick={() => setSelected(product)}
-                      >
-                        <Icon name="bag" size={16} /> Ver detalles
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-              {!loading && !catalogError && shown.length === 0 && (
-                <div className="empty-state">
-                  <h3>No encontramos ese antojo</h3>
-                  <p>
-                    Prueba con otro nombre o consulta una creación
-                    personalizada.
-                  </p>
-                  <button
-                    className="text-button"
-                    onClick={() => {
-                      setQuery("");
-                      setCategory("Todas");
-                    }}
-                  >
-                    Mostrar todos los productos <Icon name="arrow" size={18} />
-                  </button>
-                </div>
-              )}
-              <p className="sample-note">
-                {demoCatalog
-                  ? "Catálogo inicial de muestra. Imágenes y precios referenciales; confirma "
-                  : "Consulta "}
-                ingredientes, cantidades y disponibilidad antes de realizar un
-                pedido.
-              </p>
-            </section>
-          )}
 
           {(page === "bocaditos" || page === "arma-tu-mesa") && (
             <SnackCatalog
@@ -783,39 +487,6 @@ function App() {
               >
                 <Icon name="edit" size={18} /> Crear mi solicitud
               </button>
-            </section>
-          )}
-          {page === "inicio" && (
-            <section className="home-story">
-              <div>
-                <p className="eyebrow">HECHO EN DELYJHOS</p>
-                <h2>
-                  De nuestra pastelería
-                  <br />a tu celebración.
-                </h2>
-                <p>
-                  Conoce nuestras tortas personalizadas y encuentra una idea
-                  para ese día especial.
-                </p>
-                <a className="text-button" href="#/tortas">
-                  Explorar nuestras tortas <Icon name="arrow" size={18} />
-                </a>
-              </div>
-              <div className="home-preview">
-                {[1, 4, 6].map((n) => (
-                  <a
-                    key={n}
-                    href="#/tortas"
-                    aria-label="Ver tortas de DelyJhos"
-                  >
-                    <img
-                      src={`/media/works/work-0${n}/poster.webp`}
-                      alt="Torta personalizada de DelyJhos"
-                      loading="lazy"
-                    />
-                  </a>
-                ))}
-              </div>
             </section>
           )}
         </div>
