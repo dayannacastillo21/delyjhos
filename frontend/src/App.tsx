@@ -11,6 +11,7 @@ import SnackCatalog from "./SnackCatalog";
 import WorksGallery from "./WorksGallery";
 import type { Work } from "./workTypes";
 import "./Storefront.css";
+import AboutPage from "./AboutPage";
 
 const pages = [
   "inicio",
@@ -751,31 +752,7 @@ function App() {
               }}
             />
           )}
-          {page === "nosotros" && (
-            <section className="about-section" id="nosotros">
-              <div>
-                <span className="eyebrow">NUESTRA ESENCIA</span>
-                <h2>
-                  Hecho en familia,
-                  <br />
-                  <em>para tus mejores momentos.</em>
-                </h2>
-              </div>
-              <div>
-                <p>
-                  En DelyJhos nos encanta ser parte de tus celebraciones.
-                  Preparamos tortas y detalles personalizados con dedicación,
-                  desde la idea inicial hasta la decoración final.
-                </p>
-                <button
-                  className="text-button"
-                  onClick={() => setCustomOpen(true)}
-                >
-                  Cuéntanos qué estás imaginando <Icon name="arrow" size={18} />
-                </button>
-              </div>
-            </section>
-          )}
+          {page === "nosotros" && (<AboutPage onRequestQuote={() => setCustomOpen(true)} />)}
           {page === "contacto" && (
             <section className="contact-section" id="contacto">
               <Icon name="heart" size={32} />
