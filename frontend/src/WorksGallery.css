@@ -208,3 +208,16 @@
     padding: 20px;
   }
 }
+
+/* The cake catalog opens actual photographs; videos stay available in details. */
+.storefront .real-cake-catalog .work-poster > img {
+  aspect-ratio: 4 / 5;
+  height: 310px;
+  max-height: none;
+  object-fit: contain;
+  background: #f7eef1;
+}
+.storefront .real-cake-catalog .search-field { margin-top: 26px; }
+@media (max-width: 600px) {
+  .storefront .real-cake-catalog .work-poster > img { height: 280px; }
+}

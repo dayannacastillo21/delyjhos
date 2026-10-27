@@ -19,7 +19,7 @@ test("storefront navigation opens separate views and supports history and refres
     page.getByRole("heading", { name: "Nuestras tortas" }),
   ).toBeVisible();
   await expect(page.locator("#inicio")).toHaveCount(0);
-  await expect(page.locator(".product-card")).toHaveCount(1);
+  await expect(page.locator(".work-card")).toHaveCount(6);
   await page.reload();
   await expect(
     page.getByRole("heading", { name: "Nuestras tortas" }),
@@ -89,8 +89,7 @@ test("cake detail has its own address and carries the reference into a quote", a
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/#/tortas");
-  await page.getByRole("button", { name: "Ver detalles", exact: true }).click();
+  await page.goto("/#/tortas/1");
   await expect(page).toHaveURL(/#\/tortas\/1$/);
   await expect(page.locator(".cake-detail")).toBeVisible();
   await expect(page.locator(".product-grid")).toHaveCount(0);

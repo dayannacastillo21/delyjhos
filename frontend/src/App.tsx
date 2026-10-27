@@ -568,7 +568,7 @@ function App() {
             </section>
           )}
 
-          {(page === "inicio" || (page === "tortas" && !productId)) && (
+          {page === "inicio" && (
             <section id="productos" className="products-section">
               <div className="section-heading">
                 <div>
@@ -576,9 +576,7 @@ function App() {
                     UN ANTOJO PARA CADA OCASIÓN
                   </p>
                   <h2>
-                    {page === "tortas"
-                      ? "Nuestras tortas"
-                      : "Nuestros favoritos"}
+                    Nuestros favoritos
                   </h2>
                   <p>Algunas de nuestras delicias más solicitadas.</p>
                 </div>
@@ -593,7 +591,7 @@ function App() {
                   Ver todo <Icon name="arrow" size={18} />
                 </button>
               </div>
-              {(searchOpen || page === "tortas") && (
+              {searchOpen && (
                 <label className="search-field">
                   <Icon name="search" />
                   <input
@@ -606,7 +604,7 @@ function App() {
                   <button
                     className="icon-button"
                     aria-label={
-                      page === "tortas" ? "Limpiar búsqueda" : "Cerrar búsqueda"
+                      "Cerrar búsqueda"
                     }
                     onClick={() => {
                       setSearchOpen(false);
@@ -661,7 +659,7 @@ function App() {
                 </div>
               )}
               <div className="product-grid">
-                {(page === "inicio" ? featured : shown).map((product) => (
+                {featured.map((product) => (
                   <article className="product-card" key={product.id}>
                     <button
                       className="product-image-button"
@@ -743,6 +741,12 @@ function App() {
               </p>
               <CustomQuote referenceWork={null} />
             </section>
+          )}
+          {page === "tortas" && !productId && (
+            <WorksGallery view="cakes" onQuote={(work) => {
+              setReferenceWork(work);
+              setCustomOpen(true);
+            }} />
           )}
           {page === "nuestros-trabajos" && (
             <WorksGallery

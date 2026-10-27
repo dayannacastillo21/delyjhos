@@ -5,9 +5,13 @@ import "./WorksGallery.css";
 
 export default function WorksGallery({
   onQuote,
+  view = "works",
 }: {
+  view?: "works" | "cakes";
   onQuote: (work: Work) => void;
 }) {
+  const isCakeCatalog = view === "cakes";
+  const [query, setQuery] = useState("");
   const [works, setWorks] = useState<Work[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -50,21 +54,20 @@ export default function WorksGallery({
     setSelected(work);
   }
   const shown = works.filter(
-    (w) => occasion === "Todas" || w.occasion === occasion,
+    (w) => (occasion === "Todas" || w.occasion === occasion) && `${w.title} ${w.description}`.toLocaleLowerCase("es").includes(query.toLocaleLowerCase("es").trim()),
   );
   return (
     <section
-      className="works-section"
-      id="nuestros-trabajos"
+      className={`works-section ${isCakeCatalog ? "real-cake-catalog" : ""}`}
+      id={isCakeCatalog ? "tortas" : "nuestros-trabajos"}
       aria-labelledby="works-heading"
     >
       <div className="section-heading">
         <div>
           <p className="eyebrow">CREACIONES DE NUESTRA FAMILIA</p>
-          <h2 id="works-heading">Momentos que endulzamos</h2>
+          <h2 id="works-heading">{isCakeCatalog ? "Nuestras tortas" : "Momentos que endulzamos"}</h2>
           <p>
-            Trabajos reales de DelyJhos. Encuentra una idea para tu próxima
-            celebración.
+            {isCakeCatalog ? "Tortas hechas por DelyJhos. Elige una creación como referencia y cuéntanos cómo la imaginas para tu celebración." : "Trabajos reales de DelyJhos. Encuentra una idea para tu próxima celebración."}
           </p>
         </div>
         <span className="works-caption">
@@ -79,6 +82,12 @@ export default function WorksGallery({
       )}
       {!loading && !error && works.length === 0 && (
         <p>Estamos preparando nuevas historias para compartir contigo.</p>
+      )}
+      {isCakeCatalog && works.length > 0 && (
+        <label className="search-field">
+          <span className="sr-only">Buscar nuestras tortas</span>
+          <input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Buscar una temática, un color o una ocasión…" />
+        </label>
       )}
       {works.length > 0 && (
         <div
@@ -105,8 +114,8 @@ export default function WorksGallery({
           <article key={work.id} className="work-card">
             <button
               className="work-poster"
-              onClick={() => open(work, true)}
-              aria-label={`Ver video de ${work.title}`}
+              onClick={() => open(work, !isCakeCatalog)}
+              aria-label={`${isCakeCatalog ? "Ver fotos de" : "Ver video de"} ${work.title}`}
             >
               <img
                 src={assetUrl(work.poster_url)}
@@ -117,11 +126,11 @@ export default function WorksGallery({
                 decoding="async"
               />
               <span className="work-play">
-                <span aria-hidden="true">▶</span> Ver video
+                <span aria-hidden="true">{isCakeCatalog ? "↗" : "▶"}</span> {isCakeCatalog ? "Ver fotos" : "Ver video"}
               </span>
-              <span className="work-duration">
+              {!isCakeCatalog && <span className="work-duration">
                 {Math.ceil(Number(work.duration))} s
-              </span>
+              </span>}
             </button>
             <div className="work-body">
               <p className="product-category">{work.occasion}</p>
@@ -140,6 +149,9 @@ export default function WorksGallery({
           </article>
         ))}
       </div>
+      {isCakeCatalog && !loading && !error && works.length > 0 && shown.length === 0 && (
+        <div className="empty-state"><h3>No encontramos esa torta</h3><p>Prueba otra temática o revisa todas nuestras creaciones.</p><button className="text-button" onClick={() => { setQuery(""); setOccasion("Todas"); }}>Mostrar todas las tortas</button></div>
+      )}
       <dialog
         ref={dialog}
         className="modal work-dialog"
