@@ -20,7 +20,7 @@ La contraseña de PostgreSQL solo existe en el backend. La sesión administrativ
 | Área | Funcionalidad |
 | --- | --- |
 | Página pública | Diseño adaptable, catálogo desde la API, categorías, búsqueda, detalles y galería |
-| Bocaditos | 31 productos en borrador, presentaciones de 25/50/100, precios actuales confirmables, paquetes configurables y guía opcional por invitados |
+| Bocaditos | 31 bocaditos publicados con foto, 93 precios del catálogo autorizados y editables, presentaciones de 25/50/100, paquetes configurables y guía opcional por invitados |
 | Mesas | Propuestas con seguimiento privado, resumen para WhatsApp, revisión de precios y conversión a pedido, producción y entrega |
 | Trabajos reales | Seis videos propios con doce fotos WebP, visor bajo demanda y cotización «Quiero una torta similar» con referencia conservada |
 | Clientes | Solicitud de pedidos con cantidades y fecha, cotización de tortas con imagen, seguimiento privado |
@@ -164,3 +164,5 @@ Los archivos Docker y `compose.yaml` están preparados, pero requieren Docker y 
 Antes del uso comercial deben validarse precios, recetas, cantidades y fotografías con el negocio, configurar HTTPS y almacenamiento persistente para las imágenes, probar copias de seguridad y revisar los permisos de la cuenta de PostgreSQL. No hay pagos con tarjeta online, facturación tributaria, correo transaccional ni reembolsos automáticos. Las predicciones avanzadas requieren datos y evaluación posterior.
 
 Más detalles en [operación](docs/operations.md), [arquitectura](docs/architecture.md) y [despliegue](docs/deployment.md).
+
+La publicación de fotos y precios del catálogo, y su edición conjunta en administración, se documenta en [Bocaditos publicados](docs/bocaditos-publicados.md).

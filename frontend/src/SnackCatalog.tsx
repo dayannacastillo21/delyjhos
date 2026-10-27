@@ -320,6 +320,20 @@ export default function SnackCatalog({
   const detailContent = selected && (
     <>
       {photo(selected)}
+      {selected.image_url ===
+        "/media/snacks/mini-alfajores-de-chocolate.webp" && (
+        <p className="snack-photo-credit">
+          Foto referencial:{" "}
+          <a
+            href="https://www.pexels.com/photo/delicious-alfajores-being-dusted-with-cocoa-30699392/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Polat Eyyüp Albayrak / Pexels
+          </a>
+          . La presentación final se coordina con DelyJhos.
+        </p>
+      )}
       <p>
         {selected.description ||
           "Cuéntanos tu ocasión y coordinaremos los detalles de esta especialidad contigo."}

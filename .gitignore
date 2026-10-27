@@ -28,3 +28,6 @@ backend/.initial-admin.txt
 *.db
 playwright-report/
 test-results/
+
+# Temporary catalog extraction previews
+tmp/pdfs/snacks-review/

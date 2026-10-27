@@ -1618,3 +1618,24 @@
     min-height: 2.9em;
   }
 }
+.storefront .snack-image {
+  position: relative;
+}
+.storefront .snack-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+.storefront img[src="/media/snacks/mini-alfajores-de-chocolate.webp"] {
+  object-position: center 88%;
+}
+.storefront .snack-photo-credit {
+  font-size: 11px !important;
+  color: #795a66;
+  line-height: 1.6;
+}
+.storefront .snack-photo-credit a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

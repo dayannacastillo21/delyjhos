@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../api";
+import { api, assetUrl } from "../api";
 import type { RecordData } from "../api";
 import type { Module } from "./modules";
 import { statuses } from "./modules";
@@ -47,6 +47,20 @@ export default function RecordForm({
   );
   const [options, setOptions] = useState<Record<string, RecordData[]>>({});
   const [error, setError] = useState("");
+  const [snackPrices, setSnackPrices] = useState<RecordData[] | null>(null);
+  useEffect(() => {
+    if (module.key !== "snacks" || !record) return;
+    const controller = new AbortController();
+    api<{ presentations: RecordData[] }>(
+      `/api/v1/admin/snacks/${record.id}/catalog`,
+      { signal: controller.signal },
+    )
+      .then((data) => setSnackPrices(data.presentations))
+      .catch((err) => {
+        if (!controller.signal.aborted) setError(err.message);
+      });
+    return () => controller.abort();
+  }, [module.key, record]);
   const [busy, setBusy] = useState(false);
   const lineResource =
     module.lines === "snack-packages"
@@ -82,6 +96,10 @@ export default function RecordForm({
     setBusy(true);
     setError("");
     try {
+      if (module.key === "snacks" && record && snackPrices === null)
+        throw new Error(
+          "Espera a que se carguen los precios antes de guardar.",
+        );
       const data: Record<string, unknown> = {};
       for (const f of module.fields) {
         if (module.key === "users" && record && f.key === "email") continue;
@@ -137,6 +155,12 @@ export default function RecordForm({
                     unit_cost: String(l.unit_cost),
                   },
         );
+      if (module.key === "snacks" && record && snackPrices?.length)
+        data.presentations = snackPrices.map((price) => ({
+          id: price.id,
+          current_price: String(price.current_price ?? "").trim() || null,
+          price_confirmed: Boolean(price.price_confirmed),
+        }));
       if (module.key === "orders") data.request_key = crypto.randomUUID();
       await onSave(data);
     } catch (e) {
@@ -154,6 +178,61 @@ export default function RecordForm({
         <button onClick={onCancel}>Cerrar ✕</button>
       </div>
       <form onSubmit={submit}>
+        {module.key === "snacks" && record && (
+          <fieldset className="snack-price-editor">
+            <legend>Precios por presentación</legend>
+            <p>
+              Modifica aquí lo que cobrarás por 25, 50 y 100 unidades. Se
+              guardará junto con el producto.
+            </p>
+            {snackPrices === null ? (
+              <p role="status">Cargando precios…</p>
+            ) : snackPrices.length ? (
+              snackPrices.map((price) => (
+                <div className="snack-price-row" key={price.id}>
+                  <strong>{String(price.units)} unidades</strong>
+                  <label>
+                    Precio {String(price.units)} unidades (S/)
+                    <input
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      value={String(price.current_price ?? "")}
+                      onChange={(e) =>
+                        setSnackPrices((rows) =>
+                          rows!.map((row) =>
+                            row.id === price.id
+                              ? { ...row, current_price: e.target.value }
+                              : row,
+                          ),
+                        )
+                      }
+                    />
+                  </label>
+                  <label className="price-visible">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(price.price_confirmed)}
+                      onChange={(e) =>
+                        setSnackPrices((rows) =>
+                          rows!.map((row) =>
+                            row.id === price.id
+                              ? { ...row, price_confirmed: e.target.checked }
+                              : row,
+                          ),
+                        )
+                      }
+                    />
+                    Publicar precio de {String(price.units)} unidades
+                  </label>
+                </div>
+              ))
+            ) : (
+              <p>Añade las presentaciones desde “Presentaciones y precios”.</p>
+            )}
+          </fieldset>
+        )}
+
         <div className="admin-fields">
           {module.fields
             .filter(
@@ -207,6 +286,13 @@ export default function RecordForm({
                       value={String(values[f.key] ?? "")}
                       onChange={(e) => update(f.key, e.target.value)}
                     />
+                    {f.type === "image" && Boolean(values[f.key]) && (
+                      <img
+                        className="admin-image-preview"
+                        src={assetUrl(String(values[f.key]))}
+                        alt="Fotografía actual del producto"
+                      />
+                    )}
                     <input
                       type="file"
                       accept={

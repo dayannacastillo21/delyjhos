@@ -1,3 +1,4 @@
+import re
 from datetime import date
 from decimal import Decimal
 from typing import Literal
@@ -19,8 +20,8 @@ class SnackWrite(Input):
     @field_validator("image_url")
     @classmethod
     def local_image(cls, value):
-        if value and not value.startswith("/uploads/"):
-            raise ValueError("Carga una fotografía verificada")
+        if value and (".." in value or not (value.startswith("/uploads/") or re.fullmatch(r"/media/snacks/[a-z0-9-]+\.webp", value))):
+            raise ValueError("Carga una fotografía o selecciona una imagen del catálogo")
         return value
 
 
@@ -111,4 +112,26 @@ class ConvertSnackQuote(Input):
             raise ValueError(
                 "Cada presentación necesita una línea y un producto de producción distinto"
             )
+        return self
+
+
+class CatalogPrice(Input):
+    id: int = Field(gt=0)
+    current_price: Decimal | None = Field(default=None, gt=0, max_digits=12, decimal_places=2)
+    price_confirmed: bool = False
+
+    @model_validator(mode="after")
+    def confirmed_price(self):
+        if self.price_confirmed and self.current_price is None:
+            raise ValueError("Indica un precio antes de confirmarlo")
+        return self
+
+
+class SnackCatalogWrite(SnackWrite):
+    presentations: list[CatalogPrice] = Field(min_length=1, max_length=3)
+
+    @model_validator(mode="after")
+    def unique_presentations(self):
+        if len({p.id for p in self.presentations}) != len(self.presentations):
+            raise ValueError("No repitas una presentación")
         return self

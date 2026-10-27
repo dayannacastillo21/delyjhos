@@ -818,3 +818,66 @@ td {
   margin-top: 5px;
   flex-shrink: 0;
 }
+.admin-image-preview {
+  width: 160px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e8ccd8;
+  margin: 8px 0;
+}
+.snack-price-editor {
+  border: 1px solid #e6c4d2;
+  background: #fff8fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0 0 24px;
+}
+.snack-price-editor legend {
+  font-weight: 650;
+  color: #8c2e53;
+  padding: 0 8px;
+}
+.snack-price-editor > p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #795966;
+  margin: 0 0 16px;
+}
+.snack-price-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid #eed9e2;
+}
+.snack-price-row label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+.snack-price-row input[type="number"] {
+  border: 1px solid #dab6c7;
+  border-radius: 7px;
+  padding: 10px;
+  background: white;
+  width: 100%;
+}
+.snack-price-row .price-visible {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+@media (max-width: 650px) {
+  .snack-price-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .snack-price-row > strong {
+    grid-column: 1 / -1;
+  }
+  .snack-price-editor {
+    padding: 16px;
+  }
+}

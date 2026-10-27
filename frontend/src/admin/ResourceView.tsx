@@ -135,7 +135,7 @@ export default function ResourceView({
           onCancel={() => setForm(undefined)}
           onSave={async (data) => {
             await api(
-              `/api/v1/admin/${module.key}${form ? "/" + form.id : ""}`,
+              `/api/v1/admin/${module.key}${form ? "/" + form.id : ""}${form && module.key === "snacks" && data.presentations ? "/catalog" : ""}`,
               { method: form ? "PUT" : "POST", body: JSON.stringify(data) },
             );
             setForm(undefined);

@@ -1,0 +1,437 @@
+[
+  {
+    "slug": "empanaditas-de-carne",
+    "name": "Empanaditas de carne",
+    "image_url": "/media/snacks/empanaditas-de-carne.webp",
+    "width": 864,
+    "height": 486,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 2,
+      "xref": 444,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "empanaditas-de-pollo",
+    "name": "Empanaditas de pollo",
+    "image_url": "/media/snacks/empanaditas-de-pollo.webp",
+    "width": 380,
+    "height": 235,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 2,
+      "xref": 447,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "empanaditas-mixta-de-jamon-y-queso",
+    "name": "Empanaditas mixta de jamÃ³n y queso",
+    "image_url": "/media/snacks/empanaditas-mixta-de-jamon-y-queso.webp",
+    "width": 380,
+    "height": 235,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 2,
+      "xref": 447,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "petitpan-con-pollo",
+    "name": "Petitpan con pollo",
+    "image_url": "/media/snacks/petitpan-con-pollo.webp",
+    "width": 544,
+    "height": 360,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 3,
+      "xref": 476,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "petitpan-con-pollo-y-durazno",
+    "name": "Petitpan con pollo y durazno",
+    "image_url": "/media/snacks/petitpan-con-pollo-y-durazno.webp",
+    "width": 544,
+    "height": 360,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 3,
+      "xref": 476,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "enrolladitos-de-hotdog",
+    "name": "Enrolladitos de hotdog",
+    "image_url": "/media/snacks/enrolladitos-de-hotdog.webp",
+    "width": 640,
+    "height": 360,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 3,
+      "xref": 479,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-croissant-con-jamon-y-queso",
+    "name": "Mini croissant con jamÃ³n y queso",
+    "image_url": "/media/snacks/mini-croissant-con-jamon-y-queso.webp",
+    "width": 360,
+    "height": 360,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 3,
+      "xref": 484,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-triples-pollo-jamon-y-queso",
+    "name": "Mini triples pollo, jamÃ³n y queso",
+    "image_url": "/media/snacks/mini-triples-pollo-jamon-y-queso.webp",
+    "width": 627,
+    "height": 377,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 4,
+      "xref": 284,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-triple-palta-huevo-y-tomate",
+    "name": "Mini triple palta, huevo y tomate",
+    "image_url": "/media/snacks/mini-triple-palta-huevo-y-tomate.webp",
+    "width": 627,
+    "height": 377,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 4,
+      "xref": 284,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "tequenos-de-hotdog-queso",
+    "name": "TequeÃ±os de hotdog / queso",
+    "image_url": "/media/snacks/tequenos-de-hotdog-queso.webp",
+    "width": 340,
+    "height": 482,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 4,
+      "xref": 527,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "tequenos-mixtos-de-jamon-y-queso-mozarella",
+    "name": "TequeÃ±os mixtos de jamÃ³n y queso mozarella",
+    "image_url": "/media/snacks/tequenos-mixtos-de-jamon-y-queso-mozarella.webp",
+    "width": 340,
+    "height": 482,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 4,
+      "xref": 527,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "brochetas-de-pollo",
+    "name": "Brochetas de pollo",
+    "image_url": "/media/snacks/brochetas-de-pollo.webp",
+    "width": 728,
+    "height": 408,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 5,
+      "xref": 556,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "aliitas-bouchet",
+    "name": "Aliitas bouchet",
+    "image_url": "/media/snacks/aliitas-bouchet.webp",
+    "width": 640,
+    "height": 360,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 5,
+      "xref": 564,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "aliitas-bouchet-con-aji-de-polleria",
+    "name": "Aliitas bouchet con ajÃ­ de pollerÃ­a",
+    "image_url": "/media/snacks/aliitas-bouchet-con-aji-de-polleria.webp",
+    "width": 640,
+    "height": 360,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 5,
+      "xref": 564,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-pizzitas",
+    "name": "Mini pizzitas",
+    "image_url": "/media/snacks/mini-pizzitas.webp",
+    "width": 410,
+    "height": 410,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 5,
+      "xref": 559,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-hamburguesitas",
+    "name": "Mini hamburguesitas",
+    "image_url": "/media/snacks/mini-hamburguesitas.webp",
+    "width": 432,
+    "height": 648,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 6,
+      "xref": 599,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-cheeseburguer",
+    "name": "Mini cheeseburguer",
+    "image_url": "/media/snacks/mini-cheeseburguer.webp",
+    "width": 432,
+    "height": 648,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 6,
+      "xref": 599,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-causitas-de-pollo",
+    "name": "Mini causitas de pollo",
+    "image_url": "/media/snacks/mini-causitas-de-pollo.webp",
+    "width": 448,
+    "height": 308,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 6,
+      "xref": 602,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-causitas",
+    "name": "Mini causitas",
+    "image_url": "/media/snacks/mini-causitas.webp",
+    "width": 332,
+    "height": 339,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 6,
+      "xref": 607,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-alfajores-de-maicena",
+    "name": "Mini alfajores de maicena",
+    "image_url": "/media/snacks/mini-alfajores-de-maicena.webp",
+    "width": 357,
+    "height": 225,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 7,
+      "xref": 347,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-alfajores-de-chocolate",
+    "name": "Mini alfajores de chocolate",
+    "image_url": "/media/snacks/mini-alfajores-de-chocolate.webp",
+    "width": 667,
+    "height": 1000,
+    "source": {
+      "kind": "external",
+      "author": "Polat Eyyüp Albayrak",
+      "url": "https://www.pexels.com/photo/delicious-alfajores-being-dusted-with-cocoa-30699392/",
+      "license": "Pexels License",
+      "license_url": "https://www.pexels.com/license/",
+      "note": "Fotografía externa referencial de alfajores con cacao; no representa producción propia."
+    }
+  },
+  {
+    "slug": "empanaditas-de-boda",
+    "name": "Empanaditas de boda",
+    "image_url": "/media/snacks/empanaditas-de-boda.webp",
+    "width": 368,
+    "height": 654,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 7,
+      "xref": 647,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "niditos-de-amor",
+    "name": "Niditos de amor",
+    "image_url": "/media/snacks/niditos-de-amor.webp",
+    "width": 621,
+    "height": 303,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 7,
+      "xref": 356,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-tartaletas-de-fresa",
+    "name": "Mini tartaletas de fresa",
+    "image_url": "/media/snacks/mini-tartaletas-de-fresa.webp",
+    "width": 474,
+    "height": 264,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 8,
+      "xref": 370,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-tartaletas-de-durazno",
+    "name": "Mini tartaletas de durazno",
+    "image_url": "/media/snacks/mini-tartaletas-de-durazno.webp",
+    "width": 347,
+    "height": 192,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 8,
+      "xref": 369,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "fresas-con-chocolate",
+    "name": "Fresas con chocolate",
+    "image_url": "/media/snacks/fresas-con-chocolate.webp",
+    "width": 480,
+    "height": 360,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 8,
+      "xref": 682,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-brownies",
+    "name": "Mini brownies",
+    "image_url": "/media/snacks/mini-brownies.webp",
+    "width": 384,
+    "height": 349,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 8,
+      "xref": 679,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-pie-de-manzana",
+    "name": "Mini pie de manzana",
+    "image_url": "/media/snacks/mini-pie-de-manzana.webp",
+    "width": 480,
+    "height": 481,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 9,
+      "xref": 719,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "mini-pie-de-limon",
+    "name": "Mini pie de limÃ³n",
+    "image_url": "/media/snacks/mini-pie-de-limon.webp",
+    "width": 472,
+    "height": 315,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 9,
+      "xref": 722,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "trufas-de-chocolate",
+    "name": "Trufas de chocolate",
+    "image_url": "/media/snacks/trufas-de-chocolate.webp",
+    "width": 380,
+    "height": 380,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 9,
+      "xref": 713,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  },
+  {
+    "slug": "trufas-de-oreo",
+    "name": "Trufas de Oreo",
+    "image_url": "/media/snacks/trufas-de-oreo.webp",
+    "width": 720,
+    "height": 376,
+    "source": {
+      "kind": "catalog",
+      "document": "CATALOGO DELYJHOS 2025.pdf",
+      "page": 9,
+      "xref": 716,
+      "note": "Imagen referencial del catálogo; algunas variantes comparten fotografía de su familia."
+    }
+  }
+]

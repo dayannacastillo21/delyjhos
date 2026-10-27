@@ -1,13 +1,14 @@
 from fastapi import APIRouter, HTTPException, Query, Request
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 import secrets
 from app.models import Order
 from app.schemas.business import TrackingInput
 from app.security import DB, Actor, require, digest, public_limit
 from app.models.snacks import Snack, SnackPresentation, SnackQuote, SnackPackage
-from app.schemas.snacks import SnackQuoteWrite, ConvertSnackQuote
+from app.schemas.snacks import SnackQuoteWrite, ConvertSnackQuote, SnackCatalogWrite
 from app.snack_services import convert_snack_quote
-from app.services import business_today
+from app.services import business_today, audit
 
 router = APIRouter(prefix="/api/v1", tags=["Bocaditos"])
 
@@ -181,3 +182,36 @@ def create_snack_quote(data: SnackQuoteWrite, request: Request, db: DB):
         "tracking_token": token,
         "message": "Propuesta recibida. Confirmaremos disponibilidad y precio antes de crear el pedido.",
     }
+
+
+@router.put("/admin/snacks/{id}/catalog")
+def update_catalog_item(id: int, data: SnackCatalogWrite, db: DB, actor: Actor):
+    require(actor, db, "admin", "manager")
+    snack = db.scalar(select(Snack).where(Snack.id == id).with_for_update())
+    if snack is None:
+        raise HTTPException(404, "Bocadito no encontrado")
+    variants = db.scalars(select(SnackPresentation).where(SnackPresentation.snack_id == id).with_for_update()).all()
+    if {v.id for v in variants} != {v.id for v in data.presentations}:
+        raise HTTPException(422, "Las presentaciones deben pertenecer a este bocadito e incluirse completas")
+    for key, value in data.model_dump(exclude={"presentations"}).items():
+        setattr(snack, key, value)
+    by_id = {v.id: v for v in variants}
+    for price in data.presentations:
+        by_id[price.id].current_price = price.current_price
+        by_id[price.id].price_confirmed = price.price_confirmed
+    audit(db, actor, "update_catalog", "snacks", id, "Datos del bocadito y precios actualizados en una transacción")
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(409, "Ese identificador ya existe; usa uno distinto")
+    return {"id": snack.id, "updated_presentations": len(variants)}
+
+
+@router.get("/admin/snacks/{id}/catalog")
+def catalog_editor(id: int, db: DB, actor: Actor):
+    require(actor, db, "admin", "manager")
+    if db.get(Snack, id) is None:
+        raise HTTPException(404, "Bocadito no encontrado")
+    variants = db.scalars(select(SnackPresentation).where(SnackPresentation.snack_id == id).order_by(SnackPresentation.units)).all()
+    return {"presentations": [{"id": row.id, "units": row.units, "current_price": str(row.current_price) if row.current_price is not None else None, "price_confirmed": row.price_confirmed} for row in variants]}

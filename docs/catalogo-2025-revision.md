@@ -91,4 +91,4 @@ La maquetación usa recortes circulares, algunos con partes fuera de página. Pa
 
 Ya están implementados la galería de seis videos reales, la cotización de torta similar, la guía configurable por invitados, los paquetes, el resumen para WhatsApp y la conversión de mesas aceptadas a pedidos. Ver [flujo completo de mesas de bocaditos](mesas-de-bocaditos.md).
 
-Quedan por aportar o verificar los datos comerciales: fotos por producto, precios actuales, disponibilidad, recetas de cada presentación, paquetes del negocio y su guía de cantidades. Los precios históricos continúan separados de los actuales; los productos siguen en borrador hasta su revisión comercial.
+Actualización: por instrucción expresa de la propietaria, los 31 bocaditos se publicaron con fotografías del catálogo y una referencia externa, y los 93 precios de 2025 se habilitaron como precios actuales autorizados. Los históricos se conservan. Cada producto, foto y precio se puede editar desde administración. Disponibilidad, recetas y paquetes siguen siendo datos independientes. Ver [bocaditos publicados y edición administrativa](bocaditos-publicados.md).
