@@ -190,16 +190,30 @@ def update_catalog_item(id: int, data: SnackCatalogWrite, db: DB, actor: Actor):
     snack = db.scalar(select(Snack).where(Snack.id == id).with_for_update())
     if snack is None:
         raise HTTPException(404, "Bocadito no encontrado")
-    variants = db.scalars(select(SnackPresentation).where(SnackPresentation.snack_id == id).with_for_update()).all()
+    variants = db.scalars(
+        select(SnackPresentation)
+        .where(SnackPresentation.snack_id == id)
+        .with_for_update()
+    ).all()
     if {v.id for v in variants} != {v.id for v in data.presentations}:
-        raise HTTPException(422, "Las presentaciones deben pertenecer a este bocadito e incluirse completas")
+        raise HTTPException(
+            422,
+            "Las presentaciones deben pertenecer a este bocadito e incluirse completas",
+        )
     for key, value in data.model_dump(exclude={"presentations"}).items():
         setattr(snack, key, value)
     by_id = {v.id: v for v in variants}
     for price in data.presentations:
         by_id[price.id].current_price = price.current_price
         by_id[price.id].price_confirmed = price.price_confirmed
-    audit(db, actor, "update_catalog", "snacks", id, "Datos del bocadito y precios actualizados en una transacción")
+    audit(
+        db,
+        actor,
+        "update_catalog",
+        "snacks",
+        id,
+        "Datos del bocadito y precios actualizados en una transacción",
+    )
     try:
         db.commit()
     except IntegrityError:
@@ -213,5 +227,21 @@ def catalog_editor(id: int, db: DB, actor: Actor):
     require(actor, db, "admin", "manager")
     if db.get(Snack, id) is None:
         raise HTTPException(404, "Bocadito no encontrado")
-    variants = db.scalars(select(SnackPresentation).where(SnackPresentation.snack_id == id).order_by(SnackPresentation.units)).all()
-    return {"presentations": [{"id": row.id, "units": row.units, "current_price": str(row.current_price) if row.current_price is not None else None, "price_confirmed": row.price_confirmed} for row in variants]}
+    variants = db.scalars(
+        select(SnackPresentation)
+        .where(SnackPresentation.snack_id == id)
+        .order_by(SnackPresentation.units)
+    ).all()
+    return {
+        "presentations": [
+            {
+                "id": row.id,
+                "units": row.units,
+                "current_price": (
+                    str(row.current_price) if row.current_price is not None else None
+                ),
+                "price_confirmed": row.price_confirmed,
+            }
+            for row in variants
+        ]
+    }

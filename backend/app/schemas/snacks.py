@@ -20,8 +20,16 @@ class SnackWrite(Input):
     @field_validator("image_url")
     @classmethod
     def local_image(cls, value):
-        if value and (".." in value or not (value.startswith("/uploads/") or re.fullmatch(r"/media/snacks/[a-z0-9-]+\.webp", value))):
-            raise ValueError("Carga una fotografía o selecciona una imagen del catálogo")
+        if value and (
+            ".." in value
+            or not (
+                value.startswith("/uploads/")
+                or re.fullmatch(r"/media/snacks/[a-z0-9-]+\.webp", value)
+            )
+        ):
+            raise ValueError(
+                "Carga una fotografía o selecciona una imagen del catálogo"
+            )
         return value
 
 
@@ -117,7 +125,9 @@ class ConvertSnackQuote(Input):
 
 class CatalogPrice(Input):
     id: int = Field(gt=0)
-    current_price: Decimal | None = Field(default=None, gt=0, max_digits=12, decimal_places=2)
+    current_price: Decimal | None = Field(
+        default=None, gt=0, max_digits=12, decimal_places=2
+    )
     price_confirmed: bool = False
 
     @model_validator(mode="after")
