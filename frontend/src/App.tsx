@@ -5,13 +5,13 @@ import { api, assetUrl } from "./api";
 import { Checkout, CustomQuote, Tracking } from "./CustomerForms";
 import type { Product } from "./catalog";
 import "./App.css";
-import "./HeaderResponsive.css";
 import ProductGallery from "./ProductGallery";
 import SnackCatalog from "./SnackCatalog";
 import WorksGallery from "./WorksGallery";
 import type { Work } from "./workTypes";
 import "./Storefront.css";
 import AboutPage from "./AboutPage";
+import "./HeaderFooter.css";
 
 const pages = [
   "inicio",
@@ -180,6 +180,7 @@ function App() {
   const [category, setCategory] = useState("Todas");
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchRequest, setSearchRequest] = useState(0);
 
   const [bag, setBag] = useState<number[]>([]);
   const [bagOpen, setBagOpen] = useState(false);
@@ -308,6 +309,7 @@ function App() {
         <div className="header-inner">
           <a className="brand" href="#/" aria-label="DelyJhos, inicio">
             <span className="logo-picture" />
+            <span className="header-brand-copy"><strong>DelyJhos</strong><small>PASTELERÍA FINA</small></span>
           </a>
           <button
             className="icon-button mobile-toggle"
@@ -316,7 +318,8 @@ function App() {
             aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-controls="store-navigation"
           >
-            <Icon name="menu" />
+            <Icon name={menuOpen ? "close" : "menu"} />
+            <span className="menu-button-label">Menú</span>
           </button>
           <nav
             className={menuOpen ? "navigation is-open" : "navigation"}
@@ -352,10 +355,10 @@ function App() {
               className="icon-button"
               onClick={() => {
                 navigate("tortas");
-                setSearchOpen(!searchOpen);
+                setSearchOpen(true);
+                setSearchRequest(value => value + 1);
               }}
               aria-label="Buscar productos"
-              aria-expanded={searchOpen}
             >
               <Icon name="search" />
             </button>
@@ -745,7 +748,7 @@ function App() {
             </section>
           )}
           {page === "tortas" && !productId && (
-            <WorksGallery view="cakes" onQuote={(work) => {
+            <WorksGallery view="cakes" focusSearch={searchRequest} onQuote={(work) => {
               setReferenceWork(work);
               setCustomOpen(true);
             }} />
@@ -818,9 +821,14 @@ function App() {
         </div>
       </main>
       <footer className="store-footer">
+        <div className="footer-invitation">
+          <div><span className="footer-eyebrow">HAGAMOS ALGO ESPECIAL</span><h2>Tu próxima celebración<br /><em>empieza con una idea.</em></h2></div>
+          <div><p>Una torta a tu medida o bocaditos para compartir.<br />Cuéntanos qué tienes en mente.</p><a className="button button-primary" href="#/personaliza">Personaliza tu torta <Icon name="arrow" size={18} /></a></div>
+        </div>
         <div className="footer-intro">
-          <a className="footer-brand" href="#/">
-            DelyJhos <span>Pastelería fina</span>
+          <a className="footer-brand" href="#/" aria-label="DelyJhos, volver al inicio">
+            <span className="footer-logo" aria-hidden="true" />
+            <span className="footer-wordmark">DelyJhos <small>PASTELERÍA FINA</small></span>
           </a>
           <p>
             Endulzamos tus momentos.
@@ -830,13 +838,13 @@ function App() {
           <small>Hecho con cariño, desde la primera idea.</small>
         </div>
         <nav aria-label="Explorar DelyJhos">
-          <strong>Descubre</strong>
+          <strong>Explora</strong>
           <a href="#/tortas">Nuestras tortas</a>
           <a href="#/bocaditos">Bocaditos dulces y salados</a>
           <a href="#/nosotros">Conoce DelyJhos</a>
         </nav>
-        <div className="footer-service">
-          <strong>Tu celebración</strong>
+        <nav className="footer-service" aria-label="Pedidos y atención">
+          <strong>Te acompañamos</strong>
           <a href="#/personaliza">Personaliza tu torta</a>
           <a href="#/arma-tu-mesa">Arma tu mesa de bocaditos</a>
           <button className="text-button" onClick={() => setTrackingOpen(true)}>
@@ -851,9 +859,10 @@ function App() {
               Escríbenos por WhatsApp ↗
             </a>
           )}
-        </div>
+          <a href="#/contacto">Contacto y consultas <Icon name="arrow" size={14} /></a>
+        </nav>
         <div className="footer-bottom">
-          <span>DelyJhos · Pastelería fina</span>
+          <span>© {new Date().getFullYear()} DelyJhos · Pastelería familiar</span>
           <a href="#/contacto">Contacto</a>
           <a href="#/admin">Administración</a>
         </div>

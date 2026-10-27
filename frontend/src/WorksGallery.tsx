@@ -6,11 +6,14 @@ import "./WorksGallery.css";
 export default function WorksGallery({
   onQuote,
   view = "works",
+  focusSearch = 0,
 }: {
   view?: "works" | "cakes";
+  focusSearch?: number;
   onQuote: (work: Work) => void;
 }) {
   const isCakeCatalog = view === "cakes";
+  const searchInput = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [works, setWorks] = useState<Work[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +51,11 @@ export default function WorksGallery({
     if (selected) dialog.current?.showModal();
     else dialog.current?.close();
   }, [selected]);
+  useEffect(() => {
+    if (focusSearch && isCakeCatalog && works.length > 0) {
+      searchInput.current?.focus();
+    }
+  }, [focusSearch, isCakeCatalog, works.length]);
   function open(work: Work, showVideo: boolean) {
     setImage(showVideo ? null : work.poster_url);
     setPlayError(false);
@@ -86,7 +94,7 @@ export default function WorksGallery({
       {isCakeCatalog && works.length > 0 && (
         <label className="search-field">
           <span className="sr-only">Buscar nuestras tortas</span>
-          <input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Buscar una temática, un color o una ocasión…" />
+          <input ref={searchInput} type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Buscar una temática, un color o una ocasión…" />
         </label>
       )}
       {works.length > 0 && (
