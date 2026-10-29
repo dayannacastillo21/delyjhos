@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./design/tokens.css";
 :root {
   font-family: "Segoe UI", Arial, sans-serif;
   color: #292128;
@@ -60,3 +61,5 @@ img {
 ::selection {
   background: #f9c6dd;
 }
+.loading-page { min-height: 70dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: var(--dj-paper); color: var(--dj-muted); font: 14px var(--dj-font-body); }
+.loading-mark { display: grid; place-items: center; width: 65px; height: 65px; border: 1px solid var(--dj-border); border-radius: 15px; background: white; color: var(--dj-brand); font: italic 36px var(--dj-font-display); }

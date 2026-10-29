@@ -1,3 +1,4 @@
+import WorkspaceLoading from "../design/WorkspaceLoading";
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import type { RecordData, SessionUser } from "../api";
@@ -24,7 +25,7 @@ export default function Dashboard({ user }: { user: SessionUser }) {
         {error}
       </p>
     );
-  if (!data) return <p>Cargando el resumen del negocio…</p>;
+  if (!data) return <WorkspaceLoading label="Cargando el resumen del negocio…" />;
   const days = (data.daily_sales || []) as { date: string; amount: string }[];
   const maximum = Math.max(1, ...days.map((d) => Number(d.amount)));
   const upcoming = (data.upcoming || []) as RecordData[];

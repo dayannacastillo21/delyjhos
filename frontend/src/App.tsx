@@ -13,6 +13,7 @@ import "./Storefront.css";
 import AboutPage from "./AboutPage";
 import "./HeaderFooter.css";
 import HomePage from "./HomePage";
+import "./design/StorefrontTheme.css";
 
 const pages = [
   "inicio",
@@ -441,14 +442,9 @@ function App() {
             />
           )}
           {page === "personaliza" && (
-            <section className="standalone-form">
-              <p className="eyebrow">A TU MEDIDA</p>
-              <h1>Tu idea, nuestra próxima torta.</h1>
-              <p>
-                Cuéntanos la ocasión, la fecha y los detalles que te gustaría
-                incluir.
-              </p>
-              <CustomQuote referenceWork={null} />
+            <section className="standalone-form commission-page">
+              <div className="commission-intro"><p className="eyebrow">DISEÑADA ALREDEDOR DE TI</p><h1>Tu idea,<br /><em>nuestra próxima torta.</em></h1><p>Cuéntanos qué hace especial tu celebración. Revisaremos tu idea, la fecha y las porciones para preparar una propuesta contigo.</p><ol><li><span>01</span>Comparte tu inspiración</li><li><span>02</span>Coordinamos los detalles</li><li><span>03</span>Recibe una cotización</li></ol><figure><img src="/media/works/work-02/detail-1.webp" alt="Detalle de una torta real DelyJhos en blanco y dorado" loading="lazy" width="576" height="1024" /><figcaption>Hecha en DelyJhos. Pensada para tu ocasión.</figcaption></figure></div>
+              <div className="commission-form-panel"><p className="commission-form-title">Empecemos por tu celebración</p><p className="dialog-note">Enviar esta solicitud no confirma un pedido ni un precio. Lo coordinamos contigo.</p><CustomQuote referenceWork={null} /></div>
             </section>
           )}
           {page === "tortas" && !productId && (
@@ -460,33 +456,8 @@ function App() {
           {page === "nosotros" && (<AboutPage onRequestQuote={() => setCustomOpen(true)} />)}
           {page === "contacto" && (
             <section className="contact-section" id="contacto">
-              <Icon name="heart" size={32} />
-              <h2>Tu próxima celebración empieza con una idea.</h2>
-              <p>
-                Cuéntanos la fecha, el número de invitados y lo que tienes en
-                mente. Revisaremos los detalles contigo antes de confirmar.
-              </p>
-              {whatsapp && (
-                <a
-                  className="contact-whatsapp"
-                  href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="chat" size={25} />
-                  <span>
-                    Conversemos por WhatsApp
-                    <small>Atención y coordinación de tu celebración</small>
-                  </span>
-                  <Icon name="arrow" size={18} />
-                </a>
-              )}
-              <button
-                className="button button-primary"
-                onClick={() => setCustomOpen(true)}
-              >
-                <Icon name="edit" size={18} /> Crear mi solicitud
-              </button>
+              <div className="contact-intro"><p className="eyebrow">ESTAMOS PARA ESCUCHARTE</p><h1>Conversemos de<br /><em>tu próxima celebración.</em></h1><p>Una torta, una mesa de bocaditos o una idea que todavía estás imaginando. Cuéntanos qué necesitas y coordinamos los detalles.</p><a href="#/nosotros" className="text-button">Conoce nuestra pastelería <Icon name="arrow" size={18} /></a></div>
+              <div className="contact-options">{whatsapp && <a className="contact-whatsapp" href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={25} /><span>Conversemos por WhatsApp<small>Atención y coordinación de tu celebración</small></span><Icon name="arrow" size={18} /></a>}<article className="contact-request"><span className="contact-option-icon"><Icon name="edit" size={24} /></span><h2>Tu idea, con todos los detalles</h2><p>Comparte la fecha, las porciones y tu inspiración. Así podemos conocer mejor lo que buscas.</p><button className="button button-primary" onClick={() => setCustomOpen(true)}>Crear mi solicitud <Icon name="arrow" size={18} /></button></article><p className="contact-delivery-note">La disponibilidad y la entrega se coordinan al confirmar la propuesta.</p></div>
             </section>
           )}
         </div>

@@ -1,3 +1,4 @@
+import WorkspaceLoading from "../design/WorkspaceLoading";
 import { useCallback, useEffect, useState } from "react";
 import { api, assetUrl } from "../api";
 import type { RecordData, SessionUser } from "../api";
@@ -154,7 +155,7 @@ export default function ResourceView({
           <button onClick={() => void reload()}>Actualizar</button>
         </div>
         {busy ? (
-          <p>Cargando…</p>
+          <WorkspaceLoading label="Cargando registros…" />
         ) : (
           <div className="table-scroll">
             <table>

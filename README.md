@@ -170,3 +170,5 @@ La publicación de fotos y precios del catálogo, y su edición conjunta en admi
 La [revisión de preparación del negocio](docs/preparacion-negocio.md) muestra los pendientes de configuración en Administración, sin modificar los datos ni certificar automáticamente el despliegue.
 
 El [kardex físico](docs/kardex.md) permite consultar y exportar entradas, salidas y saldos por ingrediente e intervalo de fechas desde Administración.
+
+La [guía del sistema visual](docs/sistema-visual.md) documenta los tokens compartidos, los componentes de interfaz y la revisión adaptable de todas las vistas.

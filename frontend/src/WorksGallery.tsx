@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { api, assetUrl } from "./api";
 import type { Work } from "./workTypes";
 import "./WorksGallery.css";
+import { PageIntro, CardSkeletons } from "./design/Primitives";
 
 export default function WorksGallery({
   onQuote,
@@ -70,19 +71,10 @@ export default function WorksGallery({
       id={isCakeCatalog ? "tortas" : "nuestros-trabajos"}
       aria-labelledby="works-heading"
     >
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">CREACIONES DE NUESTRA FAMILIA</p>
-          <h2 id="works-heading">{isCakeCatalog ? "Nuestras tortas" : "Momentos que endulzamos"}</h2>
-          <p>
-            {isCakeCatalog ? "Tortas hechas por DelyJhos. Elige una creación como referencia y cuéntanos cómo la imaginas para tu celebración." : "Trabajos reales de DelyJhos. Encuentra una idea para tu próxima celebración."}
-          </p>
-        </div>
-        <span className="works-caption">
-          Cada torta tiene su propia historia.
-        </span>
-      </div>
-      {loading && <p role="status">Cargando nuestros trabajos…</p>}
+      <PageIntro id="works-heading" eyebrow="LA COLECCIÓN DELYJHOS" title={isCakeCatalog ? "Nuestras tortas" : "Momentos que endulzamos"} description="Creaciones reales, hechas para una celebración única. Encuentra tu inspiración y la adaptamos contigo.">
+        <span className="collection-note">Diseños a tu medida.<br />Detalles que se recuerdan.</span>
+      </PageIntro>
+      {loading && <CardSkeletons label="Cargando nuestros trabajos…" />}
       {error && (
         <p className="form-error" role="alert">
           {error}

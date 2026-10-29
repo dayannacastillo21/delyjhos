@@ -1,0 +1,44 @@
+/* DelyJhos design foundations. Shared by the storefront and the workspace. */
+:root {
+  --dj-brand: #923557;
+  --dj-brand-hover: #722541;
+  --dj-brand-soft: #f6e9ee;
+  --dj-plum: #342331;
+  --dj-ink: #352a31;
+  --dj-muted: #74616c;
+  --dj-paper: #fcfaf7;
+  --dj-surface: #ffffff;
+  --dj-border: #e6dce0;
+  --dj-gold: #ad8550;
+  --dj-success: #2d6f55;
+  --dj-danger: #a62b43;
+  --dj-radius-sm: 6px;
+  --dj-radius: 12px;
+  --dj-radius-lg: 20px;
+  --dj-shadow: 0 8px 30px #38232f08;
+  --dj-shadow-raised: 0 16px 42px #38232f12;
+  --dj-font-body: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --dj-font-display: Georgia, 'Times New Roman', serif;
+  --dj-text-xs: 12px;
+  --dj-text-sm: 14px;
+  --dj-text-base: 16px;
+  --dj-text-lead: 18px;
+  --dj-display: clamp(42px, 4.6vw, 70px);
+  --dj-space-1: 4px;
+  --dj-space-2: 8px;
+  --dj-space-3: 12px;
+  --dj-space-4: 16px;
+  --dj-space-5: 24px;
+  --dj-space-6: 32px;
+  --dj-space-7: 48px;
+  --dj-space-8: 64px;
+  --dj-space-9: 96px;
+  --dj-motion: 180ms ease;
+}
+:where(a, button, input, textarea, select):focus-visible { outline: 2px solid var(--dj-brand); outline-offset: 4px; }
+:where(button, a, input, select, textarea) { touch-action: manipulation; }
+button:disabled { cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

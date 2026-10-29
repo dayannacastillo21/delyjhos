@@ -12,6 +12,7 @@ import { modules, management, statuses } from "./admin/modules";
 import "./Admin.css";
 import "./AdminRefinement.css";
 import AdminNavigation from "./admin/AdminNavigation";
+import "./design/WorkspaceTheme.css";
 
 export default function Admin() {
   const [user, setUser] = useState<SessionUser | null>(null);

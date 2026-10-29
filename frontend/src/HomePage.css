@@ -21,7 +21,7 @@
 .storefront .home-hero-photo img { width: 100%; height: 100%; display: block; background: #e5dbe5; object-fit: contain; object-position: center; }
 .storefront .home-hero-photo figcaption { position: absolute; inset: auto 0 0; padding: 38px 15px 20px; text-align: center; font: italic 20px Georgia, serif; color: white; background: linear-gradient(transparent, #39263cbd); }
 .storefront .home-visual-word { position: absolute; z-index: 1; top: -9px; right: 0; color: #ae7188; font: italic 45px/1 Georgia, serif; transform: rotate(8deg); }
-.storefront .home-snack-note { display: flex; gap: 12px; align-items: center; position: absolute; left: -36px; bottom: 72px; background: #fffaf7; padding: 8px 18px 8px 8px; box-shadow: 0 8px 30px #52233b22; border: 1px solid #eedee3; border-radius: 6px; text-decoration: none; }
+.storefront .home-snack-note { display: flex; gap: 12px; align-items: center; position: absolute; left: -36px; bottom: 72px; background: var(--dj-paper); padding: 8px 18px 8px 8px; box-shadow: 0 8px 30px #52233b22; border: 1px solid #eedee3; border-radius: 6px; text-decoration: none; }
 .storefront .home-snack-note img { width: 65px; height: 65px; border-radius: 4px; object-fit: cover; }
 .storefront .home-snack-note > span { font-size: 10px; line-height: 1.7; color: #86616f; }
 .storefront .home-snack-note strong { display: block; color: #713047; font-weight: 600; font-size: 12px; }

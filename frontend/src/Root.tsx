@@ -13,7 +13,7 @@ export default function Root() {
     return () => window.removeEventListener("hashchange", listener);
   }, []);
   return (
-    <Suspense fallback={<p className="loading-page">Cargando DelyJhos…</p>}>
+    <Suspense fallback={<div className="loading-page" role="status"><span className="loading-mark" aria-hidden="true">D</span><p>Cargando DelyJhos…</p></div>}>
       {hash.startsWith("#/admin") ? <Admin /> : <App />}
     </Suspense>
   );

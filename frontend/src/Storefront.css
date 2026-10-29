@@ -1,14 +1,14 @@
 /* Public storefront. Tokens and responsive layouts are defined once here;
    administration styles remain independent. */
 .storefront {
-  --rose: #bc2e61;
-  --rose-hover: #982348;
+  --rose: var(--dj-brand);
+  --rose-hover: var(--dj-brand-hover);
   --wine: #79263f;
-  --ink: #402a33;
-  --muted: #765d67;
-  --paper: #fffaf7;
-  --blush: #fcebf0;
-  --line: #ecd2dc;
+  --ink: var(--dj-ink);
+  --muted: var(--dj-muted);
+  --paper: var(--dj-paper);
+  --blush: var(--dj-brand-soft);
+  --line: var(--dj-border);
   --radius: 14px;
   --shadow: 0 8px 26px #89394f0c;
   position: relative;
@@ -105,7 +105,7 @@
   color: #58404a;
 }
 .storefront .navigation a:hover {
-  background: #fcebf0;
+  background: var(--dj-brand-soft);
   color: var(--rose);
 }
 .storefront .navigation a.active {
@@ -163,43 +163,6 @@
   padding: 11px 18px;
   white-space: nowrap;
 }
-.storefront .hero {
-  display: block;
-  position: relative;
-  max-width: 1320px;
-  min-height: 620px;
-  margin: 22px auto 0;
-  border: 1px solid #efd2d7;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #fae9e7;
-  box-shadow: var(--shadow);
-}
-.storefront .hero::after {
-  display: none;
-}
-.storefront .hero-photo {
-  position: absolute;
-  inset: 0;
-  height: auto;
-  min-height: 0;
-  opacity: 1;
-  background: url("/images/hero-patisserie-v3.webp") center top / cover
-    no-repeat;
-}
-.storefront .hero-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: 100px 64px 65px;
-  display: block;
-}
-.storefront .hero-copy {
-  width: 47%;
-  max-width: 570px;
-  margin: 0;
-  text-align: left;
-}
 .storefront .eyebrow {
   color: #9a5069;
   font-size: 10px;
@@ -207,137 +170,11 @@
   line-height: 1.6;
   font-weight: 700;
 }
-.storefront .hero h1 {
-  font:
-    400 clamp(45px, 4.4vw, 67px) / 1.06 Georgia,
-    serif;
-  color: var(--wine);
-  letter-spacing: -2px;
-  margin: 20px 0 23px;
-  text-shadow: 0 1px #fff8;
-}
-.storefront .hero h1 em {
-  font-style: normal;
-  font-weight: 400;
-  color: #a33359;
-}
-.storefront .hero-copy > p {
-  font-size: 15px;
-  line-height: 1.8;
-  max-width: 440px;
-  color: #63444e;
-}
-.storefront .hero-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 27px 0 0;
-}
-.storefront .hero-buttons .button {
-  min-width: 145px;
-  padding: 13px 20px;
-  font-size: 13px;
-}
-.storefront .hero-custom-link {
-  flex-basis: 100%;
-  width: max-content;
-  text-align: left;
-  font-size: 12px;
-  color: #963652;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  min-height: 35px;
-  padding: 0;
-}
-.storefront .hero-custom-link svg {
-  display: none;
-}
-.storefront .hero-signature {
-  display: block;
-  font:
-    italic 16px/1.6 Georgia,
-    serif;
-  color: #956372;
-  margin-top: 13px;
-}
-.storefront .hero-art-label {
-  position: absolute;
-  z-index: 1;
-  right: 14px;
-  bottom: 9px;
-  font-size: 9px;
-  padding: 2px 7px;
-  background: #fff9;
-  color: #66444d;
-  border-radius: 4px;
-}
-.storefront .craft-values {
-  max-width: 1130px;
-  margin: auto;
-  padding: 24px;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-  border-bottom: 1px solid var(--line);
-}
-.storefront .craft-values > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-  color: #6e505d;
-  font-size: 12px;
-  line-height: 1.5;
-}
-.storefront .craft-values svg {
-  color: var(--rose);
-  flex-shrink: 0;
-}
 .storefront .page-content {
   max-width: 1250px;
   padding: 0 40px;
   margin: auto;
 }
-.storefront .home-categories {
-  padding: 30px 0 20px;
-}
-.storefront .home-categories h2 {
-  font:
-    400 34px/1.25 Georgia,
-    serif;
-  text-align: center;
-  color: var(--wine);
-  margin: 0 0 24px;
-}
-.storefront .home-categories h2::before,
-.storefront .home-categories h2::after {
-  content: "";
-  display: inline-block;
-  width: 48px;
-  height: 1px;
-  background: #dcb7c3;
-  vertical-align: middle;
-  margin: 0 20px;
-}
-.storefront .home-category-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-}
-.storefront .home-category-grid > a {
-  display: block;
-  padding: 9px 9px 19px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: linear-gradient(#fffdfb, #fff0f3);
-  text-align: center;
-  box-shadow: var(--shadow);
-  transition: box-shadow 0.18s;
-}
-.storefront .home-category-grid > a:hover {
-  box-shadow: 0 8px 24px #8c2c481a;
-}
-.storefront .home-category-grid img,
 .storefront .category-cover {
   display: block;
   width: 100%;
@@ -358,18 +195,6 @@
 }
 .storefront .category-cover-snacks {
   background-position-x: 95%;
-}
-.storefront .home-category-grid h3 {
-  font:
-    400 25px/1.2 Georgia,
-    serif;
-  color: var(--wine);
-  margin: 15px 0 6px;
-}
-.storefront .home-category-grid p {
-  font-size: 12px;
-  color: var(--muted);
-  margin: 0 12px 13px;
 }
 .storefront .category-link {
   display: inline-flex;
@@ -512,42 +337,6 @@
   border-radius: 25px;
   min-height: 48px;
 }
-.storefront .home-story {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 45px;
-  align-items: center;
-  padding: 38px 28px;
-  margin-bottom: 40px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: #fff4f3;
-}
-.storefront .home-story h2 {
-  font:
-    400 34px/1.25 Georgia,
-    serif;
-  color: var(--wine);
-  margin: 15px 0;
-}
-.storefront .home-story p:not(.eyebrow) {
-  max-width: 370px;
-  font-size: 14px;
-  color: var(--muted);
-}
-.storefront .home-preview {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-.storefront .home-preview img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  border: 5px solid white;
-  border-radius: 9px;
-  box-shadow: 0 4px 13px #8f385016;
-}
 .storefront .works-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
@@ -666,7 +455,7 @@
   gap: 36px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fffaf8;
+  background: var(--dj-paper);
 }
 .storefront .snack-builder h2 {
   font:
@@ -845,32 +634,13 @@
   color: var(--muted);
   margin-bottom: 30px;
 }
-.storefront .about-section {
-  min-height: 420px;
-  padding: 65px 0;
-  border: 0;
-  gap: 50px;
-}
-.storefront .about-section h2 {
-  font:
-    400 39px/1.3 Georgia,
-    serif;
-  color: var(--wine);
-}
-.storefront .about-section h2 em {
-  color: #b4446b;
-}
-.storefront .about-section p {
-  font-size: 15px;
-  color: var(--muted);
-}
 .storefront .contact-section {
   max-width: 850px;
   margin: 45px auto;
   padding: 48px 35px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fcebf0 url("/images/botanical-corner.svg") right top / 180px
+  background: var(--dj-brand-soft) url("/images/botanical-corner.svg") right top / 180px
     no-repeat;
 }
 .storefront .contact-section h2 {
@@ -887,7 +657,7 @@
   padding: 26px;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: #fffaf8 url("/images/botanical-corner.svg") right top / 145px
+  background: var(--dj-paper) url("/images/botanical-corner.svg") right top / 145px
     no-repeat;
 }
 .storefront .modal-heading h2 {
@@ -960,7 +730,7 @@
     right: 0;
     padding: 20px 28px;
     gap: 8px;
-    background: #fffaf8;
+    background: var(--dj-paper);
     border-bottom: 1px solid var(--line);
     box-shadow: 0 10px 18px #7c304519;
     white-space: normal;
@@ -976,27 +746,6 @@
     width: 112px;
     height: 112px;
   }
-  .storefront .hero {
-    margin: 20px 24px 0;
-    min-height: 565px;
-  }
-  .storefront .hero-inner {
-    padding: 90px 42px 45px;
-  }
-  .storefront .hero-copy {
-    width: 48%;
-  }
-  .storefront .hero h1 {
-    font-size: 54px;
-  }
-  .storefront .hero-copy > p {
-    font-size: 14px;
-  }
-  .storefront .hero-buttons .button {
-    padding: 12px 16px;
-    min-width: 125px;
-    font-size: 12px;
-  }
 }
 @media (max-width: 950px) {
   .storefront .header-inner {
@@ -1005,28 +754,6 @@
   .storefront .page-content {
     padding: 0 24px;
   }
-  .storefront .hero {
-    min-height: 540px;
-  }
-  .storefront .hero-inner {
-    padding: 80px 30px 40px;
-  }
-  .storefront .hero-copy {
-    width: 51%;
-  }
-  .storefront .hero-photo {
-    background-position: 54% top;
-  }
-  .storefront .hero h1 {
-    font-size: 46px;
-    letter-spacing: -1.3px;
-  }
-  .storefront .hero-signature {
-    font-size: 14px;
-  }
-  .storefront .home-category-grid {
-    gap: 16px;
-  }
   .storefront .product-grid,
   .storefront .snack-grid,
   .storefront.page-inicio .product-grid {
@@ -1034,13 +761,6 @@
   }
   .storefront .works-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .storefront .home-story {
-    gap: 25px;
-    padding: 30px 22px;
-  }
-  .storefront .home-preview img {
-    height: 180px;
   }
   .storefront .cake-detail-grid {
     gap: 25px;
@@ -1098,119 +818,8 @@
     display: flex;
     align-items: center;
   }
-  .storefront .hero {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    margin: 12px 12px 0;
-    border-radius: 12px;
-  }
-  .storefront .hero-inner {
-    order: 0;
-    padding: 30px 23px 20px;
-    background: #fff0ed;
-  }
-  .storefront .hero-copy {
-    width: 100%;
-    max-width: none;
-    text-align: left;
-  }
-  .storefront .hero h1 {
-    font-size: 43px;
-    line-height: 1.06;
-    margin: 15px 0 18px;
-    letter-spacing: -1.5px;
-  }
-  .storefront .hero .eyebrow {
-    font-size: 8px;
-    letter-spacing: 1.4px;
-  }
-  .storefront .hero-copy > p {
-    font-size: 13px;
-    line-height: 1.7;
-    max-width: 300px;
-    margin: 0;
-  }
-  .storefront .hero-buttons {
-    justify-content: flex-start;
-    gap: 9px;
-    margin: 20px 0 0;
-  }
-  .storefront .hero-buttons .button {
-    padding: 11px 16px;
-    min-width: 125px;
-    font-size: 12px;
-    min-height: 44px;
-  }
-  .storefront .hero-custom-link {
-    font-size: 11px;
-    min-height: 35px;
-  }
-  .storefront .hero-signature {
-    display: none;
-  }
-  .storefront .hero-photo {
-    order: 1;
-    position: relative;
-    inset: auto;
-    width: 100%;
-    height: 315px;
-    background-size: auto 315px;
-    background-position: right center;
-    flex-shrink: 0;
-  }
-  .storefront .hero-photo::after {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto;
-    height: 40px;
-    background: linear-gradient(#fff0ed, transparent);
-  }
-  .storefront .hero-art-label {
-    font-size: 8px;
-  }
-  .storefront .craft-values {
-    padding: 20px 13px;
-    gap: 8px;
-  }
-  .storefront .craft-values > div {
-    flex-direction: column;
-    gap: 7px;
-    text-align: center;
-    font-size: 10px;
-  }
-  .storefront .craft-values svg {
-    width: 24px;
-    height: 24px;
-  }
   .storefront .page-content {
     padding: 0 17px;
-  }
-  .storefront .home-categories {
-    padding: 24px 0 14px;
-  }
-  .storefront .home-categories h2 {
-    font-size: 29px;
-    margin-bottom: 20px;
-  }
-  .storefront .home-categories h2::before,
-  .storefront .home-categories h2::after {
-    width: 20px;
-    margin: 0 9px;
-  }
-  .storefront .home-category-grid {
-    gap: 9px;
-  }
-  .storefront .home-category-grid > a {
-    padding: 5px 5px 11px;
-    border-radius: 9px;
-  }
-  .storefront .home-category-grid h3 {
-    font-size: 17px;
-    margin: 11px 0 8px;
-  }
-  .storefront .home-category-grid p {
-    display: none;
   }
   .storefront .category-link {
     font-size: 10px;
@@ -1268,22 +877,6 @@
   }
   .storefront .sample-note {
     font-size: 11px;
-  }
-  .storefront .home-story {
-    grid-template-columns: 1fr;
-    padding: 25px 18px;
-    gap: 22px;
-    margin-bottom: 30px;
-  }
-  .storefront .home-story h2 {
-    font-size: 30px;
-  }
-  .storefront .home-preview {
-    gap: 8px;
-  }
-  .storefront .home-preview img {
-    height: 155px;
-    border-width: 3px;
   }
   .storefront .works-grid {
     grid-template-columns: 1fr;
@@ -1368,18 +961,6 @@
   }
   .storefront .standalone-form h1 {
     font-size: 32px;
-  }
-  .storefront .about-section {
-    grid-template-columns: 1fr;
-    padding: 40px 0;
-    min-height: 0;
-    gap: 22px;
-  }
-  .storefront .about-section h2 {
-    font-size: 32px;
-  }
-  .storefront .about-section p {
-    font-size: 14px;
   }
   .storefront .contact-section {
     padding: 35px 22px;

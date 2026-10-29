@@ -1,3 +1,4 @@
+import { PageIntro, CardSkeletons } from "./design/Primitives";
 import { useEffect, useRef, useState } from "react";
 import { api, assetUrl } from "./api";
 import { money } from "./catalog";
@@ -398,16 +399,9 @@ export default function SnackCatalog({
       )}
       {view !== "table" && (
         <>
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">PEQUEÑOS DETALLES PARA COMPARTIR</p>
-              <h2 id="snack-heading">Nuestros bocaditos</h2>
-              <p>Dulces y salados para una mesa a tu medida.</p>
-            </div>
-            <a className="button button-outline" href="#/arma-tu-mesa">
-              Arma tu mesa · {totalUnits} unidades
-            </a>
-          </div>
+          <PageIntro id="snack-heading" eyebrow="PEQUEÑAS DELICIAS, GRANDES MOMENTOS" title="Nuestros bocaditos" description="Dulces y salados para compartir. Descubre tus favoritos y combina una mesa a tu gusto.">
+            <a className="button button-outline" href="#/arma-tu-mesa">Arma tu mesa · {totalUnits} unidades <span aria-hidden="true">↗</span></a>
+          </PageIntro>
           <div className="snack-filters">
             <label>
               Buscar bocaditos
@@ -434,7 +428,7 @@ export default function SnackCatalog({
               ))}
             </div>
           </div>
-          {loading && <p role="status">Cargando bocaditos…</p>}
+          {loading && <CardSkeletons label="Cargando bocaditos…" />}
           {error && (
             <p role="alert" className="form-error">
               {error}
@@ -554,6 +548,7 @@ export default function SnackCatalog({
         !receipt &&
         !loading && (
           <div className="table-empty">
+            <div className="table-empty-photos" aria-hidden="true">{["empanaditas-de-carne", "mini-alfajores-de-maicena", "mini-brownies"].map(slug => <img src={`/media/snacks/${slug}.webp`} width="110" height="110" alt="" loading="lazy" key={slug} />)}</div>
             <p className="eyebrow">UNA MESA PARA COMPARTIR</p>
             <h1>Arma tu mesa de bocaditos</h1>
             <p>
@@ -574,7 +569,7 @@ export default function SnackCatalog({
           >
             <div>
               <p className="eyebrow">TU CELEBRACIÓN, A TU GUSTO</p>
-              <h2 id="table-heading">Arma tu mesa de bocaditos</h2>
+              <h1 id="table-heading">Arma tu mesa de bocaditos</h1>
               <p>
                 Selecciona variedades y presentaciones. Revisaremos
                 disponibilidad y precio contigo antes de confirmar el pedido.
