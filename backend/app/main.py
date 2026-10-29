@@ -10,6 +10,7 @@ from app.routers.business import router
 from app.routers.snacks import router as snack_router
 from app.routers.works import router as works_router
 from app.routers.readiness import router as readiness_router
+from app.routers.kardex import router as kardex_router
 
 app = FastAPI(
     title="DelyJhos API",
@@ -82,3 +83,5 @@ app.include_router(snack_router)
 app.include_router(works_router)
 
 app.include_router(readiness_router)
+
+app.include_router(kardex_router)

@@ -1,0 +1,16 @@
+.kardex-filters { display: flex; align-items: end; gap: 16px; flex-wrap: wrap; }
+.kardex-filters label { display: flex; flex-direction: column; gap: 8px; font-size: 12px; flex: 1; min-width: 150px; }
+.kardex-filters select, .kardex-filters input { width: 100%; min-height: 42px; box-sizing: border-box; }
+.kardex-totals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
+.kardex-totals > div { padding: 20px; background: white; border: 1px solid #e5d7e0; border-radius: 8px; }
+.kardex-totals span { display: block; font-size: 11px; color: #8e6e81; margin-bottom: 12px; }
+.kardex-totals strong { color: #573e4c; font-size: 24px; }
+.kardex-totals small { font-size: 12px; font-weight: 400; }
+.kardex-page caption { text-align: left; padding: 14px 0; color: #745565; font-size: 12px; }
+.kardex-reference { display: block; color: #92798a; margin-top: 6px; }
+.kardex-number { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kardex-number.incoming { color: #36725c; }.kardex-number.outgoing { color: #a34b68; }
+.kardex-notice { padding: 15px; background: #fff2d8; border: 1px solid #ead1a4; color: #805f2e; border-radius: 6px; font-size: 12px; line-height: 1.7; }
+.kardex-pagination { display: flex; justify-content: flex-end; align-items: center; gap: 14px; margin-top: 18px; font-size: 12px; }
+@media(max-width: 700px) { .kardex-totals { grid-template-columns: 1fr 1fr; }.kardex-totals > div { padding: 15px; }.kardex-totals strong { font-size: 21px; }.kardex-filters { align-items: stretch; }.kardex-filters label { flex-basis: 100%; }.kardex-pagination { gap: 8px; } }
+.admin-content .kardex-filters .admin-primary { color: #fff; }

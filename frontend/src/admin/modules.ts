@@ -479,7 +479,7 @@ export const modules: Module[] = [
   },
   {
     key: "movements",
-    title: "Movimientos",
+    title: "Kardex",
     icon: "⇄",
     roles: all,
     readonly: true,

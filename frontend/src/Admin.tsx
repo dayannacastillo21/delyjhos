@@ -3,6 +3,7 @@ import { api, setAccessToken } from "./api";
 import type { SessionUser } from "./api";
 import Dashboard from "./admin/Dashboard";
 import Readiness from "./admin/Readiness";
+import Kardex from "./admin/Kardex";
 import BusinessSettings from "./admin/BusinessSettings";
 import SnackCatalog from "./SnackCatalog";
 import ResourceView from "./admin/ResourceView";
@@ -181,6 +182,8 @@ export default function Admin() {
             <CostTools />
           ) : section === "calendar" ? (
             <Calendar />
+          ) : section === "movements" ? (
+            <Kardex />
           ) : module ? (
             <ResourceView key={section} module={module} user={user} />
           ) : null}

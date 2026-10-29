@@ -1,0 +1,30 @@
+import { test, expect } from "@playwright/test";
+
+test("kardex shows movements, balances and exports the complete selected ledger", async ({ page }) => {
+  await page.goto("/#/admin");
+  await page.getByLabel("Correo", { exact: true }).fill("admin@example.com");
+  await page.getByLabel("Contraseña", { exact: true }).fill("E2E-only-password-123");
+  await page.getByRole("button", { name: "Iniciar sesión" }).click();
+  await page.getByRole("navigation", { name: "Administración" }).getByRole("button", { name: "Inventario", exact: true }).click();
+  await page.getByLabel("Ingrediente", { exact: true }).selectOption("1");
+  await page.getByLabel("Cantidad de ajuste").fill("3");
+  await page.getByLabel("Motivo del ajuste").fill("Entrada para kardex");
+  const adjustment = page.waitForResponse(response => response.url().endsWith("/api/v1/admin/inventory/adjust") && response.request().method() === "POST");
+  await page.getByRole("button", { name: "Registrar ajuste" }).click();
+  expect((await adjustment).status()).toBe(201);
+  await page.getByRole("button", { name: "Kardex", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Kardex de inventario" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "Entrada para kardex", exact: true })).toBeVisible();
+  await expect(page.getByRole("row").filter({ hasText: "Entrada para kardex" }).getByRole("cell").nth(4)).toHaveText("3");
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Exportar kardex completo" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("delyjhos-kardex-1.csv");
+  await page.getByLabel("Desde", { exact: true }).fill("2090-01-01");
+  await page.getByLabel("Hasta", { exact: true }).fill("2090-01-02");
+  await page.getByRole("button", { name: "Consultar kardex", exact: true }).click();
+  await expect(page.getByRole("cell", { name: "No hay movimientos en este intervalo." })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.screenshot({ path: "test-results/kardex-mobile.png", fullPage: true });
+});

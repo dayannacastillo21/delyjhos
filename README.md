@@ -168,3 +168,5 @@ Más detalles en [operación](docs/operations.md), [arquitectura](docs/architect
 La publicación de fotos y precios del catálogo, y su edición conjunta en administración, se documenta en [Bocaditos publicados](docs/bocaditos-publicados.md).
 
 La [revisión de preparación del negocio](docs/preparacion-negocio.md) muestra los pendientes de configuración en Administración, sin modificar los datos ni certificar automáticamente el despliegue.
+
+El [kardex físico](docs/kardex.md) permite consultar y exportar entradas, salidas y saldos por ingrediente e intervalo de fechas desde Administración.
