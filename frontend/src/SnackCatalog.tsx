@@ -389,7 +389,7 @@ export default function SnackCatalog({
     <section
       className={`snack-catalog snack-view-${view}`}
       id="bocaditos"
-      aria-labelledby="snack-heading"
+      aria-labelledby={view === "table" ? "table-heading" : "snack-heading"}
     >
       {preview && (
         <p className="snack-notice" role="status">
@@ -550,7 +550,7 @@ export default function SnackCatalog({
           <div className="table-empty">
             <div className="table-empty-photos" aria-hidden="true">{["empanaditas-de-carne", "mini-alfajores-de-maicena", "mini-brownies"].map(slug => <img src={`/media/snacks/${slug}.webp`} width="110" height="110" alt="" loading="lazy" key={slug} />)}</div>
             <p className="eyebrow">UNA MESA PARA COMPARTIR</p>
-            <h1>Arma tu mesa de bocaditos</h1>
+            <h1 id="table-heading">Arma tu mesa de bocaditos</h1>
             <p>
               Empieza eligiendo tus variedades favoritas y sus presentaciones.
               Después podrás ajustar las cantidades y enviarnos tu solicitud.
