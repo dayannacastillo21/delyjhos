@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api, setAccessToken } from "./api";
 import type { SessionUser } from "./api";
 import Dashboard from "./admin/Dashboard";
+import Readiness from "./admin/Readiness";
 import BusinessSettings from "./admin/BusinessSettings";
 import SnackCatalog from "./SnackCatalog";
 import ResourceView from "./admin/ResourceView";
@@ -158,6 +159,9 @@ export default function Admin() {
             </button>
           )}
           {management.includes(user.role) && (
+            <button className={section === "readiness" ? "selected" : ""} onClick={() => { setSection("readiness"); setNavOpen(false); }}>✓ <span>Preparación del negocio</span></button>
+          )}
+          {management.includes(user.role) && (
             <button
               onClick={() => {
                 setSection("settings");
@@ -205,6 +209,8 @@ export default function Admin() {
         <main className="admin-content">
           {section === "dashboard" ? (
             <Dashboard user={user} />
+          ) : section === "readiness" && management.includes(user.role) ? (
+            <Readiness onOpenSection={setSection} />
           ) : section === "settings" ? (
             <BusinessSettings />
           ) : section === "snack-preview" ? (

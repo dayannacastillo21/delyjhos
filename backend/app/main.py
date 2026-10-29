@@ -9,6 +9,7 @@ from app.database import engine
 from app.routers.business import router
 from app.routers.snacks import router as snack_router
 from app.routers.works import router as works_router
+from app.routers.readiness import router as readiness_router
 
 app = FastAPI(
     title="DelyJhos API",
@@ -79,3 +80,5 @@ app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads"
 app.include_router(router)
 app.include_router(snack_router)
 app.include_router(works_router)
+
+app.include_router(readiness_router)
