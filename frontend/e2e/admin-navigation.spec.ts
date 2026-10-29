@@ -1,0 +1,33 @@
+import { test, expect } from "@playwright/test";
+import { modules } from "../src/admin/modules";
+
+test("administration groups its modules and keeps mobile navigation usable", async ({ page }) => {
+  await page.goto("/#/admin");
+  await page.getByLabel("Correo", { exact: true }).fill("admin@example.com");
+  await page.getByLabel("Contraseña", { exact: true }).fill("E2E-only-password-123");
+  await page.getByRole("button", { name: "Iniciar sesión" }).click();
+  await expect(page.getByRole("heading", { name: /Hola,/ })).toBeVisible();
+  const navigation = page.getByRole("navigation", { name: "Administración", exact: true });
+  await expect(navigation.locator(".admin-nav-group")).toHaveCount(5);
+  await expect(navigation.getByRole("button")).toHaveCount(modules.filter(item => item.roles.includes("admin")).length + 6);
+  await expect(navigation.getByRole("button", { name: "Inicio", exact: true })).toHaveAttribute("aria-current", "page");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.screenshot({ path: "test-results/admin-reference-desktop.png", fullPage: true });
+  await navigation.getByRole("button", { name: "Productos", exact: true }).click();
+  await expect(navigation.getByRole("button", { name: "Productos", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(page.locator(".admin-breadcrumb")).toContainText("Productos");
+  await page.setViewportSize({ width: 390, height: 844 });
+  const toggle = page.getByRole("button", { name: "Abrir menú administrativo", exact: true });
+  await toggle.click();
+  await expect(navigation).toBeVisible();
+  await page.screenshot({ path: "test-results/admin-reference-mobile-menu.png" });
+  await navigation.getByRole("button", { name: "Inicio", exact: true }).focus();
+  await page.keyboard.press("Escape");
+  await expect(toggle).toBeFocused();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await toggle.click();
+  await navigation.getByRole("button", { name: "Inicio", exact: true }).click();
+  await expect(page.getByRole("heading", { name: /Hola,/ })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.screenshot({ path: "test-results/admin-reference-mobile-dashboard.png", fullPage: true });
+});

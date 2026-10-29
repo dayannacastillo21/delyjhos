@@ -40,7 +40,7 @@ test("admin login, dashboard and inventory workflow", async ({ page }) => {
     .fill("E2E-only-password-123");
   await page.getByRole("button", { name: "Iniciar sesión" }).click();
   await expect(
-    page.getByRole("heading", { name: /Bienvenida,/ }),
+    page.getByRole("heading", { name: /Hola,/ }),
   ).toBeVisible();
   await page
     .getByRole("navigation", { name: "Administración" })
@@ -131,7 +131,7 @@ test("custom quote reaches administration and converts with approved price", asy
     .fill("E2E-only-password-123");
   await page.getByRole("button", { name: "Iniciar sesión" }).click();
   await expect(
-    page.getByRole("heading", { name: /Bienvenida,/ }),
+    page.getByRole("heading", { name: /Hola,/ }),
   ).toBeVisible();
   await page
     .getByRole("navigation", { name: "Administración" })

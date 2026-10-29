@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import type { RecordData, SessionUser } from "../api";
+import AdminIcon from "./AdminIcon";
 import { currency, statuses, show } from "./modules";
 
 export default function Dashboard({ user }: { user: SessionUser }) {
@@ -37,11 +38,10 @@ export default function Dashboard({ user }: { user: SessionUser }) {
     <>
       <div className="welcome">
         <div>
-          <h1>
-            ¡Bienvenida, {user.name.split(" ")[0]}! <span>♥</span>
-          </h1>
+          <p className="admin-eyebrow">RESUMEN DEL NEGOCIO</p>
+          <h1>Hola, {user.name.split(" ")[0]}.</h1>
           <p>
-            Aquí puedes gestionar tu pastelería y hacer cada momento más dulce.
+            Pedidos, producción e inventario: lo importante de tu día, en un solo lugar.
           </p>
         </div>
         <time>
@@ -55,14 +55,14 @@ export default function Dashboard({ user }: { user: SessionUser }) {
       </div>
       <div className="stat-grid">
         <div className="stat-card pink">
-          <span>🛍</span>
+          <span><AdminIcon name="orders" /></span>
           <div>
             <p>Pedidos de hoy</p>
             <strong>{Number(data.orders_today)}</strong>
           </div>
         </div>
         <div className="stat-card yellow">
-          <span>◉</span>
+          <span><AdminIcon name="money" /></span>
           <div>
             <p>Cobrado hoy</p>
             <strong>
@@ -73,14 +73,14 @@ export default function Dashboard({ user }: { user: SessionUser }) {
           </div>
         </div>
         <div className="stat-card purple">
-          <span>◇</span>
+          <span><AdminIcon name="catalog" /></span>
           <div>
             <p>Pedidos activos</p>
             <strong>{Number(data.active_orders)}</strong>
           </div>
         </div>
         <div className="stat-card green">
-          <span>♧</span>
+          <span><AdminIcon name="recipe" /></span>
           <div>
             <p>En producción</p>
             <strong>{Number(data.in_production)}</strong>
@@ -151,7 +151,7 @@ export default function Dashboard({ user }: { user: SessionUser }) {
           )}
         </section>
         <section className="admin-panel">
-          <h2>⚠ Stock bajo</h2>
+          <h2>Stock bajo</h2>
           {low.length ? (
             <ul className="summary-list">
               {low.map((i) => (

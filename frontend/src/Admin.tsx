@@ -9,6 +9,8 @@ import ResourceView from "./admin/ResourceView";
 import { Calendar, CostTools } from "./admin/Tools";
 import { modules, management, statuses } from "./admin/modules";
 import "./Admin.css";
+import "./AdminRefinement.css";
+import AdminNavigation from "./admin/AdminNavigation";
 
 export default function Admin() {
   const [user, setUser] = useState<SessionUser | null>(null);
@@ -28,6 +30,28 @@ export default function Admin() {
     return () =>
       window.removeEventListener("delyjhos-session-expired", expired);
   }, []);
+  useEffect(() => {
+    if (!navOpen) return;
+    const sidebar = document.getElementById("admin-sidebar");
+    const toggle = document.querySelector<HTMLButtonElement>(".admin-topbar > button");
+    sidebar?.querySelector<HTMLButtonElement>("nav button")?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setNavOpen(false);
+        toggle?.focus();
+      }
+      if (event.key === "Tab") {
+        const items = Array.from(sidebar?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") || []);
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [navOpen]);
   async function login(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
@@ -101,77 +125,13 @@ export default function Admin() {
   const module = modules.find((m) => m.key === section);
   return (
     <div className="admin-layout">
-      <aside className={"admin-sidebar " + (navOpen ? "open" : "")}>
-        <a href="#inicio" aria-label="Volver a DelyJhos">
-          <span className="logo-picture" />
+      {navOpen && <button className="admin-menu-backdrop" aria-label="Cerrar navegación administrativa" onClick={() => { setNavOpen(false); document.querySelector<HTMLButtonElement>(".admin-topbar > button")?.focus(); }} />}
+      <aside id="admin-sidebar" className={"admin-sidebar " + (navOpen ? "open" : "")}>
+        <a className="admin-brand" href="#/" aria-label="Volver a DelyJhos">
+          <span className="logo-picture" /><span><strong>DelyJhos</strong><small>Gestión de la pastelería</small></span>
         </a>
-        <nav aria-label="Administración">
-          <button
-            className={section === "dashboard" ? "selected" : ""}
-            onClick={() => {
-              setSection("dashboard");
-              setNavOpen(false);
-            }}
-          >
-            ⌂ <span>Inicio</span>
-          </button>
-          {modules
-            .filter((m) => m.roles.includes(user.role))
-            .map((m) => (
-              <button
-                key={m.key}
-                aria-label={m.title}
-                className={section === m.key ? "selected" : ""}
-                onClick={() => {
-                  setSection(m.key);
-                  setNavOpen(false);
-                }}
-              >
-                {m.icon} <span>{m.title}</span>
-              </button>
-            ))}
-          <button
-            onClick={() => {
-              setSection("calendar");
-              setNavOpen(false);
-            }}
-          >
-            ▦ <span>Calendario</span>
-          </button>
-          {management.includes(user.role) && (
-            <button
-              onClick={() => {
-                setSection("snack-preview");
-                setNavOpen(false);
-              }}
-            >
-              ◈ <span>Vista previa de bocaditos</span>
-            </button>
-          )}
-          {management.includes(user.role) && (
-            <button
-              onClick={() => {
-                setSection("reports");
-                setNavOpen(false);
-              }}
-            >
-              ▥ <span>Costos y reportes</span>
-            </button>
-          )}
-          {management.includes(user.role) && (
-            <button className={section === "readiness" ? "selected" : ""} onClick={() => { setSection("readiness"); setNavOpen(false); }}>✓ <span>Preparación del negocio</span></button>
-          )}
-          {management.includes(user.role) && (
-            <button
-              onClick={() => {
-                setSection("settings");
-                setNavOpen(false);
-              }}
-            >
-              ⚙ <span>Configuración</span>
-            </button>
-          )}
-        </nav>
+        <AdminNavigation user={user} section={section} onSelect={key => { setSection(key); setNavOpen(false); }} />
+        <div className="admin-session-card"><span>SESIÓN ACTIVA</span><strong>{user.name}</strong><small>{statuses[user.role] || user.role}</small></div>
         <a className="back-store" href="#inicio">
           ← Ver página pública
         </a>
@@ -179,12 +139,14 @@ export default function Admin() {
       <div className="admin-workspace">
         <header className="admin-topbar">
           <button
-            aria-label="Abrir menú administrativo"
+            aria-label={navOpen ? "Cerrar menú administrativo" : "Abrir menú administrativo"}
+            aria-expanded={navOpen}
+            aria-controls="admin-sidebar"
             onClick={() => setNavOpen(!navOpen)}
           >
             ☰
           </button>
-          <span>Gestión de la pastelería</span>
+          <span className="admin-breadcrumb">Administración <span aria-hidden="true">/</span> <strong>{module?.title || ({ dashboard: "Resumen del negocio", settings: "Configuración", readiness: "Preparación del negocio", calendar: "Calendario", reports: "Costos y reportes", "snack-preview": "Vista previa de bocaditos" }[section] || "DelyJhos")}</strong></span>
           <div>
             <span className="admin-avatar">{user.name.charAt(0)}</span>
             <span>
